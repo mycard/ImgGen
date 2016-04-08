@@ -1,0 +1,14 @@
+C:\Users\Twinkle\Desktop\ImgGen\bin\Release\ImgGen.exe.config
+C:\Users\Twinkle\Desktop\ImgGen\bin\Release\ImgGen.exe
+C:\Users\Twinkle\Desktop\ImgGen\bin\Release\ImgGen.pdb
+C:\Users\Twinkle\Desktop\ImgGen\bin\Release\System.Data.SQLite.dll
+C:\Users\Twinkle\Desktop\ImgGen\obj\x86\Release\ImgGen.csprojResolveAssemblyReference.cache
+C:\Users\Twinkle\Desktop\ImgGen\obj\x86\Release\ImgGen.exe
+C:\Users\Twinkle\Desktop\ImgGen\obj\x86\Release\ImgGen.pdb
+C:\Users\Twinkle\Documents\Github\ImgGen\bin\Release\ImgGen.exe.config
+C:\Users\Twinkle\Documents\Github\ImgGen\obj\x86\Release\ImgGen.exe
+C:\Users\Twinkle\Documents\Github\ImgGen\obj\x86\Release\ImgGen.pdb
+C:\Users\Twinkle\Documents\Github\ImgGen\bin\Release\ImgGen.exe
+C:\Users\Twinkle\Documents\Github\ImgGen\bin\Release\ImgGen.pdb
+C:\Users\Twinkle\Documents\Github\ImgGen\bin\Release\System.Data.SQLite.dll
+C:\Users\Twinkle\Documents\Github\ImgGen\obj\x86\Release\ImgGen.csprojResolveAssemblyReference.cache
