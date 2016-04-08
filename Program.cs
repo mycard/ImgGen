@@ -28,7 +28,7 @@
             EncoderParameters encoderParams = new EncoderParameters(1);
             EncoderParameter parameter = new EncoderParameter(quality, 0x5fL);
             encoderParams.Param[0] = parameter;
-            string[] files = Directory.GetFiles("./pico");
+            string[] files = Directory.GetFiles("./pico", "*.jpg");
             Directory.CreateDirectory("./picn/thumbnail");
             foreach (string str in files)
             {
