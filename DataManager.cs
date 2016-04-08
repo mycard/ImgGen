@@ -1,4 +1,4 @@
-﻿namespace ImgGen
+namespace ImgGen
 {
     using System;
     using System.Collections.Generic;
@@ -217,6 +217,10 @@
                     str = str + "／仪式";
                 }
             }
+            if ((dat.type & 0x1000000) != 0)
+            {
+                str = str + "／灵摆";
+            }
             if ((dat.type & 0x200) != 0)
             {
                 str = str + "／灵魂";
@@ -229,13 +233,13 @@
             {
                 str = str + "／同盟";
             }
+            else if ((dat.type & 0x200000) != 0)
+            {
+                str = str + "／反转";
+            }
             else if ((dat.type & 0x400000) != 0)
             {
                 str = str + "／卡通";
-            }
-            else if ((dat.type & 0x1000000) != 0)
-            {
-                str = str + "／灵摆";
             }
             if ((dat.type & 0x1000) != 0)
             {
@@ -266,6 +270,7 @@
             bTemplates[9] = new Bitmap("./textures/card_pxyz.jpg");
             bTemplates[10] = new Bitmap("./textures/card_peffect.jpg");
             bTemplates[11] = new Bitmap("./textures/card_pnormal.jpg");
+            bTemplates[12] = new Bitmap("./textures/card_psynchro.jpg");
             bAttributes[0] = new Bitmap("./textures/att_earth.png");
             bAttributes[1] = new Bitmap("./textures/att_water.png");
             bAttributes[2] = new Bitmap("./textures/att_fire.png");
@@ -360,7 +365,14 @@
                     }
                     else if ((data.type & 0x2000) != 0)
                     {
-                        bitmap = new Bitmap(bTemplates[2]);
+                        if ((data.type & 0x1000000) != 0)
+                        {
+                            bitmap = new Bitmap(bTemplates[12]);
+                        }
+                        else
+                        {
+                            bitmap = new Bitmap(bTemplates[2]);
+                        }
                     }
                     else if ((data.type & 0x800000) != 0)
                     {
@@ -414,21 +426,11 @@
                         int y = 15;
                         if ((data.type & 0x800000) == 0)
                         {
-                            if ((data.type & 0x1000000) == 0)
+                            for (num2 = 0; num2 < (data.level & 0xff); num2++)
                             {
-                                for (num2 = 0; num2 < (data.level & 0xff); num2++)
-                                {
-                                    graphics.DrawImage(bStar[0], 149 - (12 * num2), 0x25, 11, 11);
-                                }
+                                graphics.DrawImage(bStar[0], 149 - (12 * num2), 0x23, 11, 11);
                             }
-                            else
-                            {
-                                for (num2 = 0; num2 < (data.level & 0xff); num2++)
-                                {
-                                    graphics.DrawImage(bStar[0], 149 - (12 * num2), 0x23, 11, 11);
-                                }
-                                y = 12;
-                            }
+                            y = 12;
                         }
                         else
                         {
