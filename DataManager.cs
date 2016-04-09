@@ -426,11 +426,21 @@ namespace ImgGen
                         int y = 15;
                         if ((data.type & 0x800000) == 0)
                         {
-                            for (num2 = 0; num2 < (data.level & 0xff); num2++)
+                            if ((data.type & 0x1000000) == 0)
                             {
-                                graphics.DrawImage(bStar[0], 149 - (12 * num2), 0x23, 11, 11);
+                                for (num2 = 0; num2 < (data.level & 0xff); num2++)
+                                {
+                                    graphics.DrawImage(bStar[0], 149 - (12 * num2), 0x25, 11, 11);
+                                }
                             }
+                            else
+                            {
+                                for (num2 = 0; num2 < (data.level & 0xff); num2++)
+                                {
+                                    graphics.DrawImage(bStar[0], 149 - (12 * num2), 0x23, 11, 11);
+                                }
                             y = 12;
+                            }
                         }
                         else
                         {
