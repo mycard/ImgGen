@@ -352,8 +352,7 @@ namespace ImgGen
                 cardTexts.Add(code, text);
                 if (!cardImages.ContainsKey(code))
                 {
-                    Bitmap bitmap, bitmap_answer;
-                    bitmap_answer = new Bitmap(177, 254);
+                    Bitmap bitmap;
                     SizeF ef;
                     int num4;
                     if ((data.type & 2) != 0)
@@ -420,8 +419,7 @@ namespace ImgGen
                             bitmap = new Bitmap(bTemplates[8]);
                         }
                     }
-                    Graphics graphics = Graphics.FromImage(bitmap_answer);
-                    grpahics.DrawImage(bitmap, 0, 0);
+                    Graphics graphics = Graphics.FromImage(bitmap);
                     text.text = tosbc(text.text);
                     if ((data.type & 1) != 0)
                     {
@@ -725,7 +723,7 @@ namespace ImgGen
                     graphics.DrawString(str3, nameFont, nameBrush, (float) 0f, (float) 0f);
                     graphics.DrawString(str3, nameFont, Brushes.Gold, (float) 1f, (float) 1f);
                     graphics.ResetTransform();
-                    cardImages.Add(code, bitmap_answer);
+                    cardImages.Add(code, bitmap);
                 }
                 return 0;
             }
