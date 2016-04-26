@@ -706,9 +706,9 @@ namespace ImgGen
                     string str3 = text.name.Replace('\x00b7', '・');
                     float width = graphics.MeasureString(str3, nameFont).Width;
                     float sx = 1f;
-                    if (width > 125f)
+                    if (width > 130f)
                     {
-                        sx *= 125f / width;
+                        sx *= 130f / width;
                     }
                     if ((data.type & 0x800000) > 0)
                     {
