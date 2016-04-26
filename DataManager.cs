@@ -16,7 +16,7 @@ namespace ImgGen
         private static Dictionary<int, Data> cardDatas = new Dictionary<int, Data>();
         private static Dictionary<int, Bitmap> cardImages = new Dictionary<int, Bitmap>();
         private static Dictionary<int, Text> cardTexts = new Dictionary<int, Text>();
-        private static SQLiteConnection conn = new SQLiteConnection("Data Source=../cards.cdb");
+        private static SQLiteConnection conn;
         private static Dictionary<int, string> ctStrings = new Dictionary<int, string>();
         private static object locker = new object();
         private static SolidBrush nameBrush = new SolidBrush(Color.FromArgb(0x40, 0x40, 0));
@@ -31,6 +31,7 @@ namespace ImgGen
 
 		private static string regex_monster = @"[果|介|述|報]】\n([\S\s]*)";
 		private static string regex_pendulum = @"】[\s\S]*?\n([\S\s]*?)\n【";
+		private static string xyzString = "超量";
 
 		public static Data GetCardData(int code)
         {
@@ -202,7 +203,7 @@ namespace ImgGen
             {
                 if ((dat.type & 0x800000) != 0)
                 {
-                    str = str + "／超量";
+                    str = str + "／" + xyzString;
                 }
                 else if ((dat.type & 0x2000) != 0)
                 {
@@ -252,8 +253,10 @@ namespace ImgGen
             return (str + "】");
         }
 
-        public static void InitialDatas()
+        public static void InitialDatas(string dbPath= "../cards.cdb", string xyz="超量")
         {
+            xyzString = xyz;
+            conn = new SQLiteConnection("Data Source=" + dbPath);
             numFont = new Font("Arial", 5.5f);
             nameFont = new Font("文泉驿微米黑", 10f);
             typeFont = new Font("文泉驿微米黑", 6f);

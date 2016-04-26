@@ -22,7 +22,18 @@
 
         private static void Main(string[] args)
         {
-            DataManager.InitialDatas();
+            if (args.Length > 1)
+            {
+                DataManager.InitialDatas(args[0], args[1]);
+            }
+            else if (args.Length > 0)
+            {
+                DataManager.InitialDatas(args[0]);
+            }
+            else
+            {
+                DataManager.InitialDatas();
+            }
             Encoder quality = Encoder.Quality;
             ImageCodecInfo encoderInfo = GetEncoderInfo("image/jpeg");
             EncoderParameters encoderParams = new EncoderParameters(1);
