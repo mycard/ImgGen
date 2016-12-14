@@ -274,6 +274,7 @@ namespace ImgGen
             bTemplates[10] = new Bitmap("./textures/card_peffect.jpg");
             bTemplates[11] = new Bitmap("./textures/card_pnormal.jpg");
             bTemplates[12] = new Bitmap("./textures/card_psynchro.jpg");
+            bTemplates[13] = new Bitmap("./textures/card_pfusion.jpg");
             bAttributes[0] = new Bitmap("./textures/att_earth.png");
             bAttributes[1] = new Bitmap("./textures/att_water.png");
             bAttributes[2] = new Bitmap("./textures/att_fire.png");
@@ -390,7 +391,14 @@ namespace ImgGen
                     }
                     else if ((data.type & 0x40) != 0)
                     {
-                        bitmap = new Bitmap(bTemplates[4]);
+                        if ((data.type & 0x1000000) != 0)
+                        {
+                            bitmap = new Bitmap(bTemplates[13]);
+                        }
+                        else
+                        {
+                            bitmap = new Bitmap(bTemplates[4]);
+                        }
                     }
                     else if ((data.type & 0x80) != 0)
                     {
