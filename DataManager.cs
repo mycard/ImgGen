@@ -199,24 +199,21 @@ namespace ImgGen
                     str = str + "幻龙族";
                     break;
             }
-            if ((dat.type & 0x8020c0) != 0)
+            if ((dat.type & 0x40) != 0)
             {
-                if ((dat.type & 0x800000) != 0)
-                {
-                    str = str + "／" + xyzString;
-                }
-                else if ((dat.type & 0x2000) != 0)
-                {
-                    str = str + "／同调";
-                }
-                else if ((dat.type & 0x40) != 0)
-                {
-                    str = str + "／融合";
-                }
-                else if ((dat.type & 0x80) != 0)
-                {
-                    str = str + "／仪式";
-                }
+                str = str + "／融合";
+            }
+            if ((dat.type & 0x2000) != 0)
+            {
+                str = str + "／同调";
+            }
+            if ((dat.type & 0x800000) != 0)
+            {
+                str = str + "／" + xyzString;
+            }
+            if ((dat.type & 0x80) != 0)
+            {
+                str = str + "／仪式";
             }
             if ((dat.type & 0x1000000) != 0)
             {
@@ -275,6 +272,7 @@ namespace ImgGen
             bTemplates[11] = new Bitmap("./textures/card_pnormal.jpg");
             bTemplates[12] = new Bitmap("./textures/card_psynchro.jpg");
             bTemplates[13] = new Bitmap("./textures/card_pfusion.jpg");
+            bTemplates[14] = new Bitmap("./textures/card_zarc.jpg");
             bAttributes[0] = new Bitmap("./textures/att_earth.png");
             bAttributes[1] = new Bitmap("./textures/att_water.png");
             bAttributes[2] = new Bitmap("./textures/att_fire.png");
@@ -359,7 +357,11 @@ namespace ImgGen
                     Bitmap bitmap;
                     SizeF ef;
                     int num4;
-                    if ((data.type & 2) != 0)
+                    if ((data.type & 0x1802040) == 0x1802040)
+                    {
+                        bitmap = new Bitmap(bTemplates[14]);
+                    }
+                    else if ((data.type & 2) != 0)
                     {
                         bitmap = new Bitmap(bTemplates[0]);
                     }
@@ -435,7 +437,7 @@ namespace ImgGen
                     if ((data.type & 1) != 0)
                     {
                         int y = 15;
-                        if ((data.type & 0x800000) == 0)
+                        if ((data.type & 0x800000) == 0 || (data.type & 0x1802040) == 0x1802040)
                         {
                             if ((data.type & 0x1000000) == 0)
                             {
@@ -581,9 +583,18 @@ namespace ImgGen
 						}
 						else//pendulum
 						{
-							graphics.DrawString(gettypestring(data), typeFont, typeBrush, (float)12f, (float)192f);
-							string monster_effect = GetDesc(text.text, regex_monster);
-							string pendulum_effect = GetDesc(text.text, regex_pendulum);
+                            string type_string = gettypestring(data);
+                            float width1 = graphics.MeasureString(type_string, typeFont).Width;
+                            float sx1 = 1f;
+                            if (width1 > 150f)
+                            {
+                                sx1 *= 150f / width1;
+                            }
+                            graphics.ScaleTransform(sx1, 1f);
+                            graphics.DrawString(type_string, typeFont, typeBrush, (float)12f, (float)192f);
+                            graphics.ResetTransform();
+                            string monster_effect = GetDesc(text.text, regex_monster);
+                            string pendulum_effect = GetDesc(text.text, regex_pendulum);
                             int lscale = (data.level >> 0x18) & 0xff;
                             int rscale = (data.level >> 0x10) & 0xff;
                             if (lscale > 9)
