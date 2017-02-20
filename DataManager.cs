@@ -215,6 +215,10 @@ namespace ImgGen
             {
                 str = str + "／仪式";
             }
+            if ((dat.type & 0x2000000) != 0)
+            {
+                str = str + "／特殊召唤";
+            }
             if ((dat.type & 0x1000000) != 0)
             {
                 str = str + "／灵摆";
