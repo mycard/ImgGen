@@ -11,8 +11,10 @@ namespace ImgGen
     {
         private static Bitmap[] bAttributes = new Bitmap[8];
         private static Bitmap[] bStar = new Bitmap[2];
-        private static Bitmap[] bTemplates = new Bitmap[15];
+        private static Bitmap[] bTemplates = new Bitmap[16];
         private static Bitmap[] bType = new Bitmap[15];
+        private static Bitmap[] bLinkMarkers1 = new Bitmap[9];
+        private static Bitmap[] bLinkMarkers2 = new Bitmap[9];
         private static Dictionary<int, Data> cardDatas = new Dictionary<int, Data>();
         private static Dictionary<int, Bitmap> cardImages = new Dictionary<int, Bitmap>();
         private static Dictionary<int, Text> cardTexts = new Dictionary<int, Text>();
@@ -22,6 +24,7 @@ namespace ImgGen
         private static SolidBrush nameBrush = new SolidBrush(Color.FromArgb(0x40, 0x40, 0));
         private static Font nameFont;
         private static Font numFont;
+        private static Font linkFont;
         private static Dictionary<int, string> sysStrings = new Dictionary<int, string>();
         private static SolidBrush textBrush = new SolidBrush(Color.FromArgb(0x40, 0x40, 0x40));
         private static Font txtFont;
@@ -198,6 +201,10 @@ namespace ImgGen
                 case 0x800000:
                     str = str + "幻龙族";
                     break;
+
+                case 0x1000000:
+                    str = str + "电子界族";
+                    break;
             }
             if ((dat.type & 0x40) != 0)
             {
@@ -207,7 +214,11 @@ namespace ImgGen
             {
                 str = str + "／同调";
             }
-            if ((dat.type & 0x800000) != 0)
+            if ((dat.type & 0x4000000) != 0)
+            {
+                str = str + "／连接";
+            }
+            else if ((dat.type & 0x800000) != 0)
             {
                 str = str + "／" + xyzString;
             }
@@ -259,6 +270,7 @@ namespace ImgGen
             xyzString = xyz;
             conn = new SQLiteConnection("Data Source=" + dbPath);
             numFont = new Font("Arial", 5.5f);
+            linkFont = new Font("Tohoma", 5.5f, FontStyle.Bold);
             nameFont = new Font("文泉驿微米黑", 10f);
             typeFont = new Font("文泉驿微米黑", 6f);
             txtFont = new Font("文泉驿微米黑", 5f);
@@ -277,6 +289,7 @@ namespace ImgGen
             bTemplates[12] = new Bitmap("./textures/card_psynchro.jpg");
             bTemplates[13] = new Bitmap("./textures/card_pfusion.jpg");
             bTemplates[14] = new Bitmap("./textures/card_zarc.jpg");
+            bTemplates[15] = new Bitmap("./textures/card_link.jpg");
             bAttributes[0] = new Bitmap("./textures/att_earth.png");
             bAttributes[1] = new Bitmap("./textures/att_water.png");
             bAttributes[2] = new Bitmap("./textures/att_fire.png");
@@ -296,6 +309,12 @@ namespace ImgGen
             bType[7] = new Bitmap("./textures/type_field.png");
             bType[8] = new Bitmap("./textures/type_quickplay.png");
             bType[9] = new Bitmap("./textures/type_ritual.png");
+            for (int i=1; i<=9; i++)
+            {
+                if (i == 5) continue;
+                bLinkMarkers1[i-1] = new Bitmap("./textures/link_marker_off_"+i+".png");
+                bLinkMarkers2[i-1] = new Bitmap("./textures/link_marker_on_"+i+".png");
+            }
         }
 
         private static int LoadCard(int code)
@@ -384,6 +403,10 @@ namespace ImgGen
                             bitmap = new Bitmap(bTemplates[2]);
                         }
                     }
+                    else if ((data.type & 0x4000000) != 0)
+                    {
+                        bitmap = new Bitmap(bTemplates[15]);
+                    }
                     else if ((data.type & 0x800000) != 0)
                     {
                         if ((data.type & 0x1000000) != 0)
@@ -440,6 +463,7 @@ namespace ImgGen
                     text.text = tosbc(text.text);
                     if ((data.type & 1) != 0)
                     {
+                        int x = 144;
                         int y = 15;
                         if ((data.type & 0x800000) == 0 || (data.type & 0x1802040) == 0x1802040)
                         {
@@ -459,6 +483,11 @@ namespace ImgGen
                             y = 12;
                             }
                         }
+                        if ((data.type & 0x4000000) != 0)
+                        {
+                            x = 147;
+                            y = 11;
+                        }
                         else
                         {
                             for (num2 = 0; num2 < (data.level & 0xff); num2++)
@@ -469,33 +498,45 @@ namespace ImgGen
                         }
                         if (data.attribute == 1)
                         {
-                            graphics.DrawImage(bAttributes[0], 0x90, y, 0x12, 0x12);
+                            graphics.DrawImage(bAttributes[0], x, y, 0x12, 0x12);
                         }
                         else if (data.attribute == 2)
                         {
-                            graphics.DrawImage(bAttributes[1], 0x90, y, 0x12, 0x12);
+                            graphics.DrawImage(bAttributes[1], x, y, 0x12, 0x12);
                         }
                         else if (data.attribute == 4)
                         {
-                            graphics.DrawImage(bAttributes[2], 0x90, y, 0x12, 0x12);
+                            graphics.DrawImage(bAttributes[2], x, y, 0x12, 0x12);
                         }
                         else if (data.attribute == 8)
                         {
-                            graphics.DrawImage(bAttributes[3], 0x90, y, 0x12, 0x12);
+                            graphics.DrawImage(bAttributes[3], x, y, 0x12, 0x12);
                         }
                         else if (data.attribute == 0x10)
                         {
-                            graphics.DrawImage(bAttributes[4], 0x90, y, 0x12, 0x12);
+                            graphics.DrawImage(bAttributes[4], x, y, 0x12, 0x12);
                         }
                         else if (data.attribute == 0x20)
                         {
-                            graphics.DrawImage(bAttributes[5], 0x90, y, 0x12, 0x12);
+                            graphics.DrawImage(bAttributes[5], x, y, 0x12, 0x12);
                         }
                         else if (data.attribute == 0x40)
                         {
-                            graphics.DrawImage(bAttributes[6], 0x90, y, 0x12, 0x12);
+                            graphics.DrawImage(bAttributes[6], x, y, 0x12, 0x12);
                         }
-                        if ((data.type & 0x1000000) == 0)
+                        if ((data.type & 0x4000000) != 0)
+                        {
+                            if (data.attack >= 0)
+                            {
+                                graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, (float)110f, (float)231f);
+                            }
+                            else
+                            {
+                                graphics.DrawString("?", numFont, textBrush, (float)110f, (float)231f);
+                            }
+                            graphics.DrawString(data.level.ToString(), linkFont, Brushes.Black, (float)156f, (float)231f);
+                        }
+                        else if ((data.type & 0x1000000) == 0)
                         {
                             if ((data.type & 0x800000) == 0)
                             {
@@ -570,7 +611,22 @@ namespace ImgGen
                             graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
                             graphics.ResetTransform();
                         }
-						else if ((data.type & 0x1000000) == 0)//xyz
+                        else if ((data.type & 0x4000000) != 0)//link
+                        {
+                            graphics.DrawString(gettypestring(data), typeFont, typeBrush, (float)10f, (float)192f);
+                            ef = graphics.MeasureString(text.text, txtFont, 0x96);
+                            num4 = 0x96;
+                            while (ef.Height > (((float)(0x1c * num4)) / 148f))
+                            {
+                                num4 += 3;
+                                ef = graphics.MeasureString(text.text, txtFont, num4);
+                            }
+                            graphics.TranslateTransform(14f, 202f);
+                            graphics.ScaleTransform(148f / ((float)num4), 148f / ((float)num4));
+                            graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
+                            graphics.ResetTransform();
+                        }
+                        else if ((data.type & 0x1000000) == 0)//xyz
 						{
                             graphics.DrawString(gettypestring(data), typeFont, typeBrush, (float) 12f, (float) 192f);
                             ef = graphics.MeasureString(text.text, txtFont, 0x91);
@@ -710,7 +766,11 @@ namespace ImgGen
                     try
                     {
                         Bitmap image = new Bitmap("./pico/" + code.ToString() + ".jpg");
-                        if ((data.type & 0x1000000) > 0)
+                        if ((data.type & 0x4000000) > 0)
+                        {
+                            graphics.DrawImage(image, 22, 47, 133, 133);
+                        }
+                        else if ((data.type & 0x1000000) > 0)
                         {
                             graphics.DrawImage(image, 0xF, 0x32, 0x93, 0x6d);
                         }
@@ -726,6 +786,41 @@ namespace ImgGen
                     catch
                     {
                     }
+                    if ((data.type & 0x4000000) != 0)
+                    {
+                        if ((data.defence & 0x1) == 0)
+                            graphics.DrawImage(bLinkMarkers1[0], 14, 169, 18, 17);
+                        else
+                            graphics.DrawImage(bLinkMarkers2[0], 14, 169, 18, 17);
+                        if ((data.defence & 0x2) == 0)
+                            graphics.DrawImage(bLinkMarkers1[1], 73, 178, 32, 12);
+                        else
+                            graphics.DrawImage(bLinkMarkers2[1], 73, 178, 32, 12);
+                        if ((data.defence & 0x4) == 0)
+                            graphics.DrawImage(bLinkMarkers1[2], 145, 169, 18, 17);
+                        else
+                            graphics.DrawImage(bLinkMarkers2[2], 145, 169, 18, 17);
+                        if ((data.defence & 0x8) == 0)
+                            graphics.DrawImage(bLinkMarkers1[3], 11, 97, 12, 32);
+                        else
+                            graphics.DrawImage(bLinkMarkers2[3], 11, 97, 12, 32);
+                        if ((data.defence & 0x20) == 0)
+                            graphics.DrawImage(bLinkMarkers1[5], 154, 97, 12, 32);
+                        else
+                            graphics.DrawImage(bLinkMarkers2[5], 154, 97, 12, 32);
+                        if ((data.defence & 0x40) == 0)
+                            graphics.DrawImage(bLinkMarkers1[6], 14, 39, 18, 17);
+                        else
+                            graphics.DrawImage(bLinkMarkers2[6], 14, 39, 18, 17);
+                        if ((data.defence & 0x80) == 0)
+                            graphics.DrawImage(bLinkMarkers1[7], 73, 36, 32, 12);
+                        else
+                            graphics.DrawImage(bLinkMarkers2[7], 73, 36, 32, 12);
+                        if ((data.defence & 0x100) == 0)
+                            graphics.DrawImage(bLinkMarkers1[8], 146, 39, 18, 17);
+                        else
+                            graphics.DrawImage(bLinkMarkers2[8], 146, 39, 18, 17);
+                    }
                     string str3 = text.name.Replace('\x00b7', '・');
                     float width = graphics.MeasureString(str3, nameFont).Width;
                     float sx = 1f;
@@ -733,7 +828,11 @@ namespace ImgGen
                     {
                         sx *= 130f / width;
                     }
-                    if ((data.type & 0x800000) > 0)
+                    if ((data.type & 0x4000000) > 0)
+                    {
+                        graphics.TranslateTransform(10f, 13f);
+                    }
+                    else if ((data.type & 0x800000) > 0)
                     {
                         graphics.TranslateTransform(12f, 13f);
                     }
