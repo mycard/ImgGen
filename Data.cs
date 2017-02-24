@@ -9,12 +9,17 @@
         public int code;
         public int alias;
         public int setcode;
-        public int type;
+        public Type type;
         public int level;
-        public int attribute;
-        public int race;
+        public Attribute attribute;
+        public Race race;
         public int attack;
         public int defence;
+
+        public bool isType(Type typ)
+        {
+            return (type & typ) == typ;
+        }
     }
 }
 

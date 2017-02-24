@@ -101,166 +101,96 @@ namespace ImgGen
             return "";
         }
 
-        private static string gettypestring(Data dat)
+        private static string GetTypeString(Data dat)
         {
             string str = "【";
             switch (dat.race)
             {
-                case 0x10:
-                    str = str + "不死族";
-                    break;
-
-                case 0x20:
-                    str = str + "机械族";
-                    break;
-
-                case 0x40:
-                    str = str + "水族";
-                    break;
-
-                case 1:
-                    str = str + "战士族";
-                    break;
-
-                case 2:
-                    str = str + "魔法师族";
-                    break;
-
-                case 4:
-                    str = str + "天使族";
-                    break;
-
-                case 8:
-                    str = str + "恶魔族";
-                    break;
-
-                case 0x80:
-                    str = str + "炎族";
-                    break;
-
-                case 0x100:
-                    str = str + "岩石族";
-                    break;
-
-                case 0x200:
-                    str = str + "鸟兽族";
-                    break;
-
-                case 0x400:
-                    str = str + "植物族";
-                    break;
-
-                case 0x800:
-                    str = str + "昆虫族";
-                    break;
-
-                case 0x4000:
-                    str = str + "兽族";
-                    break;
-
-                case 0x8000:
-                    str = str + "兽战士族";
-                    break;
-
-                case 0x10000:
-                    str = str + "恐龙族";
-                    break;
-
-                case 0x1000:
-                    str = str + "雷族";
-                    break;
-
-                case 0x2000:
-                    str = str + "龙族";
-                    break;
-
-                case 0x20000:
-                    str = str + "鱼族";
-                    break;
-
-                case 0x40000:
-                    str = str + "海龙族";
-                    break;
-
-                case 0x80000:
-                    str = str + "爬虫类族";
-                    break;
-
-                case 0x100000:
-                    str = str + "念动力族";
-                    break;
-
-                case 0x200000:
-                    str = str + "幻神兽族";
-                    break;
-
-                case 0x400000:
-                    str = str + "创造神族";
-                    break;
-
-                case 0x800000:
-                    str = str + "幻龙族";
-                    break;
-
-                case 0x1000000:
-                    str = str + "电子界族";
-                    break;
+                case Race.RACE_WARRIOR: str = str + "战士族"; break;
+                case Race.RACE_SPELLCASTER: str = str + "魔法师族"; break;
+                case Race.RACE_FAIRY: str = str + "天使族"; break;
+                case Race.RACE_FIEND: str = str + "恶魔族"; break;
+                case Race.RACE_ZOMBIE: str = str + "不死族"; break;
+                case Race.RACE_MACHINE: str = str + "机械族"; break;
+                case Race.RACE_AQUA: str = str + "水族"; break;
+                case Race.RACE_PYRO: str = str + "炎族"; break;
+                case Race.RACE_ROCK: str = str + "岩石族"; break;
+                case Race.RACE_WINDBEAST: str = str + "鸟兽族"; break;
+                case Race.RACE_PLANT: str = str + "植物族"; break;
+                case Race.RACE_INSECT: str = str + "昆虫族"; break;
+                case Race.RACE_THUNDER: str = str + "雷族"; break;
+                case Race.RACE_DRAGON: str = str + "龙族"; break;
+                case Race.RACE_BEAST: str = str + "兽族"; break;
+                case Race.RACE_BEASTWARRIOR: str = str + "兽战士族"; break;
+                case Race.RACE_DINOSAUR: str = str + "恐龙族"; break;
+                case Race.RACE_FISH: str = str + "鱼族"; break;
+                case Race.RACE_SEASERPENT: str = str + "海龙族"; break;
+                case Race.RACE_REPTILE: str = str + "爬虫族"; break;
+                case Race.RACE_PSYCHO: str = str + "念动力族"; break;
+                case Race.RACE_DEVINE: str = str + "幻神兽族"; break;
+                case Race.RACE_CREATORGOD: str = str + "创造神族"; break;
+                case Race.RACE_WYRM: str = str + "幻龙族"; break;
+                case Race.RACE_CYBERS: str = str + "电子界族"; break;
             }
-            if ((dat.type & 0x40) != 0)
+            if (dat.isType(Type.TYPE_FUSION))
             {
                 str = str + "／融合";
             }
-            if ((dat.type & 0x2000) != 0)
+            if (dat.isType(Type.TYPE_SYNCHRO))
             {
                 str = str + "／同调";
             }
-            if ((dat.type & 0x4000000) != 0)
+            if (dat.isType(Type.TYPE_LINK))
             {
                 str = str + "／连接";
             }
-            else if ((dat.type & 0x800000) != 0)
+            else if (dat.isType(Type.TYPE_XYZ))
             {
                 str = str + "／" + xyzString;
             }
-            if ((dat.type & 0x80) != 0)
+            if (dat.isType(Type.TYPE_RITUAL))
             {
                 str = str + "／仪式";
             }
-            if ((dat.type & 0x2000000) != 0)
+            if (dat.isType(Type.TYPE_SPSUMMON))
             {
                 str = str + "／特殊召唤";
             }
-            if ((dat.type & 0x1000000) != 0)
+            if (dat.isType(Type.TYPE_PENDULUM))
             {
                 str = str + "／灵摆";
             }
-            if ((dat.type & 0x200) != 0)
+            if (dat.isType(Type.TYPE_SPIRIT))
             {
                 str = str + "／灵魂";
             }
-            else if ((dat.type & 0x800) != 0)
+            else if (dat.isType(Type.TYPE_DUAL))
             {
                 str = str + "／二重";
             }
-            else if ((dat.type & 0x400) != 0)
+            else if (dat.isType(Type.TYPE_UNION))
             {
                 str = str + "／同盟";
             }
-            else if ((dat.type & 0x200000) != 0)
+            else if (dat.isType(Type.TYPE_FLIP))
             {
                 str = str + "／反转";
             }
-            else if ((dat.type & 0x400000) != 0)
+            else if (dat.isType(Type.TYPE_TOON))
             {
                 str = str + "／卡通";
             }
-            if ((dat.type & 0x1000) != 0)
+            if (dat.isType(Type.TYPE_TUNER))
             {
                 str = str + "／调整";
             }
-            if ((dat.type & 0x20) != 0)
+            if (dat.isType(Type.TYPE_EFFECT))
             {
                 str = str + "／效果";
+            }
+            if (dat.isType(Type.TYPE_NORMAL))
+            {
+                str = str + "／通常";
             }
             return (str + "】");
         }
@@ -342,12 +272,12 @@ namespace ImgGen
                         data.code = reader.GetInt32(0);
                         data.alias = reader.GetInt32(2);
                         data.setcode = reader.GetInt32(3);
-                        data.type = reader.GetInt32(4);
+                        data.type = (Type)reader.GetInt32(4);
                         data.attack = reader.GetInt32(5);
                         data.defence = reader.GetInt32(6);
                         data.level = reader.GetInt32(7);
-                        data.race = reader.GetInt32(8);
-                        data.attribute = reader.GetInt32(9);
+                        data.race = (Race)reader.GetInt32(8);
+                        data.attribute = (Attribute)reader.GetInt32(9);
                     }
                     reader.Close();
                     string str = string.Format("select * from texts where id={0}", code);
@@ -380,21 +310,21 @@ namespace ImgGen
                     Bitmap bitmap;
                     SizeF ef;
                     int num4;
-                    if ((data.type & 0x1802040) == 0x1802040)
+                    if (((int)data.type & 0x1802040) == 0x1802040)
                     {
                         bitmap = new Bitmap(bTemplates[14]);
                     }
-                    else if ((data.type & 2) != 0)
+                    else if (data.isType(Type.TYPE_SPELL))
                     {
                         bitmap = new Bitmap(bTemplates[0]);
                     }
-                    else if ((data.type & 4) != 0)
+                    else if (data.isType(Type.TYPE_TRAP))
                     {
                         bitmap = new Bitmap(bTemplates[1]);
                     }
-                    else if ((data.type & 0x2000) != 0)
+                    else if (data.isType(Type.TYPE_SYNCHRO))
                     {
-                        if ((data.type & 0x1000000) != 0)
+                        if (data.isType(Type.TYPE_PENDULUM))
                         {
                             bitmap = new Bitmap(bTemplates[12]);
                         }
@@ -403,13 +333,13 @@ namespace ImgGen
                             bitmap = new Bitmap(bTemplates[2]);
                         }
                     }
-                    else if ((data.type & 0x4000000) != 0)
+                    else if (data.isType(Type.TYPE_LINK))
                     {
                         bitmap = new Bitmap(bTemplates[15]);
                     }
-                    else if ((data.type & 0x800000) != 0)
+                    else if (data.isType(Type.TYPE_XYZ))
                     {
-                        if ((data.type & 0x1000000) != 0)
+                        if (data.isType(Type.TYPE_PENDULUM))
                         {
                             bitmap = new Bitmap(bTemplates[9]);
                         }
@@ -418,9 +348,9 @@ namespace ImgGen
                             bitmap = new Bitmap(bTemplates[3]);
                         }
                     }
-                    else if ((data.type & 0x40) != 0)
+                    else if (data.isType(Type.TYPE_FUSION))
                     {
-                        if ((data.type & 0x1000000) != 0)
+                        if (data.isType(Type.TYPE_PENDULUM))
                         {
                             bitmap = new Bitmap(bTemplates[13]);
                         }
@@ -429,17 +359,17 @@ namespace ImgGen
                             bitmap = new Bitmap(bTemplates[4]);
                         }
                     }
-                    else if ((data.type & 0x80) != 0)
+                    else if (data.isType(Type.TYPE_RITUAL))
                     {
                         bitmap = new Bitmap(bTemplates[5]);
                     }
-                    else if ((data.type & 0x4000) != 0)
+                    else if (data.isType(Type.TYPE_TOKEN))
                     {
                         bitmap = new Bitmap(bTemplates[6]);
                     }
-                    else if ((data.type & 0x20) != 0)
+                    else if (data.isType(Type.TYPE_EFFECT))
                     {
-                        if ((data.type & 0x1000000) != 0)
+                        if (data.isType(Type.TYPE_PENDULUM))
                         {
                             bitmap = new Bitmap(bTemplates[10]);
                         }
@@ -450,7 +380,7 @@ namespace ImgGen
                     }
                     else
                     {
-                        if ((data.type & 0x1000000) != 0)
+                        if (data.isType(Type.TYPE_PENDULUM))
                         {
                             bitmap = new Bitmap(bTemplates[11]);
                         }
@@ -461,13 +391,13 @@ namespace ImgGen
                     }
                     Graphics graphics = Graphics.FromImage(bitmap);
                     text.text = tosbc(text.text);
-                    if ((data.type & 1) != 0)
+                    if (data.isType(Type.TYPE_MONSTER))
                     {
                         int x = 144;
                         int y = 15;
-                        if ((data.type & 0x800000) == 0 || (data.type & 0x1802040) == 0x1802040)
+                        if (!data.isType(Type.TYPE_XYZ) || ((int)data.type & 0x1802040) == 0x1802040)
                         {
-                            if ((data.type & 0x1000000) == 0)
+                            if (!data.isType(Type.TYPE_PENDULUM))
                             {
                                 for (num2 = 0; num2 < (data.level & 0xff); num2++)
                                 {
@@ -483,12 +413,12 @@ namespace ImgGen
                             y = 12;
                             }
                         }
-                        if ((data.type & 0x4000000) != 0)
+                        if (data.isType(Type.TYPE_LINK))
                         {
                             x = 147;
                             y = 11;
                         }
-                        else
+                        else if (data.isType(Type.TYPE_XYZ))
                         {
                             for (num2 = 0; num2 < (data.level & 0xff); num2++)
                             {
@@ -496,35 +426,35 @@ namespace ImgGen
                             }
                             y = 12;
                         }
-                        if (data.attribute == 1)
+                        if (data.attribute == Attribute.ATTRIBUTE_EARTH)
                         {
                             graphics.DrawImage(bAttributes[0], x, y, 0x12, 0x12);
                         }
-                        else if (data.attribute == 2)
+                        else if (data.attribute == Attribute.ATTRIBUTE_WATER)
                         {
                             graphics.DrawImage(bAttributes[1], x, y, 0x12, 0x12);
                         }
-                        else if (data.attribute == 4)
+                        else if (data.attribute == Attribute.ATTRIBUTE_FIRE)
                         {
                             graphics.DrawImage(bAttributes[2], x, y, 0x12, 0x12);
                         }
-                        else if (data.attribute == 8)
+                        else if (data.attribute == Attribute.ATTRIBUTE_WIND)
                         {
                             graphics.DrawImage(bAttributes[3], x, y, 0x12, 0x12);
                         }
-                        else if (data.attribute == 0x10)
+                        else if (data.attribute == Attribute.ATTRIBUTE_LIGHT)
                         {
                             graphics.DrawImage(bAttributes[4], x, y, 0x12, 0x12);
                         }
-                        else if (data.attribute == 0x20)
+                        else if (data.attribute == Attribute.ATTRIBUTE_DARK)
                         {
                             graphics.DrawImage(bAttributes[5], x, y, 0x12, 0x12);
                         }
-                        else if (data.attribute == 0x40)
+                        else if (data.attribute == Attribute.ATTRIBUTE_DEVINE)
                         {
                             graphics.DrawImage(bAttributes[6], x, y, 0x12, 0x12);
                         }
-                        if ((data.type & 0x4000000) != 0)
+                        if (data.isType(Type.TYPE_LINK))
                         {
                             if (data.attack >= 0)
                             {
@@ -536,9 +466,9 @@ namespace ImgGen
                             }
                             graphics.DrawString(data.level.ToString(), linkFont, Brushes.Black, (float)156f, (float)231f);
                         }
-                        else if ((data.type & 0x1000000) == 0)
+                        else if (!data.isType(Type.TYPE_PENDULUM))
                         {
-                            if ((data.type & 0x800000) == 0)
+                            if (!data.isType(Type.TYPE_XYZ))
                             {
                                 if (data.attack >= 0)
                                 {
@@ -596,9 +526,9 @@ namespace ImgGen
                                 graphics.DrawString("?", numFont, textBrush, (float)152f, (float)231f);
                             }
                         }
-                        if ((data.type & 0x800000) == 0 && (data.type & 0x1000000) == 0)
+                        if (!data.isType(Type.TYPE_XYZ) && !data.isType(Type.TYPE_PENDULUM))
 						{
-                            graphics.DrawString(gettypestring(data), typeFont, typeBrush, (float) 13f, (float) 195f);
+                            graphics.DrawString(GetTypeString(data), typeFont, typeBrush, (float) 13f, (float) 195f);
                             ef = graphics.MeasureString(text.text, txtFont, 0x91);
                             num4 = 0x91;
                             while (ef.Height > (((float) (0x19 * num4)) / 145f))
@@ -611,9 +541,9 @@ namespace ImgGen
                             graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
                             graphics.ResetTransform();
                         }
-                        else if ((data.type & 0x4000000) != 0)//link
+                        else if (data.isType(Type.TYPE_LINK))//link
                         {
-                            graphics.DrawString(gettypestring(data), typeFont, typeBrush, (float)10f, (float)192f);
+                            graphics.DrawString(GetTypeString(data), typeFont, typeBrush, (float)10f, (float)192f);
                             ef = graphics.MeasureString(text.text, txtFont, 0x96);
                             num4 = 0x96;
                             while (ef.Height > (((float)(0x1c * num4)) / 148f))
@@ -626,9 +556,9 @@ namespace ImgGen
                             graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
                             graphics.ResetTransform();
                         }
-                        else if ((data.type & 0x1000000) == 0)//xyz
+                        else if (!data.isType(Type.TYPE_PENDULUM))//xyz
 						{
-                            graphics.DrawString(gettypestring(data), typeFont, typeBrush, (float) 12f, (float) 192f);
+                            graphics.DrawString(GetTypeString(data), typeFont, typeBrush, (float) 12f, (float) 192f);
                             ef = graphics.MeasureString(text.text, txtFont, 0x91);
                             num4 = 0x91;
                             while (ef.Height > (((float) (0x1c * num4)) / 145f))
@@ -643,7 +573,7 @@ namespace ImgGen
 						}
 						else//pendulum
 						{
-                            string type_string = gettypestring(data);
+                            string type_string = GetTypeString(data);
                             float width1 = graphics.MeasureString(type_string, typeFont).Width;
                             float sx1 = 1f;
                             if (width1 > 150f)
@@ -701,51 +631,51 @@ namespace ImgGen
 					}
                     else
                     {
-                        if ((data.type & 2) != 0)
+                        if (data.isType(Type.TYPE_SPELL))
                         {
-                            if (data.type == 2)
+                            if (data.type == Type.TYPE_SPELL)
                             {
                                 graphics.DrawImage(bType[0], 0x65, 0x25);
                             }
                             else
                             {
                                 graphics.DrawImage(bType[1], 0x5c, 0x25);
-                                if ((data.type & 0x20000) != 0)
+                                if (data.isType(Type.TYPE_CONTINUOUS))
                                 {
                                     graphics.DrawImage(bType[4], 0x8f, 40);
                                 }
-                                else if ((data.type & 0x40000) != 0)
+                                else if (data.isType(Type.TYPE_EQUIP))
                                 {
                                     graphics.DrawImage(bType[6], 0x8f, 40);
                                 }
-                                else if ((data.type & 0x80000) != 0)
+                                else if (data.isType(Type.TYPE_FIELD))
                                 {
                                     graphics.DrawImage(bType[7], 0x8f, 40);
                                 }
-                                else if ((data.type & 0x10000) != 0)
+                                else if (data.isType(Type.TYPE_QUICKPLAY))
                                 {
                                     graphics.DrawImage(bType[8], 0x8f, 40);
                                 }
-                                else if ((data.type & 0x80) != 0)
+                                else if (data.isType(Type.TYPE_RITUAL))
                                 {
                                     graphics.DrawImage(bType[9], 0x8f, 40);
                                 }
                             }
                         }
-                        else if ((data.type & 4) != 0)
+                        else if (data.isType(Type.TYPE_TRAP))
                         {
-                            if (data.type == 4)
+                            if (data.type == Type.TYPE_TRAP)
                             {
                                 graphics.DrawImage(bType[2], 0x6f, 0x25);
                             }
                             else
                             {
                                 graphics.DrawImage(bType[3], 0x66, 0x25);
-                                if ((data.type & 0x20000) != 0)
+                                if (data.isType(Type.TYPE_CONTINUOUS))
                                 {
                                     graphics.DrawImage(bType[4], 0x8f, 40);
                                 }
-                                else if ((data.type & 0x100000) != 0)
+                                else if (data.isType(Type.TYPE_COUNTER))
                                 {
                                     graphics.DrawImage(bType[5], 0x8f, 40);
                                 }
@@ -766,15 +696,15 @@ namespace ImgGen
                     try
                     {
                         Bitmap image = new Bitmap("./pico/" + code.ToString() + ".jpg");
-                        if ((data.type & 0x4000000) > 0)
+                        if (data.isType(Type.TYPE_LINK))
                         {
                             graphics.DrawImage(image, 22, 47, 133, 133);
                         }
-                        else if ((data.type & 0x1000000) > 0)
+                        else if (data.isType(Type.TYPE_PENDULUM))
                         {
                             graphics.DrawImage(image, 0xF, 0x32, 0x93, 0x6d);
                         }
-                        else if((data.type & 0x800000) == 0)
+                        else if(!data.isType(Type.TYPE_XYZ))
                         {
                             graphics.DrawImage(image, 0x19, 0x36, 0x80, 0x80);
                         }
@@ -786,7 +716,7 @@ namespace ImgGen
                     catch
                     {
                     }
-                    if ((data.type & 0x4000000) != 0)
+                    if (data.isType(Type.TYPE_LINK))
                     {
                         if ((data.defence & 0x1) == 0)
                             graphics.DrawImage(bLinkMarkers1[0], 14, 169, 18, 17);
@@ -828,15 +758,15 @@ namespace ImgGen
                     {
                         sx *= 130f / width;
                     }
-                    if ((data.type & 0x4000000) > 0)
+                    if (data.isType(Type.TYPE_LINK))
                     {
                         graphics.TranslateTransform(10f, 13f);
                     }
-                    else if ((data.type & 0x800000) > 0)
+                    else if (data.isType(Type.TYPE_XYZ))
                     {
                         graphics.TranslateTransform(12f, 13f);
                     }
-                    else if ((data.type & 0x1000000) > 0)
+                    else if (data.isType(Type.TYPE_PENDULUM))
                     {
                         graphics.TranslateTransform(12f, 13f);
                     }
