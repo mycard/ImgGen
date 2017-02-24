@@ -37,7 +37,7 @@
             Encoder quality = Encoder.Quality;
             ImageCodecInfo encoderInfo = GetEncoderInfo("image/jpeg");
             EncoderParameters encoderParams = new EncoderParameters(1);
-            EncoderParameter parameter = new EncoderParameter(quality, 0x5fL);
+            EncoderParameter parameter = new EncoderParameter(quality, 95L);
             encoderParams.Param[0] = parameter;
             string[] files = Directory.GetFiles("./pico", "*.jpg");
             Directory.CreateDirectory("./picn/thumbnail");

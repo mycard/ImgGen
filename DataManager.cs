@@ -21,14 +21,14 @@ namespace ImgGen
         private static SQLiteConnection conn;
         private static Dictionary<int, string> ctStrings = new Dictionary<int, string>();
         private static object locker = new object();
-        private static SolidBrush nameBrush = new SolidBrush(Color.FromArgb(0x40, 0x40, 0));
+        private static SolidBrush nameBrush = new SolidBrush(Color.FromArgb(64, 64, 0));
         private static Font nameFont;
         private static Font numFont;
         private static Font linkFont;
         private static Dictionary<int, string> sysStrings = new Dictionary<int, string>();
-        private static SolidBrush textBrush = new SolidBrush(Color.FromArgb(0x40, 0x40, 0x40));
+        private static SolidBrush textBrush = new SolidBrush(Color.FromArgb(64, 64, 64));
         private static Font txtFont;
-        private static SolidBrush typeBrush = new SolidBrush(Color.FromArgb(0x20, 0x20, 0x20));
+        private static SolidBrush typeBrush = new SolidBrush(Color.FromArgb(32, 32, 32));
         private static Font typeFont;
         private static Dictionary<int, string> winStrings = new Dictionary<int, string>();
 
@@ -101,10 +101,10 @@ namespace ImgGen
             return "";
         }
 
-        private static string GetTypeString(Data dat)
+        private static string GetTypeString(Data data)
         {
             string str = "【";
-            switch (dat.race)
+            switch (data.race)
             {
                 case Race.RACE_WARRIOR: str = str + "战士族"; break;
                 case Race.RACE_SPELLCASTER: str = str + "魔法师族"; break;
@@ -132,63 +132,63 @@ namespace ImgGen
                 case Race.RACE_WYRM: str = str + "幻龙族"; break;
                 case Race.RACE_CYBERS: str = str + "电子界族"; break;
             }
-            if (dat.isType(Type.TYPE_FUSION))
+            if (data.isType(Type.TYPE_FUSION))
             {
                 str = str + "／融合";
             }
-            if (dat.isType(Type.TYPE_SYNCHRO))
+            if (data.isType(Type.TYPE_SYNCHRO))
             {
                 str = str + "／同调";
             }
-            if (dat.isType(Type.TYPE_LINK))
+            if (data.isType(Type.TYPE_LINK))
             {
                 str = str + "／连接";
             }
-            else if (dat.isType(Type.TYPE_XYZ))
+            else if (data.isType(Type.TYPE_XYZ))
             {
                 str = str + "／" + xyzString;
             }
-            if (dat.isType(Type.TYPE_RITUAL))
+            if (data.isType(Type.TYPE_RITUAL))
             {
                 str = str + "／仪式";
             }
-            if (dat.isType(Type.TYPE_SPSUMMON))
+            if (data.isType(Type.TYPE_SPSUMMON))
             {
                 str = str + "／特殊召唤";
             }
-            if (dat.isType(Type.TYPE_PENDULUM))
+            if (data.isType(Type.TYPE_PENDULUM))
             {
                 str = str + "／灵摆";
             }
-            if (dat.isType(Type.TYPE_SPIRIT))
+            if (data.isType(Type.TYPE_SPIRIT))
             {
                 str = str + "／灵魂";
             }
-            else if (dat.isType(Type.TYPE_DUAL))
+            else if (data.isType(Type.TYPE_DUAL))
             {
                 str = str + "／二重";
             }
-            else if (dat.isType(Type.TYPE_UNION))
+            else if (data.isType(Type.TYPE_UNION))
             {
                 str = str + "／同盟";
             }
-            else if (dat.isType(Type.TYPE_FLIP))
+            else if (data.isType(Type.TYPE_FLIP))
             {
                 str = str + "／反转";
             }
-            else if (dat.isType(Type.TYPE_TOON))
+            else if (data.isType(Type.TYPE_TOON))
             {
                 str = str + "／卡通";
             }
-            if (dat.isType(Type.TYPE_TUNER))
+            if (data.isType(Type.TYPE_TUNER))
             {
                 str = str + "／调整";
             }
-            if (dat.isType(Type.TYPE_EFFECT))
+            if (data.isType(Type.TYPE_EFFECT))
             {
                 str = str + "／效果";
             }
-            if (dat.isType(Type.TYPE_NORMAL))
+            if (data.isType(Type.TYPE_NORMAL))
             {
                 str = str + "／通常";
             }
@@ -401,14 +401,14 @@ namespace ImgGen
                             {
                                 for (num2 = 0; num2 < (data.level & 0xff); num2++)
                                 {
-                                    graphics.DrawImage(bStar[0], 149 - (12 * num2), 0x25, 11, 11);
+                                    graphics.DrawImage(bStar[0], 149 - (12 * num2), 37, 11, 11);
                                 }
                             }
                             else
                             {
                                 for (num2 = 0; num2 < (data.level & 0xff); num2++)
                                 {
-                                    graphics.DrawImage(bStar[0], 149 - (12 * num2), 0x23, 11, 11);
+                                    graphics.DrawImage(bStar[0], 149 - (12 * num2), 35, 11, 11);
                                 }
                             y = 12;
                             }
@@ -422,49 +422,49 @@ namespace ImgGen
                         {
                             for (num2 = 0; num2 < (data.level & 0xff); num2++)
                             {
-                                graphics.DrawImage(bStar[1], 17 + (12 * num2), 0x23, 11, 11);
+                                graphics.DrawImage(bStar[1], 17 + (12 * num2), 35, 11, 11);
                             }
                             y = 12;
                         }
                         if (data.attribute == Attribute.ATTRIBUTE_EARTH)
                         {
-                            graphics.DrawImage(bAttributes[0], x, y, 0x12, 0x12);
+                            graphics.DrawImage(bAttributes[0], x, y, 18, 18);
                         }
                         else if (data.attribute == Attribute.ATTRIBUTE_WATER)
                         {
-                            graphics.DrawImage(bAttributes[1], x, y, 0x12, 0x12);
+                            graphics.DrawImage(bAttributes[1], x, y, 18, 18);
                         }
                         else if (data.attribute == Attribute.ATTRIBUTE_FIRE)
                         {
-                            graphics.DrawImage(bAttributes[2], x, y, 0x12, 0x12);
+                            graphics.DrawImage(bAttributes[2], x, y, 18, 18);
                         }
                         else if (data.attribute == Attribute.ATTRIBUTE_WIND)
                         {
-                            graphics.DrawImage(bAttributes[3], x, y, 0x12, 0x12);
+                            graphics.DrawImage(bAttributes[3], x, y, 18, 18);
                         }
                         else if (data.attribute == Attribute.ATTRIBUTE_LIGHT)
                         {
-                            graphics.DrawImage(bAttributes[4], x, y, 0x12, 0x12);
+                            graphics.DrawImage(bAttributes[4], x, y, 18, 18);
                         }
                         else if (data.attribute == Attribute.ATTRIBUTE_DARK)
                         {
-                            graphics.DrawImage(bAttributes[5], x, y, 0x12, 0x12);
+                            graphics.DrawImage(bAttributes[5], x, y, 18, 18);
                         }
                         else if (data.attribute == Attribute.ATTRIBUTE_DEVINE)
                         {
-                            graphics.DrawImage(bAttributes[6], x, y, 0x12, 0x12);
+                            graphics.DrawImage(bAttributes[6], x, y, 18, 18);
                         }
                         if (data.isType(Type.TYPE_LINK))
                         {
                             if (data.attack >= 0)
                             {
-                                graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, (float)110f, (float)231f);
+                                graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, 110f, 231f);
                             }
                             else
                             {
-                                graphics.DrawString("?", numFont, textBrush, (float)110f, (float)231f);
+                                graphics.DrawString("?", numFont, textBrush, 110f, 231f);
                             }
-                            graphics.DrawString(data.level.ToString(), linkFont, Brushes.Black, (float)156f, (float)231f);
+                            graphics.DrawString(data.level.ToString(), linkFont, Brushes.Black, 156f, 231f);
                         }
                         else if (!data.isType(Type.TYPE_PENDULUM))
                         {
@@ -472,38 +472,38 @@ namespace ImgGen
                             {
                                 if (data.attack >= 0)
                                 {
-                                    graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, (float)105f, (float)231f);
+                                    graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, 105f, 231f);
                                 }
                                 else
                                 {
-                                    graphics.DrawString("?", numFont, textBrush, (float)115f, (float)231f);
+                                    graphics.DrawString("?", numFont, textBrush, 115f, 231f);
                                 }
                                 if (data.defence >= 0)
                                 {
-                                    graphics.DrawString(data.defence.ToString(), numFont, Brushes.Black, (float)142f, (float)231f);
+                                    graphics.DrawString(data.defence.ToString(), numFont, Brushes.Black, 142f, 231f);
                                 }
                                 else
                                 {
-                                    graphics.DrawString("?", numFont, textBrush, (float)152f, (float)231f);
+                                    graphics.DrawString("?", numFont, textBrush, 152f, 231f);
                                 }
                             }
                             else
                             {
                                 if (data.attack >= 0)
                                 {
-                                    graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, (float)109f, (float)231f);
+                                    graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, 109f, 231f);
                                 }
                                 else
                                 {
-                                    graphics.DrawString("?", numFont, textBrush, (float)119f, (float)231f);
+                                    graphics.DrawString("?", numFont, textBrush, 119f, 231f);
                                 }
                                 if (data.defence >= 0)
                                 {
-                                    graphics.DrawString(data.defence.ToString(), numFont, Brushes.Black, (float)145f, (float)231f);
+                                    graphics.DrawString(data.defence.ToString(), numFont, Brushes.Black, 145f, 231f);
                                 }
                                 else
                                 {
-                                    graphics.DrawString("?", numFont, textBrush, (float)155f, (float)231f);
+                                    graphics.DrawString("?", numFont, textBrush, 155f, 231f);
                                 }
                             }
                         }
@@ -511,63 +511,63 @@ namespace ImgGen
                         {
                             if (data.attack >= 0)
                             {
-                                graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, (float)105f, (float)231f);
+                                graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, 105f, 231f);
                             }
                             else
                             {
-                                graphics.DrawString("?", numFont, textBrush, (float)115f, (float)231f);
+                                graphics.DrawString("?", numFont, textBrush, 115f, 231f);
                             }
                             if (data.defence >= 0)
                             {
-                                graphics.DrawString(data.defence.ToString(), numFont, Brushes.Black, (float)142f, (float)231f);
+                                graphics.DrawString(data.defence.ToString(), numFont, Brushes.Black, 142f, 231f);
                             }
                             else
                             {
-                                graphics.DrawString("?", numFont, textBrush, (float)152f, (float)231f);
+                                graphics.DrawString("?", numFont, textBrush, 152f, 231f);
                             }
                         }
                         if (!data.isType(Type.TYPE_XYZ) && !data.isType(Type.TYPE_PENDULUM))
 						{
-                            graphics.DrawString(GetTypeString(data), typeFont, typeBrush, (float) 13f, (float) 195f);
-                            ef = graphics.MeasureString(text.text, txtFont, 0x91);
-                            num4 = 0x91;
-                            while (ef.Height > (((float) (0x19 * num4)) / 145f))
+                            graphics.DrawString(GetTypeString(data), typeFont, typeBrush, 13f, 195f);
+                            ef = graphics.MeasureString(text.text, txtFont, 145);
+                            num4 = 145;
+                            while (ef.Height > 25 * num4 / 145f)
                             {
                                 num4 += 3;
                                 ef = graphics.MeasureString(text.text, txtFont, num4);
                             }
                             graphics.TranslateTransform(16f, 205f);
-                            graphics.ScaleTransform(145f / ((float) num4), 145f / ((float) num4));
+                            graphics.ScaleTransform(145f / num4, 145f / num4);
                             graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
                             graphics.ResetTransform();
                         }
                         else if (data.isType(Type.TYPE_LINK))//link
                         {
-                            graphics.DrawString(GetTypeString(data), typeFont, typeBrush, (float)10f, (float)192f);
-                            ef = graphics.MeasureString(text.text, txtFont, 0x96);
-                            num4 = 0x96;
-                            while (ef.Height > (((float)(0x1c * num4)) / 148f))
+                            graphics.DrawString(GetTypeString(data), typeFont, typeBrush, 10f, 192f);
+                            ef = graphics.MeasureString(text.text, txtFont, 150);
+                            num4 = 150;
+                            while (ef.Height > 28 * num4 / 148f)
                             {
                                 num4 += 3;
                                 ef = graphics.MeasureString(text.text, txtFont, num4);
                             }
                             graphics.TranslateTransform(14f, 202f);
-                            graphics.ScaleTransform(148f / ((float)num4), 148f / ((float)num4));
+                            graphics.ScaleTransform(148f / num4, 148f / num4);
                             graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
                             graphics.ResetTransform();
                         }
                         else if (!data.isType(Type.TYPE_PENDULUM))//xyz
 						{
-                            graphics.DrawString(GetTypeString(data), typeFont, typeBrush, (float) 12f, (float) 192f);
-                            ef = graphics.MeasureString(text.text, txtFont, 0x91);
-                            num4 = 0x91;
-                            while (ef.Height > (((float) (0x1c * num4)) / 145f))
+                            graphics.DrawString(GetTypeString(data), typeFont, typeBrush, 12f, 192f);
+                            ef = graphics.MeasureString(text.text, txtFont, 145);
+                            num4 = 145;
+                            while (ef.Height > 28 * num4 / 145f)
                             {
                                 num4 += 3;
                                 ef = graphics.MeasureString(text.text, txtFont, num4);
                             }
                             graphics.TranslateTransform(16f, 202f);
-                            graphics.ScaleTransform(145f / ((float) num4), 145f / ((float) num4));
+                            graphics.ScaleTransform(145f / num4, 145f / num4);
                             graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
                             graphics.ResetTransform();
 						}
@@ -581,7 +581,7 @@ namespace ImgGen
                                 sx1 *= 150f / width1;
                             }
                             graphics.ScaleTransform(sx1, 1f);
-                            graphics.DrawString(type_string, typeFont, typeBrush, (float)12f, (float)192f);
+                            graphics.DrawString(type_string, typeFont, typeBrush, 12f, 192f);
                             graphics.ResetTransform();
                             string monster_effect = GetDesc(text.text, regex_monster);
                             string pendulum_effect = GetDesc(text.text, regex_pendulum);
@@ -589,42 +589,42 @@ namespace ImgGen
                             int rscale = (data.level >> 0x10) & 0xff;
                             if (lscale > 9)
                             {
-                                graphics.DrawString(lscale.ToString(), new Font("文泉驿微米黑", 7f), Brushes.Black, (float)13f, (float)174f);
+                                graphics.DrawString(lscale.ToString(), new Font("文泉驿微米黑", 7f), Brushes.Black, 13f, 174f);
                             }
                             else
                             {
-                                graphics.DrawString(lscale.ToString(), new Font("文泉驿微米黑", 8f), Brushes.Black, (float)16f, (float)174f);
+                                graphics.DrawString(lscale.ToString(), new Font("文泉驿微米黑", 8f), Brushes.Black, 16f, 174f);
                             }
                             if (rscale > 9)
                             {
-                                graphics.DrawString(rscale.ToString(), new Font("文泉驿微米黑", 7f), Brushes.Black, (float)150f, (float)174f);
+                                graphics.DrawString(rscale.ToString(), new Font("文泉驿微米黑", 7f), Brushes.Black, 150f, 174f);
                             }
                             else
                             {
-                                graphics.DrawString(rscale.ToString(), new Font("文泉驿微米黑", 8f), Brushes.Black, (float)151f, (float)174f);
+                                graphics.DrawString(rscale.ToString(), new Font("文泉驿微米黑", 8f), Brushes.Black, 151f, 174f);
                             }
-                            ef = graphics.MeasureString(monster_effect, txtFont, 0x91);
-							num4 = 0x91;
-							while (ef.Height > (((float)(0x1c * num4)) / 145f))
+                            ef = graphics.MeasureString(monster_effect, txtFont, 145);
+							num4 = 145;
+							while (ef.Height > 28 * num4 / 145f)
 							{
 								num4 += 3;
 								ef = graphics.MeasureString(monster_effect, txtFont, num4);
 							}
 							graphics.TranslateTransform(16f, 202f);
-							graphics.ScaleTransform(145f / ((float)num4), 145f / ((float)num4));
+							graphics.ScaleTransform(145f / num4, 145f / num4);
 							graphics.DrawString(monster_effect, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
 							graphics.ResetTransform();
                             int num5;
                             SizeF pf;
-                            pf = graphics.MeasureString(pendulum_effect, txtFont, 0x77);
-                            num5 = 0x77;
-                            while (pf.Height > (((float)(0x18 * num5)) / 119f))
+                            pf = graphics.MeasureString(pendulum_effect, txtFont, 119);
+                            num5 = 119;
+                            while (pf.Height > 24 * num5 / 119f)
                             {
                                 num5 += 1;
                                 pf = graphics.MeasureString(pendulum_effect, txtFont, num5);
                             }
                             graphics.TranslateTransform(29f, 162f);
-                            graphics.ScaleTransform(119f / ((float)num5), 119f / ((float)num5));
+                            graphics.ScaleTransform(119f / num5, 119f / num5);
                             graphics.DrawString(pendulum_effect, txtFont, textBrush, new RectangleF(0f, 0f, pf.Width, pf.Height));
                             graphics.ResetTransform();
 						}
@@ -635,30 +635,30 @@ namespace ImgGen
                         {
                             if (data.type == Type.TYPE_SPELL)
                             {
-                                graphics.DrawImage(bType[0], 0x65, 0x25);
+                                graphics.DrawImage(bType[0], 101, 37);
                             }
                             else
                             {
-                                graphics.DrawImage(bType[1], 0x5c, 0x25);
+                                graphics.DrawImage(bType[1], 92, 37);
                                 if (data.isType(Type.TYPE_CONTINUOUS))
                                 {
-                                    graphics.DrawImage(bType[4], 0x8f, 40);
+                                    graphics.DrawImage(bType[4], 143, 40);
                                 }
                                 else if (data.isType(Type.TYPE_EQUIP))
                                 {
-                                    graphics.DrawImage(bType[6], 0x8f, 40);
+                                    graphics.DrawImage(bType[6], 143, 40);
                                 }
                                 else if (data.isType(Type.TYPE_FIELD))
                                 {
-                                    graphics.DrawImage(bType[7], 0x8f, 40);
+                                    graphics.DrawImage(bType[7], 143, 40);
                                 }
                                 else if (data.isType(Type.TYPE_QUICKPLAY))
                                 {
-                                    graphics.DrawImage(bType[8], 0x8f, 40);
+                                    graphics.DrawImage(bType[8], 143, 40);
                                 }
                                 else if (data.isType(Type.TYPE_RITUAL))
                                 {
-                                    graphics.DrawImage(bType[9], 0x8f, 40);
+                                    graphics.DrawImage(bType[9], 143, 40);
                                 }
                             }
                         }
@@ -666,30 +666,30 @@ namespace ImgGen
                         {
                             if (data.type == Type.TYPE_TRAP)
                             {
-                                graphics.DrawImage(bType[2], 0x6f, 0x25);
+                                graphics.DrawImage(bType[2], 111, 37);
                             }
                             else
                             {
-                                graphics.DrawImage(bType[3], 0x66, 0x25);
+                                graphics.DrawImage(bType[3], 102, 37);
                                 if (data.isType(Type.TYPE_CONTINUOUS))
                                 {
-                                    graphics.DrawImage(bType[4], 0x8f, 40);
+                                    graphics.DrawImage(bType[4], 143, 40);
                                 }
                                 else if (data.isType(Type.TYPE_COUNTER))
                                 {
-                                    graphics.DrawImage(bType[5], 0x8f, 40);
+                                    graphics.DrawImage(bType[5], 143, 40);
                                 }
                             }
                         }
-                        ef = graphics.MeasureString(text.text, txtFont, 0x91);
-                        num4 = 0x91;
-                        while (ef.Height > (((float) (40 * num4)) / 145f))
+                        ef = graphics.MeasureString(text.text, txtFont, 145);
+                        num4 = 145;
+                        while (ef.Height > 40 * num4 / 145f)
                         {
                             num4 += 3;
                             ef = graphics.MeasureString(text.text, txtFont, num4);
                         }
                         graphics.TranslateTransform(16f, 195f);
-                        graphics.ScaleTransform(145f / ((float) num4), 145f / ((float) num4));
+                        graphics.ScaleTransform(145f / num4, 145f / num4);
                         graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
                         graphics.ResetTransform();
                     }
@@ -702,15 +702,15 @@ namespace ImgGen
                         }
                         else if (data.isType(Type.TYPE_PENDULUM))
                         {
-                            graphics.DrawImage(image, 0xF, 0x32, 0x93, 0x6d);
+                            graphics.DrawImage(image, 15, 50, 147, 109);
                         }
                         else if(!data.isType(Type.TYPE_XYZ))
                         {
-                            graphics.DrawImage(image, 0x19, 0x36, 0x80, 0x80);
+                            graphics.DrawImage(image, 25, 54, 128, 128);
                         }
                         else
                         {
-                            graphics.DrawImage(image, 0x18, 0x33, 0x80, 0x80);
+                            graphics.DrawImage(image, 24, 51, 128, 128);
                         }
                     }
                     catch
@@ -775,8 +775,8 @@ namespace ImgGen
                         graphics.TranslateTransform(14f, 17f);
                     }
                     graphics.ScaleTransform(sx, 1f);
-                    graphics.DrawString(str3, nameFont, nameBrush, (float) 0f, (float) 0f);
-                    graphics.DrawString(str3, nameFont, Brushes.Gold, (float) 1f, (float) 1f);
+                    graphics.DrawString(str3, nameFont, nameBrush, 0f, 0f);
+                    graphics.DrawString(str3, nameFont, Brushes.Gold, 1f, 1f);
                     graphics.ResetTransform();
                     cardImages.Add(code, bitmap);
                 }
