@@ -695,13 +695,19 @@ namespace ImgGen
                     try
                     {
                         Bitmap image = new Bitmap("./pico/" + code.ToString() + ".jpg");
+                        graphics.CompositingMode = CompositingMode.SourceOver;
+                        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                        graphics.CompositingQuality = CompositingQuality.HighQuality;
+                        graphics.SmoothingMode = SmoothingMode.AntiAlias;
                         if (data.isType(Type.TYPE_LINK))
                         {
                             graphics.DrawImage(image, 22, 47, 133, 133);
                         }
                         else if (data.isType(Type.TYPE_PENDULUM))
                         {
-                            graphics.DrawImage(image, 15, 50, 147, 109);
+                            //graphics.DrawImage(image, 15, 50, 147, 109);
+                            graphics.DrawImage(image, new Rectangle(15, 50, 147, 109), new Rectangle(0, 0, image.Width, image.Width * 109 / 147), GraphicsUnit.Pixel);
                         }
                         else if (!data.isType(Type.TYPE_XYZ))
                         {
