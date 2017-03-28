@@ -395,7 +395,7 @@ namespace ImgGen
                     {
                         int x = 144;
                         int y = 15;
-                        if (!data.isType(Type.TYPE_XYZ) || ((int)data.type & 0x1802040) == 0x1802040)
+                        if (!data.isType(Type.TYPE_LINK) && (!data.isType(Type.TYPE_XYZ) || ((int)data.type & 0x1802040) == 0x1802040))
                         {
                             if (!data.isType(Type.TYPE_PENDULUM))
                             {
@@ -526,52 +526,22 @@ namespace ImgGen
                                 graphics.DrawString("?", numFont, textBrush, 152f, 231f);
                             }
                         }
-                        if (!data.isType(Type.TYPE_XYZ) && !data.isType(Type.TYPE_PENDULUM))
-                        {
-                            graphics.DrawString(GetTypeString(data), typeFont, typeBrush, 13f, 195f);
-                            ef = graphics.MeasureString(text.text, txtFont, 145);
-                            num4 = 145;
-                            while (ef.Height > 25 * num4 / 145f)
-                            {
-                                num4 += 3;
-                                ef = graphics.MeasureString(text.text, txtFont, num4);
-                            }
-                            graphics.TranslateTransform(16f, 205f);
-                            graphics.ScaleTransform(145f / num4, 145f / num4);
-                            graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
-                            graphics.ResetTransform();
-                        }
-                        else if (data.isType(Type.TYPE_LINK))//link
+                        if (data.isType(Type.TYPE_LINK))
                         {
                             graphics.DrawString(GetTypeString(data), typeFont, typeBrush, 10f, 192f);
                             ef = graphics.MeasureString(text.text, txtFont, 150);
                             num4 = 150;
-                            while (ef.Height > 28 * num4 / 148f)
+                            while (ef.Height > 28 * num4 / 150f)
                             {
                                 num4 += 3;
                                 ef = graphics.MeasureString(text.text, txtFont, num4);
                             }
                             graphics.TranslateTransform(14f, 202f);
-                            graphics.ScaleTransform(148f / num4, 148f / num4);
+                            graphics.ScaleTransform(150f / num4, 150f / num4);
                             graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
                             graphics.ResetTransform();
                         }
-                        else if (!data.isType(Type.TYPE_PENDULUM))//xyz
-                        {
-                            graphics.DrawString(GetTypeString(data), typeFont, typeBrush, 12f, 192f);
-                            ef = graphics.MeasureString(text.text, txtFont, 145);
-                            num4 = 145;
-                            while (ef.Height > 28 * num4 / 145f)
-                            {
-                                num4 += 3;
-                                ef = graphics.MeasureString(text.text, txtFont, num4);
-                            }
-                            graphics.TranslateTransform(16f, 202f);
-                            graphics.ScaleTransform(145f / num4, 145f / num4);
-                            graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
-                            graphics.ResetTransform();
-                        }
-                        else//pendulum
+                        else if (data.isType(Type.TYPE_PENDULUM))
                         {
                             string type_string = GetTypeString(data);
                             float width1 = graphics.MeasureString(type_string, typeFont).Width;
@@ -626,6 +596,35 @@ namespace ImgGen
                             graphics.TranslateTransform(29f, 162f);
                             graphics.ScaleTransform(119f / num5, 119f / num5);
                             graphics.DrawString(pendulum_effect, txtFont, textBrush, new RectangleF(0f, 0f, pf.Width, pf.Height));
+                            graphics.ResetTransform();
+                        }
+                        else if (data.isType(Type.TYPE_XYZ))
+                        {
+                            graphics.DrawString(GetTypeString(data), typeFont, typeBrush, 12f, 192f);
+                            ef = graphics.MeasureString(text.text, txtFont, 145);
+                            num4 = 145;
+                            while (ef.Height > 28 * num4 / 145f)
+                            {
+                                num4 += 3;
+                                ef = graphics.MeasureString(text.text, txtFont, num4);
+                            }
+                            graphics.TranslateTransform(16f, 202f);
+                            graphics.ScaleTransform(145f / num4, 145f / num4);
+                            graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
+                            graphics.ResetTransform();
+                        }
+                        else {
+                            graphics.DrawString(GetTypeString(data), typeFont, typeBrush, 13f, 195f);
+                            ef = graphics.MeasureString(text.text, txtFont, 145);
+                            num4 = 145;
+                            while (ef.Height > 25 * num4 / 145f)
+                            {
+                                num4 += 3;
+                                ef = graphics.MeasureString(text.text, txtFont, num4);
+                            }
+                            graphics.TranslateTransform(16f, 205f);
+                            graphics.ScaleTransform(145f / num4, 145f / num4);
+                            graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
                             graphics.ResetTransform();
                         }
                     }
