@@ -34,54 +34,7 @@ namespace ImgGen
 
         private static string regex_monster = @"[果|介|述|報]】\n([\S\s]*)";
         private static string regex_pendulum = @"】[\s\S]*?\n([\S\s]*?)\n【";
-        private static string xyzString = "超量";
-
-        public static Data GetCardData(int code)
-        {
-            if (!cardDatas.ContainsKey(code))
-            {
-                LoadCard(code);
-            }
-            return cardDatas[code];
-        }
-
-        public static string GetCardDescription(int code)
-        {
-            if (!cardTexts.ContainsKey(code))
-            {
-                LoadCard(code);
-            }
-            return cardTexts[code].text;
-        }
-
-        public static string GetCardName(int code)
-        {
-            if (!cardTexts.ContainsKey(code))
-            {
-                LoadCard(code);
-            }
-            return cardTexts[code].name;
-        }
-
-        public static string GetCardString(int desc)
-        {
-            int key = (desc >> 4) & 0xfffffff;
-            int index = desc & 15;
-            if (!cardTexts.ContainsKey(key))
-            {
-                LoadCard(key);
-            }
-            return cardTexts[key].desc[index];
-        }
-
-        public static string GetCounterName(int code)
-        {
-            if (ctStrings.ContainsKey(code))
-            {
-                return ctStrings[code];
-            }
-            return "";
-        }
+        private static string xyzString;
 
         public static Bitmap GetImage(int code)
         {
@@ -90,15 +43,6 @@ namespace ImgGen
                 LoadCard(code);
             }
             return cardImages[code];
-        }
-
-        public static string GetSystemString(int code)
-        {
-            if (sysStrings.ContainsKey(code))
-            {
-                return sysStrings[code];
-            }
-            return "";
         }
 
         private static string GetTypeString(Data data)
@@ -193,6 +137,39 @@ namespace ImgGen
                 str = str + "／通常";
             }
             return (str + "】");
+        }
+
+        private static string GetStandardText(string r)
+        {
+            char[] chArray = r.ToCharArray();
+            for (int i = 0; i < chArray.Length; i++)
+            {
+                if ((chArray[i] > ' ') && (chArray[i] < '\x007f'))
+                {
+                    chArray[i] = (char)(chArray[i] + 0xfee0);
+                }
+                if (chArray[i] == '\x00b7')
+                {
+                    chArray[i] = '・';
+                }
+            }
+            string desc = new string(chArray);
+            desc = desc.Replace(Environment.NewLine, "\n");
+            desc = Regex.Replace(desc, @"(?<=。)([\n\s]+)(?=[①②③④⑤⑥⑦⑧⑨⑩●])", "");
+            return desc;
+        }
+
+        private static string GetPendulumDesc(string cdesc, string regx)
+        {
+            string desc = cdesc;
+            desc = desc.Replace(Environment.NewLine, "\n");
+            Regex regex = new Regex(regx, RegexOptions.Multiline);
+            Match mc = regex.Match(desc);
+            if (mc.Success)
+                return ((mc.Groups.Count > 1) ?
+                        mc.Groups[1].Value : mc.Groups[0].Value);
+            //.Trim('\n').Replace("\n", "\n\t\t");
+            return "";
         }
 
         public static void InitialDatas(string dbPath = "../cards.cdb", string xyz = "超量")
@@ -390,7 +367,7 @@ namespace ImgGen
                         }
                     }
                     Graphics graphics = Graphics.FromImage(bitmap);
-                    text.text = tosbc(text.text);
+                    text.text = GetStandardText(text.text);
                     if (data.isType(Type.TYPE_MONSTER))
                     {
                         int x = 144;
@@ -553,8 +530,8 @@ namespace ImgGen
                             graphics.ScaleTransform(sx1, 1f);
                             graphics.DrawString(type_string, typeFont, typeBrush, 12f, 192f);
                             graphics.ResetTransform();
-                            string monster_effect = GetDesc(text.text, regex_monster);
-                            string pendulum_effect = GetDesc(text.text, regex_pendulum);
+                            string monster_effect = GetPendulumDesc(text.text, regex_monster);
+                            string pendulum_effect = GetPendulumDesc(text.text, regex_pendulum);
                             int lscale = (data.level >> 0x18) & 0xff;
                             int rscale = (data.level >> 0x10) & 0xff;
                             if (lscale > 9)
@@ -718,8 +695,9 @@ namespace ImgGen
                             graphics.DrawImage(image, 24, 51, 128, 128);
                         }
                     }
-                    catch
+                    catch (Exception e)
                     {
+                        Console.WriteLine("Error prasing {0} {1}", data.code, e);
                     }
                     if (data.isType(Type.TYPE_LINK))
                     {
@@ -790,38 +768,6 @@ namespace ImgGen
             }
         }
 
-        private static string tosbc(string r)
-        {
-            char[] chArray = r.ToCharArray();
-            for (int i = 0; i < chArray.Length; i++)
-            {
-                if ((chArray[i] > ' ') && (chArray[i] < '\x007f'))
-                {
-                    chArray[i] = (char)(chArray[i] + 0xfee0);
-                }
-                if (chArray[i] == '\x00b7')
-                {
-                    chArray[i] = '・';
-                }
-            }
-            string desc = new string(chArray);
-            desc = desc.Replace(Environment.NewLine, "\n");
-            desc = Regex.Replace(desc, @"(?<=。)([\n\s]+)(?=[①②③④⑤⑥⑦⑧⑨⑩●])", "");
-            return desc;
-        }
-
-        private static string GetDesc(string cdesc, string regx)
-        {
-            string desc = cdesc;
-            desc = desc.Replace(Environment.NewLine, "\n");
-            Regex regex = new Regex(regx, RegexOptions.Multiline);
-            Match mc = regex.Match(desc);
-            if (mc.Success)
-                return ((mc.Groups.Count > 1) ?
-                        mc.Groups[1].Value : mc.Groups[0].Value);
-            //.Trim('\n').Replace("\n", "\n\t\t");
-            return "";
-        }
         public static Bitmap Zoom(Bitmap sourceBitmap, int newWidth, int newHeight)
         {
             if (sourceBitmap != null)
