@@ -17,20 +17,16 @@ namespace ImgGen
         private static Bitmap[] bLinkMarkers2 = new Bitmap[9];
         private static Dictionary<int, Data> cardDatas = new Dictionary<int, Data>();
         private static Dictionary<int, Bitmap> cardImages = new Dictionary<int, Bitmap>();
-        private static Dictionary<int, Text> cardTexts = new Dictionary<int, Text>();
         private static SQLiteConnection conn;
-        private static Dictionary<int, string> ctStrings = new Dictionary<int, string>();
         private static object locker = new object();
         private static SolidBrush nameBrush = new SolidBrush(Color.FromArgb(64, 64, 0));
         private static Font nameFont;
         private static Font numFont;
         private static Font linkFont;
-        private static Dictionary<int, string> sysStrings = new Dictionary<int, string>();
         private static SolidBrush textBrush = new SolidBrush(Color.FromArgb(64, 64, 64));
         private static Font txtFont;
         private static SolidBrush typeBrush = new SolidBrush(Color.FromArgb(32, 32, 32));
         private static Font typeFont;
-        private static Dictionary<int, string> winStrings = new Dictionary<int, string>();
 
         private static string regex_monster = @"[果|介|述|報]】\n([\S\s]*)";
         private static string regex_pendulum = @"】[\s\S]*?\n([\S\s]*?)\n【";
@@ -75,67 +71,23 @@ namespace ImgGen
                 case Race.RACE_CREATORGOD: str = str + "创造神族"; break;
                 case Race.RACE_WYRM: str = str + "幻龙族"; break;
                 case Race.RACE_CYBERS: str = str + "电子界族"; break;
+                default: str = str + "???"; break;
             }
-            if (data.isType(Type.TYPE_FUSION))
-            {
-                str = str + "／融合";
-            }
-            if (data.isType(Type.TYPE_SYNCHRO))
-            {
-                str = str + "／同调";
-            }
-            if (data.isType(Type.TYPE_LINK))
-            {
-                str = str + "／连接";
-            }
-            else if (data.isType(Type.TYPE_XYZ))
-            {
-                str = str + "／" + xyzString;
-            }
-            if (data.isType(Type.TYPE_RITUAL))
-            {
-                str = str + "／仪式";
-            }
-            if (data.isType(Type.TYPE_SPSUMMON))
-            {
-                str = str + "／特殊召唤";
-            }
-            if (data.isType(Type.TYPE_PENDULUM))
-            {
-                str = str + "／灵摆";
-            }
-            if (data.isType(Type.TYPE_SPIRIT))
-            {
-                str = str + "／灵魂";
-            }
-            else if (data.isType(Type.TYPE_DUAL))
-            {
-                str = str + "／二重";
-            }
-            else if (data.isType(Type.TYPE_UNION))
-            {
-                str = str + "／同盟";
-            }
-            else if (data.isType(Type.TYPE_FLIP))
-            {
-                str = str + "／反转";
-            }
-            else if (data.isType(Type.TYPE_TOON))
-            {
-                str = str + "／卡通";
-            }
-            if (data.isType(Type.TYPE_TUNER))
-            {
-                str = str + "／调整";
-            }
-            if (data.isType(Type.TYPE_EFFECT))
-            {
-                str = str + "／效果";
-            }
-            if (data.isType(Type.TYPE_NORMAL))
-            {
-                str = str + "／通常";
-            }
+            if (data.isType(Type.TYPE_FUSION)) str = str + "／融合";
+            if (data.isType(Type.TYPE_SYNCHRO)) str = str + "／同调";
+            if (data.isType(Type.TYPE_LINK)) str = str + "／连接";
+            if (data.isType(Type.TYPE_XYZ)) str = str + "／" + xyzString;
+            if (data.isType(Type.TYPE_RITUAL)) str = str + "／仪式";
+            if (data.isType(Type.TYPE_SPSUMMON)) str = str + "／特殊召唤";
+            if (data.isType(Type.TYPE_PENDULUM)) str = str + "／灵摆";
+            if (data.isType(Type.TYPE_SPIRIT)) str = str + "／灵魂";
+            if (data.isType(Type.TYPE_DUAL)) str = str + "／二重";
+            if (data.isType(Type.TYPE_UNION)) str = str + "／同盟";
+            if (data.isType(Type.TYPE_FLIP)) str = str + "／反转";
+            if (data.isType(Type.TYPE_TOON)) str = str + "／卡通";
+            if (data.isType(Type.TYPE_TUNER)) str = str + "／调整";
+            if (data.isType(Type.TYPE_EFFECT)) str = str + "／效果";
+            if (data.isType(Type.TYPE_NORMAL)) str = str + "／通常";
             return (str + "】");
         }
 
@@ -281,7 +233,6 @@ namespace ImgGen
                     conn.Close();
                 }
                 cardDatas.Add(code, data);
-                cardTexts.Add(code, text);
                 if (!cardImages.ContainsKey(code))
                 {
                     Bitmap bitmap;

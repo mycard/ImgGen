@@ -48,20 +48,7 @@
                 Console.WriteLine("Generating {0}", fileName);
                 Bitmap image = DataManager.GetImage(code);
                 image.Save("./picn/" + fileName, encoderInfo, encoderParams);
-
                 DataManager.Zoom(image, 44, 64).Save("./picn/thumbnail/" + fileName, encoderInfo, encoderParams);
-                /*
-                Bitmap thumbnail = new Bitmap(44, 64);
-                Graphics graph = Graphics.FromImage(thumbnail);
-                graph.DrawImage(image, 0, 0, 44, 64);
-                thumbnail.Save("./picn/thumbnail/" + fileName, encoderInfo, encoderParams);
-                thumbnail.Dispose();
-                 */
-                /*
-                Bitmap thumbnail = new Bitmap(image, 44, 64);
-                thumbnail.Save("./picn/thumbnail/" + fileName, encoderInfo, encoderParams);
-                thumbnail.Dispose();
-                 */
                 image.Dispose();
             }
         }
