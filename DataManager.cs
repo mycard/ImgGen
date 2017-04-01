@@ -11,22 +11,27 @@ namespace ImgGen
     {
         private static Bitmap[] bAttributes = new Bitmap[8];
         private static Bitmap[] bStar = new Bitmap[2];
-        private static Bitmap[] bTemplates = new Bitmap[16];
+        private static Bitmap[] bTemplates = new Bitmap[15];
         private static Bitmap[] bType = new Bitmap[15];
         private static Bitmap[] bLinkMarkers1 = new Bitmap[9];
         private static Bitmap[] bLinkMarkers2 = new Bitmap[9];
+
         private static Dictionary<int, Data> cardDatas = new Dictionary<int, Data>();
         private static Dictionary<int, Bitmap> cardImages = new Dictionary<int, Bitmap>();
+
         private static SQLiteConnection conn;
         private static object locker = new object();
-        private static SolidBrush nameBrush = new SolidBrush(Color.FromArgb(64, 64, 0));
+
         private static Font nameFont;
         private static Font numFont;
         private static Font linkFont;
-        private static SolidBrush textBrush = new SolidBrush(Color.FromArgb(64, 64, 64));
         private static Font txtFont;
-        private static SolidBrush typeBrush = new SolidBrush(Color.FromArgb(32, 32, 32));
         private static Font typeFont;
+        private static Font scaleFontNormal;
+        private static Font scaleFontSmall;
+        private static SolidBrush nameBrush = new SolidBrush(Color.FromArgb(64, 64, 0));
+        private static SolidBrush typeBrush = new SolidBrush(Color.FromArgb(32, 32, 32));
+        private static SolidBrush textBrush = new SolidBrush(Color.FromArgb(64, 64, 64));
 
         private static string regex_monster = @"[果|介|述|報]】\n([\S\s]*)";
         private static string regex_pendulum = @"】[\s\S]*?\n([\S\s]*?)\n【";
@@ -133,6 +138,8 @@ namespace ImgGen
             nameFont = new Font("文泉驿微米黑", 10f);
             typeFont = new Font("文泉驿微米黑", 6f);
             txtFont = new Font("文泉驿微米黑", 5f);
+            scaleFontNormal = new Font("文泉驿微米黑", 8f);
+            scaleFontSmall = new Font("文泉驿微米黑", 7f);
             bTemplates[0] = new Bitmap("./textures/card_spell.jpg");
             bTemplates[1] = new Bitmap("./textures/card_trap.jpg");
             bTemplates[2] = new Bitmap("./textures/card_synchro.jpg");
@@ -147,8 +154,7 @@ namespace ImgGen
             bTemplates[11] = new Bitmap("./textures/card_pnormal.jpg");
             bTemplates[12] = new Bitmap("./textures/card_psynchro.jpg");
             bTemplates[13] = new Bitmap("./textures/card_pfusion.jpg");
-            bTemplates[14] = new Bitmap("./textures/card_zarc.jpg");
-            bTemplates[15] = new Bitmap("./textures/card_link.jpg");
+            bTemplates[14] = new Bitmap("./textures/card_link.jpg");
             bAttributes[0] = new Bitmap("./textures/att_earth.png");
             bAttributes[1] = new Bitmap("./textures/att_water.png");
             bAttributes[2] = new Bitmap("./textures/att_fire.png");
@@ -180,7 +186,6 @@ namespace ImgGen
         {
             lock (locker)
             {
-                int num2;
                 if (cardDatas.ContainsKey(code))
                 {
                     return 0;
@@ -188,7 +193,6 @@ namespace ImgGen
                 Data data = new Data();
                 Text text = new Text();
                 data.code = code;
-                text.desc = new string[0x10];
                 text.name = "???";
                 text.text = "???";
                 try
@@ -216,12 +220,6 @@ namespace ImgGen
                     {
                         text.name = reader.GetString(1);
                         text.text = reader.GetString(2);
-                        num2 = 0;
-                        while (num2 < 0x10)
-                        {
-                            text.desc[num2] = reader.GetString(3 + num2);
-                            num2++;
-                        }
                     }
                     reader.Close();
                 }
@@ -237,12 +235,8 @@ namespace ImgGen
                 {
                     Bitmap bitmap;
                     SizeF ef;
-                    int num4;
-                    if (((int)data.type & 0x1802040) == 0x1802040)
-                    {
-                        bitmap = new Bitmap(bTemplates[14]);
-                    }
-                    else if (data.isType(Type.TYPE_SPELL))
+                    int nWidth;
+                    if (data.isType(Type.TYPE_SPELL))
                     {
                         bitmap = new Bitmap(bTemplates[0]);
                     }
@@ -263,7 +257,7 @@ namespace ImgGen
                     }
                     else if (data.isType(Type.TYPE_LINK))
                     {
-                        bitmap = new Bitmap(bTemplates[15]);
+                        bitmap = new Bitmap(bTemplates[14]);
                     }
                     else if (data.isType(Type.TYPE_XYZ))
                     {
@@ -323,20 +317,21 @@ namespace ImgGen
                     {
                         int x = 144;
                         int y = 15;
-                        if (!data.isType(Type.TYPE_LINK) && (!data.isType(Type.TYPE_XYZ) || ((int)data.type & 0x1802040) == 0x1802040))
+                        int nStar;
+                        if (!data.isType(Type.TYPE_LINK) && !data.isType(Type.TYPE_XYZ))
                         {
                             if (!data.isType(Type.TYPE_PENDULUM))
                             {
-                                for (num2 = 0; num2 < (data.level & 0xff); num2++)
+                                for (nStar = 0; nStar < (data.level & 0xff); nStar++)
                                 {
-                                    graphics.DrawImage(bStar[0], 149 - (12 * num2), 37, 11, 11);
+                                    graphics.DrawImage(bStar[0], 149 - (12 * nStar), 37, 11, 11);
                                 }
                             }
                             else
                             {
-                                for (num2 = 0; num2 < (data.level & 0xff); num2++)
+                                for (nStar = 0; nStar < (data.level & 0xff); nStar++)
                                 {
-                                    graphics.DrawImage(bStar[0], 149 - (12 * num2), 35, 11, 11);
+                                    graphics.DrawImage(bStar[0], 149 - (12 * nStar), 35, 11, 11);
                                 }
                                 y = 12;
                             }
@@ -348,9 +343,9 @@ namespace ImgGen
                         }
                         else if (data.isType(Type.TYPE_XYZ))
                         {
-                            for (num2 = 0; num2 < (data.level & 0xff); num2++)
+                            for (nStar = 0; nStar < (data.level & 0xff); nStar++)
                             {
-                                graphics.DrawImage(bStar[1], 17 + (12 * num2), 35, 11, 11);
+                                graphics.DrawImage(bStar[1], 17 + (12 * nStar), 35, 11, 11);
                             }
                             y = 12;
                         }
@@ -458,14 +453,14 @@ namespace ImgGen
                         {
                             graphics.DrawString(GetTypeString(data), typeFont, typeBrush, 10f, 192f);
                             ef = graphics.MeasureString(text.text, txtFont, 150);
-                            num4 = 150;
-                            while (ef.Height > 28 * num4 / 150f)
+                            nWidth = 150;
+                            while (ef.Height > 28 * nWidth / 150f)
                             {
-                                num4 += 3;
-                                ef = graphics.MeasureString(text.text, txtFont, num4);
+                                nWidth += 3;
+                                ef = graphics.MeasureString(text.text, txtFont, nWidth);
                             }
                             graphics.TranslateTransform(14f, 202f);
-                            graphics.ScaleTransform(150f / num4, 150f / num4);
+                            graphics.ScaleTransform(150f / nWidth, 150f / nWidth);
                             graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
                             graphics.ResetTransform();
                         }
@@ -487,42 +482,42 @@ namespace ImgGen
                             int rscale = (data.level >> 0x10) & 0xff;
                             if (lscale > 9)
                             {
-                                graphics.DrawString(lscale.ToString(), new Font("文泉驿微米黑", 7f), Brushes.Black, 13f, 174f);
+                                graphics.DrawString(lscale.ToString(), scaleFontSmall, Brushes.Black, 13f, 174f);
                             }
                             else
                             {
-                                graphics.DrawString(lscale.ToString(), new Font("文泉驿微米黑", 8f), Brushes.Black, 16f, 174f);
+                                graphics.DrawString(lscale.ToString(), scaleFontNormal, Brushes.Black, 16f, 174f);
                             }
                             if (rscale > 9)
                             {
-                                graphics.DrawString(rscale.ToString(), new Font("文泉驿微米黑", 7f), Brushes.Black, 150f, 174f);
+                                graphics.DrawString(rscale.ToString(), scaleFontSmall, Brushes.Black, 150f, 174f);
                             }
                             else
                             {
-                                graphics.DrawString(rscale.ToString(), new Font("文泉驿微米黑", 8f), Brushes.Black, 151f, 174f);
+                                graphics.DrawString(rscale.ToString(), scaleFontNormal, Brushes.Black, 151f, 174f);
                             }
                             ef = graphics.MeasureString(monster_effect, txtFont, 145);
-                            num4 = 145;
-                            while (ef.Height > 28 * num4 / 145f)
+                            nWidth = 145;
+                            while (ef.Height > 28 * nWidth / 145f)
                             {
-                                num4 += 3;
-                                ef = graphics.MeasureString(monster_effect, txtFont, num4);
+                                nWidth += 3;
+                                ef = graphics.MeasureString(monster_effect, txtFont, nWidth);
                             }
                             graphics.TranslateTransform(16f, 202f);
-                            graphics.ScaleTransform(145f / num4, 145f / num4);
+                            graphics.ScaleTransform(145f / nWidth, 145f / nWidth);
                             graphics.DrawString(monster_effect, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
                             graphics.ResetTransform();
-                            int num5;
+                            int nWidthP;
                             SizeF pf;
                             pf = graphics.MeasureString(pendulum_effect, txtFont, 119);
-                            num5 = 119;
-                            while (pf.Height > 24 * num5 / 119f)
+                            nWidthP = 119;
+                            while (pf.Height > 24 * nWidthP / 119f)
                             {
-                                num5 += 1;
-                                pf = graphics.MeasureString(pendulum_effect, txtFont, num5);
+                                nWidthP += 1;
+                                pf = graphics.MeasureString(pendulum_effect, txtFont, nWidthP);
                             }
                             graphics.TranslateTransform(29f, 162f);
-                            graphics.ScaleTransform(119f / num5, 119f / num5);
+                            graphics.ScaleTransform(119f / nWidthP, 119f / nWidthP);
                             graphics.DrawString(pendulum_effect, txtFont, textBrush, new RectangleF(0f, 0f, pf.Width, pf.Height));
                             graphics.ResetTransform();
                         }
@@ -530,28 +525,28 @@ namespace ImgGen
                         {
                             graphics.DrawString(GetTypeString(data), typeFont, typeBrush, 12f, 192f);
                             ef = graphics.MeasureString(text.text, txtFont, 145);
-                            num4 = 145;
-                            while (ef.Height > 28 * num4 / 145f)
+                            nWidth = 145;
+                            while (ef.Height > 28 * nWidth / 145f)
                             {
-                                num4 += 3;
-                                ef = graphics.MeasureString(text.text, txtFont, num4);
+                                nWidth += 3;
+                                ef = graphics.MeasureString(text.text, txtFont, nWidth);
                             }
                             graphics.TranslateTransform(16f, 202f);
-                            graphics.ScaleTransform(145f / num4, 145f / num4);
+                            graphics.ScaleTransform(145f / nWidth, 145f / nWidth);
                             graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
                             graphics.ResetTransform();
                         }
                         else {
                             graphics.DrawString(GetTypeString(data), typeFont, typeBrush, 13f, 195f);
                             ef = graphics.MeasureString(text.text, txtFont, 145);
-                            num4 = 145;
-                            while (ef.Height > 25 * num4 / 145f)
+                            nWidth = 145;
+                            while (ef.Height > 25 * nWidth / 145f)
                             {
-                                num4 += 3;
-                                ef = graphics.MeasureString(text.text, txtFont, num4);
+                                nWidth += 3;
+                                ef = graphics.MeasureString(text.text, txtFont, nWidth);
                             }
                             graphics.TranslateTransform(16f, 205f);
-                            graphics.ScaleTransform(145f / num4, 145f / num4);
+                            graphics.ScaleTransform(145f / nWidth, 145f / nWidth);
                             graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
                             graphics.ResetTransform();
                         }
@@ -609,14 +604,14 @@ namespace ImgGen
                             }
                         }
                         ef = graphics.MeasureString(text.text, txtFont, 145);
-                        num4 = 145;
-                        while (ef.Height > 40 * num4 / 145f)
+                        nWidth = 145;
+                        while (ef.Height > 40 * nWidth / 145f)
                         {
-                            num4 += 3;
-                            ef = graphics.MeasureString(text.text, txtFont, num4);
+                            nWidth += 3;
+                            ef = graphics.MeasureString(text.text, txtFont, nWidth);
                         }
                         graphics.TranslateTransform(16f, 195f);
-                        graphics.ScaleTransform(145f / num4, 145f / num4);
+                        graphics.ScaleTransform(145f / nWidth, 145f / nWidth);
                         graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
                         graphics.ResetTransform();
                     }
