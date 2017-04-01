@@ -723,35 +723,36 @@ namespace ImgGen
                     }
                     if (data.isType(Type.TYPE_LINK))
                     {
-                        if ((data.defence & 0x1) == 0)
+                        LinkMarker lm = (LinkMarker)data.defence;
+                        if ((lm & LinkMarker.LINK_MARKER_BOTTOM_LEFT) == 0)
                             graphics.DrawImage(bLinkMarkers1[0], 14, 169, 18, 17);
                         else
                             graphics.DrawImage(bLinkMarkers2[0], 14, 169, 18, 17);
-                        if ((data.defence & 0x2) == 0)
+                        if ((lm & LinkMarker.LINK_MARKER_BOTTOM) == 0)
                             graphics.DrawImage(bLinkMarkers1[1], 73, 178, 32, 12);
                         else
                             graphics.DrawImage(bLinkMarkers2[1], 73, 178, 32, 12);
-                        if ((data.defence & 0x4) == 0)
+                        if ((lm & LinkMarker.LINK_MARKER_BOTTOM_RIGHT) == 0)
                             graphics.DrawImage(bLinkMarkers1[2], 145, 169, 18, 17);
                         else
                             graphics.DrawImage(bLinkMarkers2[2], 145, 169, 18, 17);
-                        if ((data.defence & 0x8) == 0)
+                        if ((lm & LinkMarker.LINK_MARKER_LEFT) == 0)
                             graphics.DrawImage(bLinkMarkers1[3], 11, 97, 12, 32);
                         else
                             graphics.DrawImage(bLinkMarkers2[3], 11, 97, 12, 32);
-                        if ((data.defence & 0x20) == 0)
+                        if ((lm & LinkMarker.LINK_MARKER_RIGHT) == 0)
                             graphics.DrawImage(bLinkMarkers1[5], 154, 97, 12, 32);
                         else
                             graphics.DrawImage(bLinkMarkers2[5], 154, 97, 12, 32);
-                        if ((data.defence & 0x40) == 0)
+                        if ((lm & LinkMarker.LINK_MARKER_TOP_LEFT) == 0)
                             graphics.DrawImage(bLinkMarkers1[6], 14, 39, 18, 17);
                         else
                             graphics.DrawImage(bLinkMarkers2[6], 14, 39, 18, 17);
-                        if ((data.defence & 0x80) == 0)
+                        if ((lm & LinkMarker.LINK_MARKER_TOP) == 0)
                             graphics.DrawImage(bLinkMarkers1[7], 73, 36, 32, 12);
                         else
                             graphics.DrawImage(bLinkMarkers2[7], 73, 36, 32, 12);
-                        if ((data.defence & 0x100) == 0)
+                        if ((lm & LinkMarker.LINK_MARKER_TOP_RIGHT) == 0)
                             graphics.DrawImage(bLinkMarkers1[8], 146, 39, 18, 17);
                         else
                             graphics.DrawImage(bLinkMarkers2[8], 146, 39, 18, 17);

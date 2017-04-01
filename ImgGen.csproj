@@ -46,15 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attribute.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="DataManager.cs" />
-    <Compile Include="Location.cs" />
-    <Compile Include="Position.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Race.cs" />
-    <Compile Include="Text.cs" />
-    <Compile Include="Type.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
