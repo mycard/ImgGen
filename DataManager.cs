@@ -12,7 +12,7 @@ namespace ImgGen
         private static Bitmap[] bAttributes = new Bitmap[8];
         private static Bitmap[] bStar = new Bitmap[2];
         private static Bitmap[] bTemplates = new Bitmap[15];
-        private static Bitmap[] bType = new Bitmap[15];
+        private static Bitmap[] bType = new Bitmap[9];
         private static Bitmap[] bLinkMarkers1 = new Bitmap[9];
         private static Bitmap[] bLinkMarkers2 = new Bitmap[9];
 
@@ -133,28 +133,28 @@ namespace ImgGen
         {
             xyzString = xyz;
             conn = new SQLiteConnection("Data Source=" + dbPath);
-            numFont = new Font("Arial", 5.5f);
-            linkFont = new Font("Tohoma", 5.5f, FontStyle.Bold);
-            nameFont = new Font("文泉驿微米黑", 10f);
-            typeFont = new Font("文泉驿微米黑", 6f);
-            txtFont = new Font("文泉驿微米黑", 5f);
-            scaleFontNormal = new Font("文泉驿微米黑", 8f);
-            scaleFontSmall = new Font("文泉驿微米黑", 7f);
-            bTemplates[0] = new Bitmap("./textures/card_spell.jpg");
-            bTemplates[1] = new Bitmap("./textures/card_trap.jpg");
-            bTemplates[2] = new Bitmap("./textures/card_synchro.jpg");
-            bTemplates[3] = new Bitmap("./textures/card_xyz.jpg");
-            bTemplates[4] = new Bitmap("./textures/card_fusion.jpg");
-            bTemplates[5] = new Bitmap("./textures/card_ritual.jpg");
-            bTemplates[6] = new Bitmap("./textures/card_token.jpg");
-            bTemplates[7] = new Bitmap("./textures/card_effect.jpg");
-            bTemplates[8] = new Bitmap("./textures/card_normal.jpg");
-            bTemplates[9] = new Bitmap("./textures/card_pxyz.jpg");
-            bTemplates[10] = new Bitmap("./textures/card_peffect.jpg");
-            bTemplates[11] = new Bitmap("./textures/card_pnormal.jpg");
-            bTemplates[12] = new Bitmap("./textures/card_psynchro.jpg");
-            bTemplates[13] = new Bitmap("./textures/card_pfusion.jpg");
-            bTemplates[14] = new Bitmap("./textures/card_link.jpg");
+            numFont = new Font("文泉驿微米黑", 12, FontStyle.Regular, GraphicsUnit.Pixel);
+            linkFont = new Font("文泉驿微米黑", 12, FontStyle.Bold, GraphicsUnit.Pixel);
+            nameFont = new Font("文泉驿微米黑", 24, GraphicsUnit.Pixel);
+            typeFont = new Font("文泉驿微米黑", 12, FontStyle.Regular, GraphicsUnit.Pixel);
+            txtFont = new Font("文泉驿微米黑", 10, GraphicsUnit.Pixel);
+            scaleFontNormal = new Font("文泉驿微米黑", 24, GraphicsUnit.Pixel);
+            scaleFontSmall = new Font("文泉驿微米黑", 20, GraphicsUnit.Pixel);
+            bTemplates[0] = new Bitmap("./textures/card_spell.png");
+            bTemplates[1] = new Bitmap("./textures/card_trap.png");
+            bTemplates[2] = new Bitmap("./textures/card_synchro.png");
+            bTemplates[3] = new Bitmap("./textures/card_xyz.png");
+            bTemplates[4] = new Bitmap("./textures/card_fusion.png");
+            bTemplates[5] = new Bitmap("./textures/card_ritual.png");
+            bTemplates[6] = new Bitmap("./textures/card_token.png");
+            bTemplates[7] = new Bitmap("./textures/card_effect.png");
+            bTemplates[8] = new Bitmap("./textures/card_normal.png");
+            bTemplates[9] = new Bitmap("./textures/card_pxyz.png");
+            bTemplates[10] = new Bitmap("./textures/card_peffect.png");
+            bTemplates[11] = new Bitmap("./textures/card_pnormal.png");
+            bTemplates[12] = new Bitmap("./textures/card_psynchro.png");
+            bTemplates[13] = new Bitmap("./textures/card_pfusion.png");
+            bTemplates[14] = new Bitmap("./textures/card_link.png");
             bAttributes[0] = new Bitmap("./textures/att_earth.png");
             bAttributes[1] = new Bitmap("./textures/att_water.png");
             bAttributes[2] = new Bitmap("./textures/att_fire.png");
@@ -164,16 +164,15 @@ namespace ImgGen
             bAttributes[6] = new Bitmap("./textures/att_devine.png");
             bStar[0] = new Bitmap("./textures/star.png");
             bStar[1] = new Bitmap("./textures/starb.png");
-            bType[0] = new Bitmap("./textures/spell1.png");
-            bType[1] = new Bitmap("./textures/spell2.png");
-            bType[2] = new Bitmap("./textures/trap1.png");
-            bType[3] = new Bitmap("./textures/trap2.png");
-            bType[4] = new Bitmap("./textures/type_continuous.png");
-            bType[5] = new Bitmap("./textures/type_counter.png");
-            bType[6] = new Bitmap("./textures/type_equip.png");
-            bType[7] = new Bitmap("./textures/type_field.png");
-            bType[8] = new Bitmap("./textures/type_quickplay.png");
-            bType[9] = new Bitmap("./textures/type_ritual.png");
+            bType[0] = new Bitmap("./textures/spell_normal.png");
+            bType[1] = new Bitmap("./textures/spell_quickplay.png");
+            bType[2] = new Bitmap("./textures/spell_continuous.png");
+            bType[3] = new Bitmap("./textures/spell_equip.png");
+            bType[4] = new Bitmap("./textures/spell_field.png");
+            bType[5] = new Bitmap("./textures/spell_ritual.png");
+            bType[6] = new Bitmap("./textures/trap_normal.png");
+            bType[7] = new Bitmap("./textures/trap_continuous.png");
+            bType[8] = new Bitmap("./textures/trap_counter.png");
             for (int i = 1; i <= 9; i++)
             {
                 if (i == 5) continue;
@@ -254,42 +253,44 @@ namespace ImgGen
             {
                 bitmap = new Bitmap(bTemplates[1]);
             }
-            else if (data.isType(Type.TYPE_SYNCHRO))
+            else if (data.isType(Type.TYPE_PENDULUM))
             {
-                if (data.isType(Type.TYPE_PENDULUM))
+                if (data.isType(Type.TYPE_SYNCHRO))
                 {
                     bitmap = new Bitmap(bTemplates[12]);
                 }
-                else
+                else if (data.isType(Type.TYPE_XYZ))
                 {
-                    bitmap = new Bitmap(bTemplates[2]);
+                    bitmap = new Bitmap(bTemplates[9]);
+                }
+                else if (data.isType(Type.TYPE_FUSION))
+                {
+                    bitmap = new Bitmap(bTemplates[13]);
+                }
+                else if (data.isType(Type.TYPE_EFFECT))
+                {
+                    bitmap = new Bitmap(bTemplates[10]);
+                }
+                else //pnormal
+                {
+                    bitmap = new Bitmap(bTemplates[11]);
                 }
             }
             else if (data.isType(Type.TYPE_LINK))
             {
                 bitmap = new Bitmap(bTemplates[14]);
             }
+            else if (data.isType(Type.TYPE_SYNCHRO))
+            {
+                bitmap = new Bitmap(bTemplates[2]);
+            }
             else if (data.isType(Type.TYPE_XYZ))
             {
-                if (data.isType(Type.TYPE_PENDULUM))
-                {
-                    bitmap = new Bitmap(bTemplates[9]);
-                }
-                else
-                {
-                    bitmap = new Bitmap(bTemplates[3]);
-                }
+                bitmap = new Bitmap(bTemplates[3]);
             }
             else if (data.isType(Type.TYPE_FUSION))
             {
-                if (data.isType(Type.TYPE_PENDULUM))
-                {
-                    bitmap = new Bitmap(bTemplates[13]);
-                }
-                else
-                {
-                    bitmap = new Bitmap(bTemplates[4]);
-                }
+                bitmap = new Bitmap(bTemplates[4]);
             }
             else if (data.isType(Type.TYPE_RITUAL))
             {
@@ -301,263 +302,128 @@ namespace ImgGen
             }
             else if (data.isType(Type.TYPE_EFFECT))
             {
-                if (data.isType(Type.TYPE_PENDULUM))
-                {
-                    bitmap = new Bitmap(bTemplates[10]);
-                }
-                else
-                {
-                    bitmap = new Bitmap(bTemplates[7]);
-                }
+                bitmap = new Bitmap(bTemplates[7]);
             }
-            else
+            else //normal
             {
-                if (data.isType(Type.TYPE_PENDULUM))
-                {
-                    bitmap = new Bitmap(bTemplates[11]);
-                }
-                else
-                {
-                    bitmap = new Bitmap(bTemplates[8]);
-                }
+                bitmap = new Bitmap(bTemplates[8]);
             }
             Graphics graphics = Graphics.FromImage(bitmap);
             text.text = GetStandardText(text.text);
             if (data.isType(Type.TYPE_MONSTER))
             {
-                int x = 144;
-                int y = 15;
                 int nStar;
-                if (!data.isType(Type.TYPE_LINK) && !data.isType(Type.TYPE_XYZ))
-                {
-                    if (!data.isType(Type.TYPE_PENDULUM))
-                    {
-                        for (nStar = 0; nStar < (data.level & 0xff); nStar++)
-                        {
-                            graphics.DrawImage(bStar[0], 149 - (12 * nStar), 37, 11, 11);
-                        }
-                    }
-                    else
-                    {
-                        for (nStar = 0; nStar < (data.level & 0xff); nStar++)
-                        {
-                            graphics.DrawImage(bStar[0], 149 - (12 * nStar), 35, 11, 11);
-                        }
-                        y = 12;
-                    }
-                }
-                if (data.isType(Type.TYPE_LINK))
-                {
-                    x = 147;
-                    y = 11;
-                }
-                else if (data.isType(Type.TYPE_XYZ))
+                if (data.isType(Type.TYPE_XYZ))
                 {
                     for (nStar = 0; nStar < (data.level & 0xff); nStar++)
                     {
-                        graphics.DrawImage(bStar[1], 17 + (12 * nStar), 35, 11, 11);
+                        graphics.DrawImage(bStar[1], (int)35 + (22.5f * nStar), 60, 20, 20);
                     }
-                    y = 12;
                 }
-                if (data.attribute == Attribute.ATTRIBUTE_EARTH)
+                else if (!data.isType(Type.TYPE_LINK))
                 {
-                    graphics.DrawImage(bAttributes[0], x, y, 18, 18);
-                }
-                else if (data.attribute == Attribute.ATTRIBUTE_WATER)
-                {
-                    graphics.DrawImage(bAttributes[1], x, y, 18, 18);
-                }
-                else if (data.attribute == Attribute.ATTRIBUTE_FIRE)
-                {
-                    graphics.DrawImage(bAttributes[2], x, y, 18, 18);
-                }
-                else if (data.attribute == Attribute.ATTRIBUTE_WIND)
-                {
-                    graphics.DrawImage(bAttributes[3], x, y, 18, 18);
-                }
-                else if (data.attribute == Attribute.ATTRIBUTE_LIGHT)
-                {
-                    graphics.DrawImage(bAttributes[4], x, y, 18, 18);
-                }
-                else if (data.attribute == Attribute.ATTRIBUTE_DARK)
-                {
-                    graphics.DrawImage(bAttributes[5], x, y, 18, 18);
-                }
-                else if (data.attribute == Attribute.ATTRIBUTE_DEVINE)
-                {
-                    graphics.DrawImage(bAttributes[6], x, y, 18, 18);
-                }
-                if (data.isType(Type.TYPE_LINK))
-                {
-                    if (data.attack >= 0)
+                    for (nStar = 0; nStar < (data.level & 0xff); nStar++)
                     {
-                        graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, 110f, 231f);
+                        graphics.DrawImage(bStar[0], (int)282 - (22.5f * nStar), 60, 20, 20);
                     }
-                    else
-                    {
-                        graphics.DrawString("?", numFont, textBrush, 110f, 231f);
-                    }
-                    graphics.DrawString(data.level.ToString(), linkFont, Brushes.Black, 156f, 231f);
                 }
-                else if (!data.isType(Type.TYPE_PENDULUM))
+
+                int nAttr;
+                if (data.attribute == Attribute.ATTRIBUTE_EARTH) nAttr = 0;
+                else if (data.attribute == Attribute.ATTRIBUTE_WATER) nAttr = 1;
+                else if (data.attribute == Attribute.ATTRIBUTE_FIRE) nAttr = 2;
+                else if (data.attribute == Attribute.ATTRIBUTE_WIND) nAttr = 3;
+                else if (data.attribute == Attribute.ATTRIBUTE_LIGHT) nAttr = 4;
+                else if (data.attribute == Attribute.ATTRIBUTE_DARK) nAttr = 5;
+                else nAttr = 6;
+                graphics.DrawImage(bAttributes[nAttr], 280, 22, 32, 32);
+
+                if (data.attack >= 0)
                 {
-                    if (!data.isType(Type.TYPE_XYZ))
-                    {
-                        if (data.attack >= 0)
-                        {
-                            graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, 105f, 231f);
-                        }
-                        else
-                        {
-                            graphics.DrawString("?", numFont, textBrush, 115f, 231f);
-                        }
-                        if (data.defence >= 0)
-                        {
-                            graphics.DrawString(data.defence.ToString(), numFont, Brushes.Black, 142f, 231f);
-                        }
-                        else
-                        {
-                            graphics.DrawString("?", numFont, textBrush, 152f, 231f);
-                        }
-                    }
-                    else
-                    {
-                        if (data.attack >= 0)
-                        {
-                            graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, 109f, 231f);
-                        }
-                        else
-                        {
-                            graphics.DrawString("?", numFont, textBrush, 119f, 231f);
-                        }
-                        if (data.defence >= 0)
-                        {
-                            graphics.DrawString(data.defence.ToString(), numFont, Brushes.Black, 145f, 231f);
-                        }
-                        else
-                        {
-                            graphics.DrawString("?", numFont, textBrush, 155f, 231f);
-                        }
-                    }
+                    graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, 208, 446);
                 }
                 else
                 {
-                    if (data.attack >= 0)
-                    {
-                        graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, 105f, 231f);
-                    }
-                    else
-                    {
-                        graphics.DrawString("?", numFont, textBrush, 115f, 231f);
-                    }
-                    if (data.defence >= 0)
-                    {
-                        graphics.DrawString(data.defence.ToString(), numFont, Brushes.Black, 142f, 231f);
-                    }
-                    else
-                    {
-                        graphics.DrawString("?", numFont, textBrush, 152f, 231f);
-                    }
+                    graphics.DrawString("?", numFont, textBrush, 208, 446);
                 }
+
                 if (data.isType(Type.TYPE_LINK))
                 {
-                    graphics.DrawString(GetTypeString(data), typeFont, typeBrush, 10f, 192f);
-                    ef = graphics.MeasureString(text.text, txtFont, 150);
-                    nWidth = 150;
-                    while (ef.Height > 28 * nWidth / 150f)
-                    {
-                        nWidth += 3;
-                        ef = graphics.MeasureString(text.text, txtFont, nWidth);
-                    }
-                    graphics.TranslateTransform(14f, 202f);
-                    graphics.ScaleTransform(150f / nWidth, 150f / nWidth);
-                    graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
-                    graphics.ResetTransform();
+                    graphics.DrawString(data.level.ToString(), linkFont, Brushes.Black, 295, 446);
                 }
-                else if (data.isType(Type.TYPE_PENDULUM))
+                else
                 {
-                    string type_string = GetTypeString(data);
-                    float width1 = graphics.MeasureString(type_string, typeFont).Width;
-                    float sx1 = 1f;
-                    if (width1 > 150f)
+                    if (data.defence >= 0)
                     {
-                        sx1 *= 150f / width1;
+                        graphics.DrawString(data.defence.ToString(), numFont, Brushes.Black, 275, 446);
                     }
-                    graphics.ScaleTransform(sx1, 1f);
-                    graphics.DrawString(type_string, typeFont, typeBrush, 12f, 192f);
-                    graphics.ResetTransform();
-                    string monster_effect = GetPendulumDesc(text.text, regex_monster);
-                    string pendulum_effect = GetPendulumDesc(text.text, regex_pendulum);
+                    else
+                    {
+                        graphics.DrawString("?", numFont, textBrush, 275, 446);
+                    }
+                }
+
+                string type_string = GetTypeString(data);
+                float tWidth = graphics.MeasureString(type_string, typeFont).Width;
+                float sx1 = 1f;
+                if (tWidth > 280f)
+                {
+                    sx1 *= 280f / tWidth;
+                }
+                graphics.ScaleTransform(sx1, 1f);
+                graphics.DrawString(type_string, typeFont, typeBrush, 20, 369);
+                graphics.ResetTransform();
+
+                string monster_effect = text.text;
+                if (data.isType(Type.TYPE_PENDULUM))
+                {
+                    monster_effect = GetPendulumDesc(text.text, regex_monster);
+                }
+                nWidth = 288;
+                ef = graphics.MeasureString(monster_effect, txtFont, nWidth);
+                while (ef.Height > 60 * nWidth / 288f)
+                {
+                    nWidth += 3;
+                    ef = graphics.MeasureString(monster_effect, txtFont, nWidth);
+                }
+                graphics.TranslateTransform(24f, 385f);
+                graphics.ScaleTransform(288f / nWidth, 288f / nWidth);
+                graphics.DrawString(monster_effect, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
+                graphics.ResetTransform();
+
+                if (data.isType(Type.TYPE_PENDULUM))
+                {
                     int lscale = (data.level >> 0x18) & 0xff;
                     int rscale = (data.level >> 0x10) & 0xff;
                     if (lscale > 9)
                     {
-                        graphics.DrawString(lscale.ToString(), scaleFontSmall, Brushes.Black, 13f, 174f);
+                        graphics.DrawString(lscale.ToString(), scaleFontSmall, Brushes.Black, 20f, 336f);
                     }
                     else
                     {
-                        graphics.DrawString(lscale.ToString(), scaleFontNormal, Brushes.Black, 16f, 174f);
+                        graphics.DrawString(lscale.ToString(), scaleFontNormal, Brushes.Black, 25f, 333f);
                     }
                     if (rscale > 9)
                     {
-                        graphics.DrawString(rscale.ToString(), scaleFontSmall, Brushes.Black, 150f, 174f);
+                        graphics.DrawString(rscale.ToString(), scaleFontSmall, Brushes.Black, 286f, 336f);
                     }
                     else
                     {
-                        graphics.DrawString(rscale.ToString(), scaleFontNormal, Brushes.Black, 151f, 174f);
+                        graphics.DrawString(rscale.ToString(), scaleFontNormal, Brushes.Black, 290f, 333f);
                     }
-                    ef = graphics.MeasureString(monster_effect, txtFont, 145);
-                    nWidth = 145;
-                    while (ef.Height > 28 * nWidth / 145f)
-                    {
-                        nWidth += 3;
-                        ef = graphics.MeasureString(monster_effect, txtFont, nWidth);
-                    }
-                    graphics.TranslateTransform(16f, 202f);
-                    graphics.ScaleTransform(145f / nWidth, 145f / nWidth);
-                    graphics.DrawString(monster_effect, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
-                    graphics.ResetTransform();
                     int nWidthP;
                     SizeF pf;
-                    pf = graphics.MeasureString(pendulum_effect, txtFont, 119);
-                    nWidthP = 119;
-                    while (pf.Height > 24 * nWidthP / 119f)
+                    string pendulum_effect = GetPendulumDesc(text.text, regex_pendulum);
+                    nWidthP = 232;
+                    pf = graphics.MeasureString(pendulum_effect, txtFont, nWidthP);
+                    while (pf.Height > 52 * nWidthP / 232f)
                     {
                         nWidthP += 1;
                         pf = graphics.MeasureString(pendulum_effect, txtFont, nWidthP);
                     }
-                    graphics.TranslateTransform(29f, 162f);
-                    graphics.ScaleTransform(119f / nWidthP, 119f / nWidthP);
+                    graphics.TranslateTransform(51f, 311f);
+                    graphics.ScaleTransform(232f / nWidthP, 232f / nWidthP);
                     graphics.DrawString(pendulum_effect, txtFont, textBrush, new RectangleF(0f, 0f, pf.Width, pf.Height));
-                    graphics.ResetTransform();
-                }
-                else if (data.isType(Type.TYPE_XYZ))
-                {
-                    graphics.DrawString(GetTypeString(data), typeFont, typeBrush, 12f, 192f);
-                    ef = graphics.MeasureString(text.text, txtFont, 145);
-                    nWidth = 145;
-                    while (ef.Height > 28 * nWidth / 145f)
-                    {
-                        nWidth += 3;
-                        ef = graphics.MeasureString(text.text, txtFont, nWidth);
-                    }
-                    graphics.TranslateTransform(16f, 202f);
-                    graphics.ScaleTransform(145f / nWidth, 145f / nWidth);
-                    graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
-                    graphics.ResetTransform();
-                }
-                else {
-                    graphics.DrawString(GetTypeString(data), typeFont, typeBrush, 13f, 195f);
-                    ef = graphics.MeasureString(text.text, txtFont, 145);
-                    nWidth = 145;
-                    while (ef.Height > 25 * nWidth / 145f)
-                    {
-                        nWidth += 3;
-                        ef = graphics.MeasureString(text.text, txtFont, nWidth);
-                    }
-                    graphics.TranslateTransform(16f, 205f);
-                    graphics.ScaleTransform(145f / nWidth, 145f / nWidth);
-                    graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
                     graphics.ResetTransform();
                 }
             }
@@ -567,61 +433,42 @@ namespace ImgGen
                 {
                     if (data.type == Type.TYPE_SPELL)
                     {
-                        graphics.DrawImage(bType[0], 101, 37);
+                        graphics.DrawImage(bType[0], 204, 60, 96, 19);
                     }
                     else
                     {
-                        graphics.DrawImage(bType[1], 92, 37);
-                        if (data.isType(Type.TYPE_CONTINUOUS))
-                        {
-                            graphics.DrawImage(bType[4], 143, 40);
-                        }
-                        else if (data.isType(Type.TYPE_EQUIP))
-                        {
-                            graphics.DrawImage(bType[6], 143, 40);
-                        }
-                        else if (data.isType(Type.TYPE_FIELD))
-                        {
-                            graphics.DrawImage(bType[7], 143, 40);
-                        }
-                        else if (data.isType(Type.TYPE_QUICKPLAY))
-                        {
-                            graphics.DrawImage(bType[8], 143, 40);
-                        }
-                        else if (data.isType(Type.TYPE_RITUAL))
-                        {
-                            graphics.DrawImage(bType[9], 143, 40);
-                        }
+                        int nType = 0;
+                        if (data.isType(Type.TYPE_QUICKPLAY)) nType = 1;
+                        if (data.isType(Type.TYPE_CONTINUOUS)) nType = 2;
+                        if (data.isType(Type.TYPE_EQUIP)) nType = 3;
+                        if (data.isType(Type.TYPE_FIELD)) nType = 4;
+                        if (data.isType(Type.TYPE_RITUAL)) nType = 5;
+                        graphics.DrawImage(bType[nType], 192, 60, 108, 19);
                     }
                 }
                 else if (data.isType(Type.TYPE_TRAP))
                 {
                     if (data.type == Type.TYPE_TRAP)
                     {
-                        graphics.DrawImage(bType[2], 111, 37);
+                        graphics.DrawImage(bType[6], 221, 60, 80, 19);
                     }
                     else
                     {
-                        graphics.DrawImage(bType[3], 102, 37);
-                        if (data.isType(Type.TYPE_CONTINUOUS))
-                        {
-                            graphics.DrawImage(bType[4], 143, 40);
-                        }
-                        else if (data.isType(Type.TYPE_COUNTER))
-                        {
-                            graphics.DrawImage(bType[5], 143, 40);
-                        }
+                        int nType = 6;
+                        if (data.isType(Type.TYPE_CONTINUOUS)) nType = 7;
+                        if (data.isType(Type.TYPE_COUNTER)) nType = 8;
+                        graphics.DrawImage(bType[nType], 209, 60, 91, 19);
                     }
                 }
-                ef = graphics.MeasureString(text.text, txtFont, 145);
-                nWidth = 145;
-                while (ef.Height > 40 * nWidth / 145f)
+                nWidth = 288;
+                ef = graphics.MeasureString(text.text, txtFont, nWidth);
+                while (ef.Height > 80 * nWidth / 288f)
                 {
                     nWidth += 3;
                     ef = graphics.MeasureString(text.text, txtFont, nWidth);
                 }
-                graphics.TranslateTransform(16f, 195f);
-                graphics.ScaleTransform(145f / nWidth, 145f / nWidth);
+                graphics.TranslateTransform(24f, 370f);
+                graphics.ScaleTransform(288f / nWidth, 288f / nWidth);
                 graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
                 graphics.ResetTransform();
             }
@@ -633,22 +480,14 @@ namespace ImgGen
                 graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
                 graphics.CompositingQuality = CompositingQuality.HighQuality;
                 graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                if (data.isType(Type.TYPE_LINK))
-                {
-                    graphics.DrawImage(image, 22, 47, 133, 133);
-                }
-                else if (data.isType(Type.TYPE_PENDULUM))
+                if (data.isType(Type.TYPE_PENDULUM))
                 {
                     //graphics.DrawImage(image, 15, 50, 147, 109);
-                    graphics.DrawImage(image, new Rectangle(15, 50, 147, 109), new Rectangle(0, 0, image.Width, image.Width * 109 / 147), GraphicsUnit.Pixel);
-                }
-                else if (!data.isType(Type.TYPE_XYZ))
-                {
-                    graphics.DrawImage(image, 25, 54, 128, 128);
+                    graphics.DrawImage(image, new Rectangle(23, 88, 290, 217), new Rectangle(0, 0, image.Width, image.Width * 217 / 290), GraphicsUnit.Pixel);
                 }
                 else
                 {
-                    graphics.DrawImage(image, 24, 51, 128, 128);
+                    graphics.DrawImage(image, 40, 89, 256, 256);
                 }
             }
             catch (Exception e)
@@ -659,64 +498,50 @@ namespace ImgGen
             {
                 LinkMarker lm = (LinkMarker)data.defence;
                 if ((lm & LinkMarker.LINK_MARKER_BOTTOM_LEFT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[0], 14, 169, 18, 17);
+                    graphics.DrawImage(bLinkMarkers1[0], 26, 327, 34, 34);
                 else
-                    graphics.DrawImage(bLinkMarkers2[0], 14, 169, 18, 17);
+                    graphics.DrawImage(bLinkMarkers2[0], 26, 327, 34, 34);
                 if ((lm & LinkMarker.LINK_MARKER_BOTTOM) == 0)
-                    graphics.DrawImage(bLinkMarkers1[1], 73, 178, 32, 12);
+                    graphics.DrawImage(bLinkMarkers1[1], 139, 343, 62, 23);
                 else
-                    graphics.DrawImage(bLinkMarkers2[1], 73, 178, 32, 12);
+                    graphics.DrawImage(bLinkMarkers2[1], 139, 343, 62, 23);
                 if ((lm & LinkMarker.LINK_MARKER_BOTTOM_RIGHT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[2], 145, 169, 18, 17);
+                    graphics.DrawImage(bLinkMarkers1[2], 277, 327, 35, 34);
                 else
-                    graphics.DrawImage(bLinkMarkers2[2], 145, 169, 18, 17);
+                    graphics.DrawImage(bLinkMarkers2[2], 277, 327, 35, 34);
                 if ((lm & LinkMarker.LINK_MARKER_LEFT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[3], 11, 97, 12, 32);
+                    graphics.DrawImage(bLinkMarkers1[3], 20, 189, 23, 62);
                 else
-                    graphics.DrawImage(bLinkMarkers2[3], 11, 97, 12, 32);
+                    graphics.DrawImage(bLinkMarkers2[3], 20, 189, 23, 62);
                 if ((lm & LinkMarker.LINK_MARKER_RIGHT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[5], 154, 97, 12, 32);
+                    graphics.DrawImage(bLinkMarkers1[5], 294, 189, 23, 62);
                 else
-                    graphics.DrawImage(bLinkMarkers2[5], 154, 97, 12, 32);
+                    graphics.DrawImage(bLinkMarkers2[5], 294, 189, 23, 62);
                 if ((lm & LinkMarker.LINK_MARKER_TOP_LEFT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[6], 14, 39, 18, 17);
+                    graphics.DrawImage(bLinkMarkers1[6], 26, 77, 35, 34);
                 else
-                    graphics.DrawImage(bLinkMarkers2[6], 14, 39, 18, 17);
+                    graphics.DrawImage(bLinkMarkers2[6], 26, 77, 35, 34);
                 if ((lm & LinkMarker.LINK_MARKER_TOP) == 0)
-                    graphics.DrawImage(bLinkMarkers1[7], 73, 36, 32, 12);
+                    graphics.DrawImage(bLinkMarkers1[7], 138, 69, 63, 23);
                 else
-                    graphics.DrawImage(bLinkMarkers2[7], 73, 36, 32, 12);
+                    graphics.DrawImage(bLinkMarkers2[7], 138, 69, 63, 23);
                 if ((lm & LinkMarker.LINK_MARKER_TOP_RIGHT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[8], 146, 39, 18, 17);
+                    graphics.DrawImage(bLinkMarkers1[8], 278, 77, 34, 34);
                 else
-                    graphics.DrawImage(bLinkMarkers2[8], 146, 39, 18, 17);
+                    graphics.DrawImage(bLinkMarkers2[8], 278, 77, 34, 34);
             }
-            string str3 = text.name.Replace('\x00b7', '・');
-            float width = graphics.MeasureString(str3, nameFont).Width;
+            string nametext = text.name.Replace('\x00b7', '・');
+            graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+            float width = graphics.MeasureString(nametext, nameFont).Width;
             float sx = 1f;
-            if (width > 130f)
+            if (width > 265f)
             {
-                sx *= 130f / width;
+                sx *= 265f / width;
             }
-            if (data.isType(Type.TYPE_LINK))
-            {
-                graphics.TranslateTransform(10f, 13f);
-            }
-            else if (data.isType(Type.TYPE_XYZ))
-            {
-                graphics.TranslateTransform(12f, 13f);
-            }
-            else if (data.isType(Type.TYPE_PENDULUM))
-            {
-                graphics.TranslateTransform(12f, 13f);
-            }
-            else
-            {
-                graphics.TranslateTransform(14f, 17f);
-            }
+            graphics.TranslateTransform(21f, 23f);
             graphics.ScaleTransform(sx, 1f);
-            graphics.DrawString(str3, nameFont, nameBrush, 0f, 0f);
-            graphics.DrawString(str3, nameFont, Brushes.Gold, 1f, 1f);
+            graphics.DrawString(nametext, nameFont, nameBrush, 0f, 0f);
+            graphics.DrawString(nametext, nameFont, Brushes.Gold, 1f, 1f);
             graphics.ResetTransform();
             return bitmap;
         }
