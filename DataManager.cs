@@ -482,8 +482,11 @@ namespace ImgGen
                 graphics.SmoothingMode = SmoothingMode.AntiAlias;
                 if (data.isType(Type.TYPE_PENDULUM))
                 {
-                    //graphics.DrawImage(image, 15, 50, 147, 109);
-                    graphics.DrawImage(image, new Rectangle(23, 88, 290, 217), new Rectangle(0, 0, image.Width, image.Width * 217 / 290), GraphicsUnit.Pixel);
+                    float ar = image.Width / image.Height;
+                    if ((ar >= 1.3) && (ar <= 1.4))
+                        graphics.DrawImage(image, 23, 88, 290, 217);
+                    else
+                        graphics.DrawImage(image, new Rectangle(23, 88, 290, 217), new Rectangle(0, 0, image.Width, image.Width * 217 / 290), GraphicsUnit.Pixel);
                 }
                 else
                 {
