@@ -340,26 +340,26 @@ namespace ImgGen
 
                 if (data.attack >= 0)
                 {
-                    graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, 208, 446);
+                    graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, 210, 447);
                 }
                 else
                 {
-                    graphics.DrawString("?", numFont, textBrush, 208, 446);
+                    graphics.DrawString("?", numFont, textBrush, 210, 447);
                 }
 
                 if (data.isType(Type.TYPE_LINK))
                 {
-                    graphics.DrawString(data.level.ToString(), linkFont, Brushes.Black, 295, 446);
+                    graphics.DrawString(data.level.ToString(), linkFont, Brushes.Black, 296, 446);
                 }
                 else
                 {
                     if (data.defence >= 0)
                     {
-                        graphics.DrawString(data.defence.ToString(), numFont, Brushes.Black, 275, 446);
+                        graphics.DrawString(data.defence.ToString(), numFont, Brushes.Black, 277, 447);
                     }
                     else
                     {
-                        graphics.DrawString("?", numFont, textBrush, 275, 446);
+                        graphics.DrawString("?", numFont, textBrush, 277, 447);
                     }
                 }
 
@@ -371,7 +371,7 @@ namespace ImgGen
                     sx1 *= 280f / tWidth;
                 }
                 graphics.ScaleTransform(sx1, 1f);
-                graphics.DrawString(type_string, typeFont, typeBrush, 20, 369);
+                graphics.DrawString(type_string, typeFont, typeBrush, 19, 369);
                 graphics.ResetTransform();
 
                 string monster_effect = text.text;
@@ -386,7 +386,7 @@ namespace ImgGen
                     nWidth += 3;
                     ef = graphics.MeasureString(monster_effect, txtFont, nWidth);
                 }
-                graphics.TranslateTransform(24f, 385f);
+                graphics.TranslateTransform(23f, 385f);
                 graphics.ScaleTransform(288f / nWidth, 288f / nWidth);
                 graphics.DrawString(monster_effect, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
                 graphics.ResetTransform();
@@ -397,19 +397,19 @@ namespace ImgGen
                     int rscale = (data.level >> 0x10) & 0xff;
                     if (lscale > 9)
                     {
-                        graphics.DrawString(lscale.ToString(), scaleFontSmall, Brushes.Black, 20f, 336f);
+                        graphics.DrawString(lscale.ToString(), scaleFontSmall, Brushes.Black, 19f, 336f);
                     }
                     else
                     {
-                        graphics.DrawString(lscale.ToString(), scaleFontNormal, Brushes.Black, 25f, 333f);
+                        graphics.DrawString(lscale.ToString(), scaleFontNormal, Brushes.Black, 24f, 333f);
                     }
                     if (rscale > 9)
                     {
-                        graphics.DrawString(rscale.ToString(), scaleFontSmall, Brushes.Black, 286f, 336f);
+                        graphics.DrawString(rscale.ToString(), scaleFontSmall, Brushes.Black, 287f, 336f);
                     }
                     else
                     {
-                        graphics.DrawString(rscale.ToString(), scaleFontNormal, Brushes.Black, 290f, 333f);
+                        graphics.DrawString(rscale.ToString(), scaleFontNormal, Brushes.Black, 291f, 333f);
                     }
                     int nWidthP;
                     SizeF pf;
@@ -484,13 +484,13 @@ namespace ImgGen
                 {
                     float ar = image.Width / image.Height;
                     if ((ar >= 1.3) && (ar <= 1.4))
-                        graphics.DrawImage(image, 23, 88, 290, 217);
+                        graphics.DrawImage(image, 22, 88, 292, 217);
                     else
-                        graphics.DrawImage(image, new Rectangle(23, 88, 290, 217), new Rectangle(0, 0, image.Width, image.Width * 217 / 290), GraphicsUnit.Pixel);
+                        graphics.DrawImage(image, new Rectangle(22, 88, 292, 217), new Rectangle(0, 0, image.Width, image.Width * 217 / 292), GraphicsUnit.Pixel);
                 }
                 else
                 {
-                    graphics.DrawImage(image, 40, 89, 256, 256);
+                    graphics.DrawImage(image, 40, 90, 256, 256);
                 }
             }
             catch (Exception e)
@@ -501,37 +501,37 @@ namespace ImgGen
             {
                 LinkMarker lm = (LinkMarker)data.defence;
                 if ((lm & LinkMarker.LINK_MARKER_BOTTOM_LEFT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[0], 26, 327, 34, 34);
+                    graphics.DrawImage(bLinkMarkers1[0], 26, 326, 34, 34);
                 else
-                    graphics.DrawImage(bLinkMarkers2[0], 26, 327, 34, 34);
+                    graphics.DrawImage(bLinkMarkers2[0], 26, 326, 34, 34);
                 if ((lm & LinkMarker.LINK_MARKER_BOTTOM) == 0)
                     graphics.DrawImage(bLinkMarkers1[1], 139, 343, 62, 23);
                 else
                     graphics.DrawImage(bLinkMarkers2[1], 139, 343, 62, 23);
                 if ((lm & LinkMarker.LINK_MARKER_BOTTOM_RIGHT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[2], 277, 327, 35, 34);
+                    graphics.DrawImage(bLinkMarkers1[2], 277, 326, 35, 34);
                 else
-                    graphics.DrawImage(bLinkMarkers2[2], 277, 327, 35, 34);
+                    graphics.DrawImage(bLinkMarkers2[2], 277, 326, 35, 34);
                 if ((lm & LinkMarker.LINK_MARKER_LEFT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[3], 20, 189, 23, 62);
+                    graphics.DrawImage(bLinkMarkers1[3], 20, 187, 23, 62);
                 else
-                    graphics.DrawImage(bLinkMarkers2[3], 20, 189, 23, 62);
+                    graphics.DrawImage(bLinkMarkers2[3], 20, 187, 23, 62);
                 if ((lm & LinkMarker.LINK_MARKER_RIGHT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[5], 294, 189, 23, 62);
+                    graphics.DrawImage(bLinkMarkers1[5], 294, 187, 23, 62);
                 else
-                    graphics.DrawImage(bLinkMarkers2[5], 294, 189, 23, 62);
+                    graphics.DrawImage(bLinkMarkers2[5], 294, 187, 23, 62);
                 if ((lm & LinkMarker.LINK_MARKER_TOP_LEFT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[6], 26, 77, 35, 34);
+                    graphics.DrawImage(bLinkMarkers1[6], 26, 75, 35, 34);
                 else
-                    graphics.DrawImage(bLinkMarkers2[6], 26, 77, 35, 34);
+                    graphics.DrawImage(bLinkMarkers2[6], 26, 75, 35, 34);
                 if ((lm & LinkMarker.LINK_MARKER_TOP) == 0)
                     graphics.DrawImage(bLinkMarkers1[7], 138, 69, 63, 23);
                 else
                     graphics.DrawImage(bLinkMarkers2[7], 138, 69, 63, 23);
                 if ((lm & LinkMarker.LINK_MARKER_TOP_RIGHT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[8], 278, 77, 34, 34);
+                    graphics.DrawImage(bLinkMarkers1[8], 278, 75, 34, 34);
                 else
-                    graphics.DrawImage(bLinkMarkers2[8], 278, 77, 34, 34);
+                    graphics.DrawImage(bLinkMarkers2[8], 278, 75, 34, 34);
             }
             string nametext = text.name.Replace('\x00b7', '・');
             graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
