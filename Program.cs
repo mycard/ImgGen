@@ -41,7 +41,7 @@
             encoderParams.Param[0] = parameter;
             string[] files = Directory.GetFiles("./pico", "*.jpg");
             Directory.CreateDirectory("./picn");
-            Directory.CreateDirectory("./pics/thumbnail");
+            Directory.CreateDirectory("./pics");
             foreach (string str in files)
             {
                 int code = int.Parse(Path.GetFileNameWithoutExtension(str));
@@ -50,7 +50,7 @@
                 Bitmap image = DataManager.GetImage(code);
                 image.Save("./picn/" + fileName, encoderInfo, encoderParams);
                 DataManager.Zoom(image, 177, 254).Save("./pics/" + fileName, encoderInfo, encoderParams);
-                DataManager.Zoom(image, 44, 64).Save("./pics/thumbnail/" + fileName, encoderInfo, encoderParams);
+                //DataManager.Zoom(image, 44, 64).Save("./pics/thumbnail/" + fileName, encoderInfo, encoderParams);
                 image.Dispose();
             }
         }
