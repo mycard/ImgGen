@@ -35,7 +35,10 @@ namespace ImgGen
 
         private static string regex_monster = @"[果|介|述|報]】\n([\S\s]*)";
         private static string regex_pendulum = @"】[\s\S]*?\n([\S\s]*?)\n【";
-        private static string xyzString;
+
+        private static string xyzString = "超量";
+        private static string fontName = "文泉驿微米黑";
+        private static List<int> zeroStarCards = new List<int>();
 
         public static Bitmap GetImage(int code)
         {
@@ -129,17 +132,33 @@ namespace ImgGen
             return "";
         }
 
-        public static void InitialDatas(string dbPath = "../cards.cdb", string xyz = "超量")
+        public static void InitialDatas(string dbPath)
         {
-            xyzString = xyz;
+            string _xyzString = System.Configuration.ConfigurationManager.AppSettings["XyzString"];
+            if (_xyzString != null)
+                xyzString = _xyzString;
+
+            string _fontName = System.Configuration.ConfigurationManager.AppSettings["FontName"];
+            if (_fontName != null)
+                fontName = _fontName;
+
+            string _zeroStarCards = System.Configuration.ConfigurationManager.AppSettings["ZeroStarCards"];
+            if (_zeroStarCards != null)
+            {
+                foreach (string i in _zeroStarCards.Split(','))
+                {
+                    zeroStarCards.Add(int.Parse(i));
+                }
+            }
+
             conn = new SQLiteConnection("Data Source=" + dbPath);
-            numFont = new Font("文泉驿微米黑", 12, FontStyle.Regular, GraphicsUnit.Pixel);
-            linkFont = new Font("文泉驿微米黑", 12, FontStyle.Bold, GraphicsUnit.Pixel);
-            nameFont = new Font("文泉驿微米黑", 24, GraphicsUnit.Pixel);
-            typeFont = new Font("文泉驿微米黑", 12, FontStyle.Regular, GraphicsUnit.Pixel);
-            txtFont = new Font("文泉驿微米黑", 10, GraphicsUnit.Pixel);
-            scaleFontNormal = new Font("文泉驿微米黑", 24, GraphicsUnit.Pixel);
-            scaleFontSmall = new Font("文泉驿微米黑", 20, GraphicsUnit.Pixel);
+            numFont = new Font(fontName, 12, FontStyle.Regular, GraphicsUnit.Pixel);
+            linkFont = new Font(fontName, 12, FontStyle.Bold, GraphicsUnit.Pixel);
+            nameFont = new Font(fontName, 24, GraphicsUnit.Pixel);
+            typeFont = new Font(fontName, 12, FontStyle.Regular, GraphicsUnit.Pixel);
+            txtFont = new Font(fontName, 10, GraphicsUnit.Pixel);
+            scaleFontNormal = new Font(fontName, 24, GraphicsUnit.Pixel);
+            scaleFontSmall = new Font(fontName, 20, GraphicsUnit.Pixel);
             bTemplates[0] = new Bitmap("./textures/card_spell.png");
             bTemplates[1] = new Bitmap("./textures/card_trap.png");
             bTemplates[2] = new Bitmap("./textures/card_synchro.png");
@@ -312,19 +331,22 @@ namespace ImgGen
             text.text = GetStandardText(text.text);
             if (data.isType(Type.TYPE_MONSTER))
             {
-                int nStar;
-                if (data.isType(Type.TYPE_XYZ))
+                if (!zeroStarCards.Contains(data.code))
                 {
-                    for (nStar = 0; nStar < (data.level & 0xff); nStar++)
+                    int nStar;
+                    if (data.isType(Type.TYPE_XYZ))
                     {
-                        graphics.DrawImage(bStar[1], (int)35 + (22.5f * nStar), 60, 20, 20);
+                        for (nStar = 0; nStar < (data.level & 0xff); nStar++)
+                        {
+                            graphics.DrawImage(bStar[1], (int)35 + (22.5f * nStar), 60, 20, 20);
+                        }
                     }
-                }
-                else if (!data.isType(Type.TYPE_LINK))
-                {
-                    for (nStar = 0; nStar < (data.level & 0xff); nStar++)
+                    else if (!data.isType(Type.TYPE_LINK))
                     {
-                        graphics.DrawImage(bStar[0], (int)282 - (22.5f * nStar), 60, 20, 20);
+                        for (nStar = 0; nStar < (data.level & 0xff); nStar++)
+                        {
+                            graphics.DrawImage(bStar[0], (int)282 - (22.5f * nStar), 60, 20, 20);
+                        }
                     }
                 }
 
