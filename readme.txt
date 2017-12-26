@@ -1,4 +1,4 @@
-YGOPRO卡图生成工具
+YGOPro卡图生成工具
 ------------------------------------------------
 使用：
 放到游戏主目录Gen目录，即执行目录上级有cards.cdb
@@ -13,10 +13,21 @@ YGOPRO卡图生成工具
 灵摆中间图尺寸：292x217
 
 参数：
-两个可选参数，必须按顺序来
 
 自定义数据库
 ImgGen.exe ..\expansions\pre-release.cdb
 
-自定义“超量”翻译
-ImgGen.exe ..\expansions\pre-release.cdb 超维
+配置：
+
+XyzString
+自定义Xyz的翻译，默认为超量
+FontName
+自定义字体，默认为文泉驿微米黑
+ZeroStarCards
+红龙等没有星星的怪兽卡，用逗号分开
+GenerateLarge
+生成大图，默认为True
+GenerateSmall
+生成小图，默认为False
+GenerateThumb
+生成缩略图，默认为False
