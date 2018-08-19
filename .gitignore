@@ -2,3 +2,6 @@
 bin/
 obj/
 ImgGen.csproj.user
+
+/pico
+/picn
