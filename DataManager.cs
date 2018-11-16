@@ -35,9 +35,12 @@ namespace ImgGen
 
         private static string regex_monster = @"[果|介|述|報]】\n([\S\s]*)";
         private static string regex_pendulum = @"】[\s\S]*?\n([\S\s]*?)\n【";
+        private static string non_start_chars = @"。；：，、”」）·";
+        private static string non_end_chars = @"“「（●";
 
         private static string xyzString = "超量";
         private static string fontName = "文泉驿微米黑";
+        private static string spfontName = "宋体";
         private static List<int> zeroStarCards = new List<int>();
 
         public static Bitmap GetImage(int code)
@@ -115,7 +118,8 @@ namespace ImgGen
             }
             string desc = new string(chArray);
             desc = desc.Replace(Environment.NewLine, "\n");
-            desc = Regex.Replace(desc, @"(?<=。)([\n\s]+)(?=[①②③④⑤⑥⑦⑧⑨⑩●])", "");
+            desc = Regex.Replace(desc, @"(?<=。)([\n\s]+)(?=[①②③④⑤⑥⑦⑧⑨⑩])", "");
+            desc = Regex.Replace(desc, @"([\n\s]+)(?=●)", "");
             return desc;
         }
 
@@ -262,8 +266,6 @@ namespace ImgGen
         private static Bitmap DrawImage(int code, Data data, Text text)
         {
             Bitmap bitmap;
-            SizeF ef;
-            int nWidth;
             if (data.isType(Type.TYPE_SPELL))
             {
                 bitmap = new Bitmap(bTemplates[0]);
@@ -401,17 +403,7 @@ namespace ImgGen
                 {
                     monster_effect = GetPendulumDesc(text.text, regex_monster);
                 }
-                nWidth = 288;
-                ef = graphics.MeasureString(monster_effect, txtFont, nWidth);
-                while (ef.Height > 60 * nWidth / 288f)
-                {
-                    nWidth += 3;
-                    ef = graphics.MeasureString(monster_effect, txtFont, nWidth);
-                }
-                graphics.TranslateTransform(23f, 385f);
-                graphics.ScaleTransform(288f / nWidth, 288f / nWidth);
-                graphics.DrawString(monster_effect, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
-                graphics.ResetTransform();
+                DrawJustifiedText(graphics, monster_effect, 25, 384, 284, 60);
 
                 if (data.isType(Type.TYPE_PENDULUM))
                 {
@@ -433,20 +425,8 @@ namespace ImgGen
                     {
                         graphics.DrawString(rscale.ToString(), scaleFontNormal, Brushes.Black, 291f, 333f);
                     }
-                    int nWidthP;
-                    SizeF pf;
                     string pendulum_effect = GetPendulumDesc(text.text, regex_pendulum);
-                    nWidthP = 232;
-                    pf = graphics.MeasureString(pendulum_effect, txtFont, nWidthP);
-                    while (pf.Height > 52 * nWidthP / 232f)
-                    {
-                        nWidthP += 1;
-                        pf = graphics.MeasureString(pendulum_effect, txtFont, nWidthP);
-                    }
-                    graphics.TranslateTransform(51f, 311f);
-                    graphics.ScaleTransform(232f / nWidthP, 232f / nWidthP);
-                    graphics.DrawString(pendulum_effect, txtFont, textBrush, new RectangleF(0f, 0f, pf.Width, pf.Height));
-                    graphics.ResetTransform();
+                    DrawJustifiedText(graphics, pendulum_effect, 52, 311, 231, 52);
                 }
             }
             else
@@ -482,17 +462,7 @@ namespace ImgGen
                         graphics.DrawImage(bType[nType], 209, 60, 91, 19);
                     }
                 }
-                nWidth = 288;
-                ef = graphics.MeasureString(text.text, txtFont, nWidth);
-                while (ef.Height > 80 * nWidth / 288f)
-                {
-                    nWidth += 3;
-                    ef = graphics.MeasureString(text.text, txtFont, nWidth);
-                }
-                graphics.TranslateTransform(24f, 370f);
-                graphics.ScaleTransform(288f / nWidth, 288f / nWidth);
-                graphics.DrawString(text.text, txtFont, textBrush, new RectangleF(0f, 0f, ef.Width, ef.Height));
-                graphics.ResetTransform();
+                DrawJustifiedText(graphics, text.text, 25, 370, 284, 80);
             }
             try
             {
@@ -569,6 +539,97 @@ namespace ImgGen
             graphics.DrawString(nametext, nameFont, Brushes.Gold, 1f, 1f);
             graphics.ResetTransform();
             return bitmap;
+        }
+
+        private static void DrawJustifiedText(Graphics graphics, string text, float x, float y, float w, float h)
+        {
+            StringFormat format = new StringFormat(StringFormat.GenericTypographic);
+            format.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+            format.FormatFlags |= StringFormatFlags.FitBlackBox;
+
+            int size = 10;
+            var font = new Font(fontName, size, GraphicsUnit.Pixel);
+            List<string> lines = new List<string> { };
+            List<float> paddings = new List<float> { };
+            while (true)
+            {
+                int pos = 0;
+                string line = "";
+                float linewidth = 0;
+                while (pos < text.Length)
+                {
+                    string word = text.Substring(pos, 1);
+                    string nextword = pos < text.Length - 1 ? text.Substring(pos + 1, 1) : "咕";
+                    if (word == "\n")
+                    {
+                        lines.Add(line);
+                        paddings.Add(0);
+                        line = "";
+                        linewidth = 0;
+                        pos++;
+                        continue;
+                    }
+                    SizeF doublesize = graphics.MeasureString(word + nextword, font, 99, format);
+                    SizeF singlesize = graphics.MeasureString(word, font, 99, format);
+                    float wordwidth = doublesize.Width - singlesize.Width;
+                    if (linewidth + wordwidth > w || (non_start_chars.Contains(nextword) && linewidth + doublesize.Width > w) || (non_end_chars.Contains(nextword) && linewidth + doublesize.Width < w && linewidth + doublesize.Width + size > w))
+                    {
+                        lines.Add(line);
+                        paddings.Add(w - linewidth);
+                        line = "";
+                        linewidth = 0;
+                    }
+                    line += word;
+                    linewidth = linewidth + wordwidth;
+                    pos++;
+                }
+                if (linewidth > 0)
+                {
+                    lines.Add(line);
+                    paddings.Add(0);
+                }
+                if (lines.Count * (size + 1) <= h)
+                    break;
+                size--;
+                font = new Font(fontName, size, GraphicsUnit.Pixel);
+                lines.Clear();
+                paddings.Clear();
+            }
+            float dx = x;
+            float dy = y;
+            for (int i = 0; i < lines.Count; i++)
+            {
+                string line = lines[i];
+                float exspace = paddings[i] / (line.Length - 1);
+                for (int pos = 0; pos < line.Length; pos++)
+                {
+                    string word = line.Substring(pos, 1);
+                    string nextword = pos < line.Length - 1 ? line.Substring(pos + 1, 1) : "咕";
+                    if (word == "●")
+                    {
+                        Font spFont = new Font(spfontName, size, GraphicsUnit.Pixel);
+                        graphics.DrawString(word, spFont, textBrush, size < 10 ? dx + 2 : dx, dy, format);
+                    }
+                    else if (word == "×")
+                    {
+                        Font spFont = new Font(spfontName, size, GraphicsUnit.Pixel);
+                        graphics.DrawString(word, spFont, textBrush, size < 10 ? dx + 2 : dx + 3, dy, format);
+                    }
+                    else if (word == "量")
+                    {
+                        Font spFont = new Font(spfontName, size, GraphicsUnit.Pixel);
+                        graphics.DrawString(word, spFont, textBrush, dx, dy, format);
+                    }
+                    else
+                        graphics.DrawString(word, font, textBrush, dx, dy, format);
+                    SizeF doublesize = graphics.MeasureString(word + nextword, font, 99, format);
+                    SizeF singlesize = graphics.MeasureString(word, font, 99, format);
+                    float dw = doublesize.Width - singlesize.Width;
+                    dx += dw + exspace;
+                }
+                dx = x;
+                dy += size + 1;
+            }
         }
 
         public static Bitmap Zoom(Bitmap sourceBitmap, int newWidth, int newHeight)
