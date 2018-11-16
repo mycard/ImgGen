@@ -373,7 +373,7 @@ namespace ImgGen
 
                 if (data.isType(Type.TYPE_LINK))
                 {
-                    graphics.DrawString(data.level.ToString(), linkFont, Brushes.Black, 296, 446);
+                    graphics.DrawString(data.level.ToString(), linkFont, Brushes.Black, 296, 447);
                 }
                 else
                 {
