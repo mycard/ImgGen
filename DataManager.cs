@@ -352,15 +352,16 @@ namespace ImgGen
                     }
                 }
 
-                int nAttr;
+                int nAttr = -1;
                 if (data.attribute == Attribute.ATTRIBUTE_EARTH) nAttr = 0;
                 else if (data.attribute == Attribute.ATTRIBUTE_WATER) nAttr = 1;
                 else if (data.attribute == Attribute.ATTRIBUTE_FIRE) nAttr = 2;
                 else if (data.attribute == Attribute.ATTRIBUTE_WIND) nAttr = 3;
                 else if (data.attribute == Attribute.ATTRIBUTE_LIGHT) nAttr = 4;
                 else if (data.attribute == Attribute.ATTRIBUTE_DARK) nAttr = 5;
-                else nAttr = 6;
-                graphics.DrawImage(bAttributes[nAttr], 280, 22, 32, 32);
+                else if (data.attribute == Attribute.ATTRIBUTE_DEVINE) nAttr = 6;
+                if (nAttr >= 0)
+                    graphics.DrawImage(bAttributes[nAttr], 280, 22, 32, 32);
 
                 if (data.attack >= 0)
                 {
