@@ -1,6 +1,7 @@
 ﻿namespace ImgGen
 {
     using System;
+    using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
     using System.IO;
@@ -35,7 +36,9 @@
             EncoderParameters encoderParams = new EncoderParameters(1);
             EncoderParameter parameter = new EncoderParameter(quality, 90L);
             encoderParams.Param[0] = parameter;
-            string[] files = Directory.GetFiles("./pico", "*.jpg");
+            List<string> files = new List<string>();
+            files.AddRange(Directory.GetFiles("./pico", "*.png"));
+            files.AddRange(Directory.GetFiles("./pico", "*.jpg"));
             bool generateLarge = System.Configuration.ConfigurationManager.AppSettings["GenerateLarge"] == "False" ? false : true; // true if AppSettings null
             bool generateSmall = System.Configuration.ConfigurationManager.AppSettings["GenerateSmall"] == "True" ? true : false;
             bool generateThumb = System.Configuration.ConfigurationManager.AppSettings["GenerateThumb"] == "True" ? true : false;
@@ -48,7 +51,7 @@
             foreach (string str in files)
             {
                 int code = int.Parse(Path.GetFileNameWithoutExtension(str));
-                string fileName = Path.GetFileName(str);
+                string fileName = code.ToString() + ".jpg";
                 Console.WriteLine("Generating {0}", fileName);
                 Bitmap image = DataManager.GetImage(code);
                 if (generateLarge)
