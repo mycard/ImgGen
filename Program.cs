@@ -33,7 +33,7 @@
             Encoder quality = Encoder.Quality;
             ImageCodecInfo encoderInfo = GetEncoderInfo("image/jpeg");
             EncoderParameters encoderParams = new EncoderParameters(1);
-            EncoderParameter parameter = new EncoderParameter(quality, 95L);
+            EncoderParameter parameter = new EncoderParameter(quality, 90L);
             encoderParams.Param[0] = parameter;
             string[] files = Directory.GetFiles("./pico", "*.jpg");
             bool generateLarge = System.Configuration.ConfigurationManager.AppSettings["GenerateLarge"] == "False" ? false : true; // true if AppSettings null

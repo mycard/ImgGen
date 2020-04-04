@@ -6,6 +6,7 @@ namespace ImgGen
     using System.Drawing;
     using System.Text.RegularExpressions;
     using System.Drawing.Drawing2D;
+    using System.Drawing.Text;
 
     public class DataManager
     {
@@ -13,8 +14,8 @@ namespace ImgGen
         private static Bitmap[] bStar = new Bitmap[2];
         private static Bitmap[] bTemplates = new Bitmap[15];
         private static Bitmap[] bType = new Bitmap[9];
-        private static Bitmap[] bLinkMarkers1 = new Bitmap[9];
-        private static Bitmap[] bLinkMarkers2 = new Bitmap[9];
+        private static Bitmap[] bLinkNums = new Bitmap[8];
+        private static Bitmap[] bLinkMarkers = new Bitmap[9];
 
         private static Dictionary<int, Data> cardDatas = new Dictionary<int, Data>();
         private static Dictionary<int, Bitmap> cardImages = new Dictionary<int, Bitmap>();
@@ -24,23 +25,27 @@ namespace ImgGen
 
         private static Font nameFont;
         private static Font numFont;
-        private static Font linkFont;
+        private static Font numUnknownFont;
         private static Font txtFont;
         private static Font typeFont;
         private static Font scaleFontNormal;
         private static Font scaleFontSmall;
-        private static SolidBrush nameBrush = new SolidBrush(Color.FromArgb(64, 64, 0));
-        private static SolidBrush typeBrush = new SolidBrush(Color.FromArgb(32, 32, 32));
-        private static SolidBrush textBrush = new SolidBrush(Color.FromArgb(64, 64, 64));
+        private static SolidBrush nameShadowBrush = new SolidBrush(Color.FromArgb(64, 64, 0));
+        private static SolidBrush pendBgBrush = new SolidBrush(Color.FromArgb(0, 125, 105));
+        private static SolidBrush textBrush = new SolidBrush(Color.FromArgb(0, 0, 0));
+
+        private static StringFormat justifyFormat;
+        private static StringFormat rightAlignFormat;
 
         private static string regex_monster = @"[果|介|述|報]】\n([\S\s]*)";
         private static string regex_pendulum = @"】[\s\S]*?\n([\S\s]*?)\n【";
-        private static string non_start_chars = @"。；：，、”」）·";
+        private static string non_start_chars = @"。；：，、”」）·× ";
         private static string non_end_chars = @"“「（●";
 
         private static string xyzString = "超量";
         private static string fontName = "文泉驿微米黑";
-        private static string spfontName = "宋体";
+        private static string numfontName = "MatrixBoldSmallCaps";
+        private static string spfontName = "黑体";
         private static List<int> zeroStarCards = new List<int>();
 
         public static Bitmap GetImage(int code)
@@ -156,13 +161,20 @@ namespace ImgGen
             }
 
             conn = new SQLiteConnection("Data Source=" + dbPath);
-            numFont = new Font(fontName, 12, FontStyle.Regular, GraphicsUnit.Pixel);
-            linkFont = new Font(fontName, 12, FontStyle.Bold, GraphicsUnit.Pixel);
-            nameFont = new Font(fontName, 24, GraphicsUnit.Pixel);
-            typeFont = new Font(fontName, 12, FontStyle.Regular, GraphicsUnit.Pixel);
-            txtFont = new Font(fontName, 10, GraphicsUnit.Pixel);
-            scaleFontNormal = new Font(fontName, 24, GraphicsUnit.Pixel);
-            scaleFontSmall = new Font(fontName, 20, GraphicsUnit.Pixel);
+            numFont = new Font(numfontName, 17, FontStyle.Bold, GraphicsUnit.Pixel);
+            numUnknownFont = new Font(numfontName, 22, FontStyle.Bold, GraphicsUnit.Pixel);
+            nameFont = new Font(fontName, 28, GraphicsUnit.Pixel);
+            typeFont = new Font(fontName, 12, FontStyle.Bold, GraphicsUnit.Pixel);
+            txtFont = new Font(fontName, 10, FontStyle.Bold, GraphicsUnit.Pixel);
+            scaleFontNormal = new Font(numfontName, 30, GraphicsUnit.Pixel);
+            scaleFontSmall = new Font(numfontName, 27, GraphicsUnit.Pixel);
+
+            justifyFormat = new StringFormat(StringFormat.GenericTypographic);
+            justifyFormat.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+            justifyFormat.FormatFlags |= StringFormatFlags.FitBlackBox;
+            rightAlignFormat= new StringFormat();
+            rightAlignFormat.Alignment = StringAlignment.Far;
+
             bTemplates[0] = new Bitmap("./textures/card_spell.png");
             bTemplates[1] = new Bitmap("./textures/card_trap.png");
             bTemplates[2] = new Bitmap("./textures/card_synchro.png");
@@ -198,9 +210,10 @@ namespace ImgGen
             bType[8] = new Bitmap("./textures/trap_counter.png");
             for (int i = 1; i <= 9; i++)
             {
+                if (i < 9)
+                    bLinkNums[i - 1] = new Bitmap("./textures/link_" + i + ".png");
                 if (i == 5) continue;
-                bLinkMarkers1[i - 1] = new Bitmap("./textures/link_marker_off_" + i + ".png");
-                bLinkMarkers2[i - 1] = new Bitmap("./textures/link_marker_on_" + i + ".png");
+                bLinkMarkers[i - 1] = new Bitmap("./textures/link_marker_on_" + i + ".png");
             }
         }
 
@@ -265,89 +278,129 @@ namespace ImgGen
 
         private static Bitmap DrawImage(int code, Data data, Text text)
         {
-            Bitmap bitmap;
+            Bitmap bitmap = new Bitmap(400, 580);
+            Graphics graphics = Graphics.FromImage(bitmap);
+            graphics.CompositingMode = CompositingMode.SourceOver;
+            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            graphics.CompositingQuality = CompositingQuality.HighQuality;
+            graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+
+            try
+            {
+                Bitmap image = new Bitmap("./pico/" + code.ToString() + ".jpg");
+                if (data.isType(Type.TYPE_PENDULUM))
+                {
+                    if (image.Width == 347 && image.Height == 444)
+                        graphics.DrawImage(image, 26, 103, 347, 444);
+                    else
+                    {
+                        graphics.FillRectangle(pendBgBrush, new Rectangle(23, 362, 354, 189));
+                        float ar = image.Width / image.Height;
+                        if ((ar >= 1.3) && (ar <= 1.4))
+                            graphics.DrawImage(image, 26, 103, 347, 260);
+                        else
+                            graphics.DrawImage(image, new Rectangle(26, 103, 347, 260), new Rectangle(0, 0, image.Width, image.Width * 260 / 347), GraphicsUnit.Pixel);
+                    }
+                }
+                else
+                {
+                    graphics.DrawImage(image, 48, 106, 304, 304);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error prasing {0} {1}", data.code, e);
+            }
+
+
+            Bitmap template;
             if (data.isType(Type.TYPE_SPELL))
             {
-                bitmap = new Bitmap(bTemplates[0]);
+                template = new Bitmap(bTemplates[0]);
             }
             else if (data.isType(Type.TYPE_TRAP))
             {
-                bitmap = new Bitmap(bTemplates[1]);
+                template = new Bitmap(bTemplates[1]);
             }
             else if (data.isType(Type.TYPE_PENDULUM))
             {
                 if (data.isType(Type.TYPE_SYNCHRO))
                 {
-                    bitmap = new Bitmap(bTemplates[12]);
+                    template = new Bitmap(bTemplates[12]);
                 }
                 else if (data.isType(Type.TYPE_XYZ))
                 {
-                    bitmap = new Bitmap(bTemplates[9]);
+                    template = new Bitmap(bTemplates[9]);
                 }
                 else if (data.isType(Type.TYPE_FUSION))
                 {
-                    bitmap = new Bitmap(bTemplates[13]);
+                    template = new Bitmap(bTemplates[13]);
                 }
                 else if (data.isType(Type.TYPE_EFFECT))
                 {
-                    bitmap = new Bitmap(bTemplates[10]);
+                    template = new Bitmap(bTemplates[10]);
                 }
                 else //pnormal
                 {
-                    bitmap = new Bitmap(bTemplates[11]);
+                    template = new Bitmap(bTemplates[11]);
                 }
             }
             else if (data.isType(Type.TYPE_LINK))
             {
-                bitmap = new Bitmap(bTemplates[14]);
+                template = new Bitmap(bTemplates[14]);
             }
             else if (data.isType(Type.TYPE_SYNCHRO))
             {
-                bitmap = new Bitmap(bTemplates[2]);
+                template = new Bitmap(bTemplates[2]);
             }
             else if (data.isType(Type.TYPE_XYZ))
             {
-                bitmap = new Bitmap(bTemplates[3]);
+                template = new Bitmap(bTemplates[3]);
             }
             else if (data.isType(Type.TYPE_FUSION))
             {
-                bitmap = new Bitmap(bTemplates[4]);
+                template = new Bitmap(bTemplates[4]);
             }
             else if (data.isType(Type.TYPE_RITUAL))
             {
-                bitmap = new Bitmap(bTemplates[5]);
+                template = new Bitmap(bTemplates[5]);
             }
             else if (data.isType(Type.TYPE_TOKEN))
             {
-                bitmap = new Bitmap(bTemplates[6]);
+                template = new Bitmap(bTemplates[6]);
             }
             else if (data.isType(Type.TYPE_EFFECT))
             {
-                bitmap = new Bitmap(bTemplates[7]);
+                template = new Bitmap(bTemplates[7]);
             }
             else //normal
             {
-                bitmap = new Bitmap(bTemplates[8]);
+                template = new Bitmap(bTemplates[8]);
             }
-            Graphics graphics = Graphics.FromImage(bitmap);
+            graphics.DrawImage(template, 0, 0, 400, 580);
+
+
             text.text = GetStandardText(text.text);
             if (data.isType(Type.TYPE_MONSTER))
             {
                 if (!zeroStarCards.Contains(data.code))
                 {
                     int nStar;
+                    int level = data.level & 0xff;
                     if (data.isType(Type.TYPE_XYZ))
                     {
-                        for (nStar = 0; nStar < (data.level & 0xff); nStar++)
+                        for (nStar = 0; nStar < level; nStar++)
                         {
-                            graphics.DrawImage(bStar[1], (int)35 + (22.5f * nStar), 60, 20, 20);
+                            graphics.DrawImage(bStar[1], (int)41 + (26.5f * nStar), 69, 28, 28);
                         }
                     }
                     else if (!data.isType(Type.TYPE_LINK))
                     {
-                        for (nStar = 0; nStar < (data.level & 0xff); nStar++)
+                        for (nStar = 0; nStar < level; nStar++)
                         {
-                            graphics.DrawImage(bStar[0], (int)282 - (22.5f * nStar), 60, 20, 20);
+                            graphics.DrawImage(bStar[0], (int)332 - (26.5f * nStar), 69, 28, 28);
                         }
                     }
                 }
@@ -361,42 +414,42 @@ namespace ImgGen
                 else if (data.attribute == Attribute.ATTRIBUTE_DARK) nAttr = 5;
                 else if (data.attribute == Attribute.ATTRIBUTE_DEVINE) nAttr = 6;
                 if (nAttr >= 0)
-                    graphics.DrawImage(bAttributes[nAttr], 280, 22, 32, 32);
+                    graphics.DrawImage(bAttributes[nAttr], 334, 28, 36, 36);
 
                 if (data.attack >= 0)
                 {
-                    graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, 210, 447);
+                    graphics.DrawString(data.attack.ToString(), numFont, Brushes.Black, new Rectangle(248, 530, 42, 17), rightAlignFormat);
                 }
                 else
                 {
-                    graphics.DrawString("?", numFont, textBrush, 210, 447);
+                    graphics.DrawString("?", numUnknownFont, textBrush, 274, 527);
                 }
 
                 if (data.isType(Type.TYPE_LINK))
                 {
-                    graphics.DrawString(data.level.ToString(), linkFont, Brushes.Black, 296, 447);
+                    graphics.DrawImage(bLinkNums[data.level - 1], 353, 530, 13, 13);
                 }
                 else
                 {
                     if (data.defence >= 0)
                     {
-                        graphics.DrawString(data.defence.ToString(), numFont, Brushes.Black, 277, 447);
+                        graphics.DrawString(data.defence.ToString(), numFont, Brushes.Black, new Rectangle(329, 530, 42, 17), rightAlignFormat);
                     }
                     else
                     {
-                        graphics.DrawString("?", numFont, textBrush, 277, 447);
+                        graphics.DrawString("?", numUnknownFont, textBrush, 355, 527);
                     }
                 }
 
                 string type_string = GetTypeString(data);
                 float tWidth = graphics.MeasureString(type_string, typeFont).Width;
                 float sx1 = 1f;
-                if (tWidth > 280f)
+                if (tWidth > 330f)
                 {
-                    sx1 *= 280f / tWidth;
+                    sx1 *= 330f / tWidth;
                 }
                 graphics.ScaleTransform(sx1, 1f);
-                graphics.DrawString(type_string, typeFont, typeBrush, 19, 369);
+                graphics.DrawString(type_string, typeFont, Brushes.Black, 26, 438);
                 graphics.ResetTransform();
 
                 string monster_effect = text.text;
@@ -404,7 +457,7 @@ namespace ImgGen
                 {
                     monster_effect = GetPendulumDesc(text.text, regex_monster);
                 }
-                DrawJustifiedText(graphics, monster_effect, 25, 384, 284, 60);
+                DrawJustifiedText(graphics, monster_effect, 33, 453, 335, 75);
 
                 if (data.isType(Type.TYPE_PENDULUM))
                 {
@@ -412,144 +465,98 @@ namespace ImgGen
                     int rscale = (data.level >> 0x10) & 0xff;
                     if (lscale > 9)
                     {
-                        graphics.DrawString(lscale.ToString(), scaleFontSmall, Brushes.Black, 19f, 336f);
+                        graphics.DrawString("1", scaleFontSmall, Brushes.Black, 26, 397);
+                        graphics.DrawString((lscale - 10).ToString(), scaleFontSmall, Brushes.Black, 37, 397);
                     }
                     else
                     {
-                        graphics.DrawString(lscale.ToString(), scaleFontNormal, Brushes.Black, 24f, 333f);
+                        graphics.DrawString(lscale.ToString(), scaleFontNormal, Brushes.Black, 31, 396);
                     }
                     if (rscale > 9)
                     {
-                        graphics.DrawString(rscale.ToString(), scaleFontSmall, Brushes.Black, 287f, 336f);
+                        graphics.DrawString("1", scaleFontSmall, Brushes.Black, 341, 397);
+                        graphics.DrawString((rscale - 10).ToString(), scaleFontSmall, Brushes.Black, 352, 397);
                     }
                     else
                     {
-                        graphics.DrawString(rscale.ToString(), scaleFontNormal, Brushes.Black, 291f, 333f);
+                        graphics.DrawString(rscale.ToString(), scaleFontNormal, Brushes.Black, 346, 396);
                     }
                     string pendulum_effect = GetPendulumDesc(text.text, regex_pendulum);
-                    DrawJustifiedText(graphics, pendulum_effect, 52, 311, 231, 52);
+                    DrawJustifiedText(graphics, pendulum_effect, 65, 369, 272, 58);
                 }
             }
             else
             {
                 if (data.isType(Type.TYPE_SPELL))
                 {
-                    if (data.type == Type.TYPE_SPELL)
-                    {
-                        graphics.DrawImage(bType[0], 204, 60, 96, 19);
-                    }
-                    else
-                    {
-                        int nType = 0;
-                        if (data.isType(Type.TYPE_QUICKPLAY)) nType = 1;
-                        if (data.isType(Type.TYPE_CONTINUOUS)) nType = 2;
-                        if (data.isType(Type.TYPE_EQUIP)) nType = 3;
-                        if (data.isType(Type.TYPE_FIELD)) nType = 4;
-                        if (data.isType(Type.TYPE_RITUAL)) nType = 5;
-                        graphics.DrawImage(bType[nType], 192, 60, 108, 19);
-                    }
+                    int nType = 0;
+                    if (data.isType(Type.TYPE_QUICKPLAY)) nType = 1;
+                    if (data.isType(Type.TYPE_CONTINUOUS)) nType = 2;
+                    if (data.isType(Type.TYPE_EQUIP)) nType = 3;
+                    if (data.isType(Type.TYPE_FIELD)) nType = 4;
+                    if (data.isType(Type.TYPE_RITUAL)) nType = 5;
+                    graphics.DrawImage(bType[nType], 221, 69, 137, 26);
                 }
                 else if (data.isType(Type.TYPE_TRAP))
                 {
-                    if (data.type == Type.TYPE_TRAP)
-                    {
-                        graphics.DrawImage(bType[6], 221, 60, 80, 19);
-                    }
-                    else
-                    {
-                        int nType = 6;
-                        if (data.isType(Type.TYPE_CONTINUOUS)) nType = 7;
-                        if (data.isType(Type.TYPE_COUNTER)) nType = 8;
-                        graphics.DrawImage(bType[nType], 209, 60, 91, 19);
-                    }
+                    int nType = 6;
+                    if (data.isType(Type.TYPE_CONTINUOUS)) nType = 7;
+                    if (data.isType(Type.TYPE_COUNTER)) nType = 8;
+                    graphics.DrawImage(bType[nType], 243, 68, 115, 27);
                 }
-                DrawJustifiedText(graphics, text.text, 25, 370, 284, 80);
-            }
-            try
-            {
-                Bitmap image = new Bitmap("./pico/" + code.ToString() + ".jpg");
-                graphics.CompositingMode = CompositingMode.SourceOver;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                if (data.isType(Type.TYPE_PENDULUM))
-                {
-                    float ar = image.Width / image.Height;
-                    if ((ar >= 1.3) && (ar <= 1.4))
-                        graphics.DrawImage(image, 22, 88, 292, 217);
-                    else
-                        graphics.DrawImage(image, new Rectangle(22, 88, 292, 217), new Rectangle(0, 0, image.Width, image.Width * 217 / 292), GraphicsUnit.Pixel);
-                }
-                else
-                {
-                    graphics.DrawImage(image, 40, 90, 256, 256);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error prasing {0} {1}", data.code, e);
+                DrawJustifiedText(graphics, text.text, 33, 439, 335, 108);
             }
             if (data.isType(Type.TYPE_LINK))
             {
                 LinkMarker lm = (LinkMarker)data.defence;
-                if ((lm & LinkMarker.LINK_MARKER_BOTTOM_LEFT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[0], 26, 326, 34, 34);
-                else
-                    graphics.DrawImage(bLinkMarkers2[0], 26, 326, 34, 34);
-                if ((lm & LinkMarker.LINK_MARKER_BOTTOM) == 0)
-                    graphics.DrawImage(bLinkMarkers1[1], 139, 343, 62, 23);
-                else
-                    graphics.DrawImage(bLinkMarkers2[1], 139, 343, 62, 23);
-                if ((lm & LinkMarker.LINK_MARKER_BOTTOM_RIGHT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[2], 277, 326, 35, 34);
-                else
-                    graphics.DrawImage(bLinkMarkers2[2], 277, 326, 35, 34);
-                if ((lm & LinkMarker.LINK_MARKER_LEFT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[3], 20, 187, 23, 62);
-                else
-                    graphics.DrawImage(bLinkMarkers2[3], 20, 187, 23, 62);
-                if ((lm & LinkMarker.LINK_MARKER_RIGHT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[5], 294, 187, 23, 62);
-                else
-                    graphics.DrawImage(bLinkMarkers2[5], 294, 187, 23, 62);
-                if ((lm & LinkMarker.LINK_MARKER_TOP_LEFT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[6], 26, 75, 35, 34);
-                else
-                    graphics.DrawImage(bLinkMarkers2[6], 26, 75, 35, 34);
-                if ((lm & LinkMarker.LINK_MARKER_TOP) == 0)
-                    graphics.DrawImage(bLinkMarkers1[7], 138, 69, 63, 23);
-                else
-                    graphics.DrawImage(bLinkMarkers2[7], 138, 69, 63, 23);
-                if ((lm & LinkMarker.LINK_MARKER_TOP_RIGHT) == 0)
-                    graphics.DrawImage(bLinkMarkers1[8], 278, 75, 34, 34);
-                else
-                    graphics.DrawImage(bLinkMarkers2[8], 278, 75, 34, 34);
+                if ((lm & LinkMarker.LINK_MARKER_BOTTOM_LEFT) > 0)
+                    graphics.DrawImage(bLinkMarkers[0], 34, 387, 38, 37);
+                if ((lm & LinkMarker.LINK_MARKER_BOTTOM) > 0)
+                    graphics.DrawImage(bLinkMarkers[1], 163, 406, 73, 25);
+                if ((lm & LinkMarker.LINK_MARKER_BOTTOM_RIGHT) > 0)
+                    graphics.DrawImage(bLinkMarkers[2], 329, 387, 37, 37);
+                if ((lm & LinkMarker.LINK_MARKER_LEFT) > 0)
+                    graphics.DrawImage(bLinkMarkers[3], 27, 222, 24, 72);
+                if ((lm & LinkMarker.LINK_MARKER_RIGHT) > 0)
+                    graphics.DrawImage(bLinkMarkers[5], 349, 221, 24, 72);
+                if ((lm & LinkMarker.LINK_MARKER_TOP_LEFT) > 0)
+                    graphics.DrawImage(bLinkMarkers[6], 34, 91, 37, 37);
+                if ((lm & LinkMarker.LINK_MARKER_TOP) > 0)
+                    graphics.DrawImage(bLinkMarkers[7], 163, 85, 74, 23);
+                if ((lm & LinkMarker.LINK_MARKER_TOP_RIGHT) > 0)
+                    graphics.DrawImage(bLinkMarkers[8], 329, 91, 37, 37);
             }
+
+
             string nametext = text.name.Replace('\x00b7', '・');
-            graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             float width = graphics.MeasureString(nametext, nameFont).Width;
             float sx = 1f;
-            if (width > 265f)
+            if (width > 310f)
             {
-                sx *= 265f / width;
+                sx *= 310f / width;
             }
-            graphics.TranslateTransform(21f, 23f);
+            graphics.TranslateTransform(26, 28);
             graphics.ScaleTransform(sx, 1f);
-            graphics.DrawString(nametext, nameFont, nameBrush, 0f, 0f);
+            graphics.DrawString(nametext, nameFont, nameShadowBrush, 0f, 0f);
             graphics.DrawString(nametext, nameFont, Brushes.Gold, 1f, 1f);
             graphics.ResetTransform();
             return bitmap;
         }
 
+        private static string GetNextWord(string text, int pos)
+        {
+            return pos < text.Length - 1 ? text.Substring(pos + 1, 1) : "咕";
+        }
+
+        private static float GetLineSpacing(float size)
+        {
+            return size / 5f;
+        }
+
         private static void DrawJustifiedText(Graphics graphics, string text, float x, float y, float w, float h)
         {
-            StringFormat format = new StringFormat(StringFormat.GenericTypographic);
-            format.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
-            format.FormatFlags |= StringFormatFlags.FitBlackBox;
-
-            int size = 10;
-            var font = new Font(fontName, size, GraphicsUnit.Pixel);
+            float size = txtFont.Size;
+            var font = new Font(txtFont.Name, size, txtFont.Style, txtFont.Unit);
             List<string> lines = new List<string> { };
             List<float> paddings = new List<float> { };
             while (true)
@@ -560,7 +567,7 @@ namespace ImgGen
                 while (pos < text.Length)
                 {
                     string word = text.Substring(pos, 1);
-                    string nextword = pos < text.Length - 1 ? text.Substring(pos + 1, 1) : "咕";
+                    string nextword = GetNextWord(text, pos);
                     if (word == "\n")
                     {
                         lines.Add(line);
@@ -570,8 +577,8 @@ namespace ImgGen
                         pos++;
                         continue;
                     }
-                    SizeF doublesize = graphics.MeasureString(word + nextword, font, 99, format);
-                    SizeF singlesize = graphics.MeasureString(word, font, 99, format);
+                    SizeF doublesize = graphics.MeasureString(word + nextword, font, 99, justifyFormat);
+                    SizeF singlesize = graphics.MeasureString(word, font, 99, justifyFormat);
                     float wordwidth = doublesize.Width - singlesize.Width;
                     if (linewidth + wordwidth > w || (non_start_chars.Contains(nextword) && linewidth + doublesize.Width > w) || (non_end_chars.Contains(nextword) && linewidth + doublesize.Width < w && linewidth + doublesize.Width + size > w))
                     {
@@ -589,10 +596,10 @@ namespace ImgGen
                     lines.Add(line);
                     paddings.Add(0);
                 }
-                if (lines.Count * (size + 1) <= h)
+                if (lines.Count * (size + GetLineSpacing(size)) <= h - GetLineSpacing(size))
                     break;
-                size--;
-                font = new Font(fontName, size, GraphicsUnit.Pixel);
+                size -= 0.5f;
+                font = new Font(txtFont.Name, size, txtFont.Style, txtFont.Unit);
                 lines.Clear();
                 paddings.Clear();
             }
@@ -605,31 +612,31 @@ namespace ImgGen
                 for (int pos = 0; pos < line.Length; pos++)
                 {
                     string word = line.Substring(pos, 1);
-                    string nextword = pos < line.Length - 1 ? line.Substring(pos + 1, 1) : "咕";
+                    string nextword = GetNextWord(line, pos);
                     if (word == "●")
                     {
-                        Font spFont = new Font(spfontName, size, GraphicsUnit.Pixel);
-                        graphics.DrawString(word, spFont, textBrush, size < 10 ? dx + 2 : dx, dy, format);
+                        Font spFont = new Font(spfontName, size * 0.9f, txtFont.Style, txtFont.Unit);
+                        graphics.DrawString(word, spFont, textBrush, dx + (size / 10f), dy + (size / 10f), justifyFormat);
                     }
                     else if (word == "×")
                     {
-                        Font spFont = new Font(spfontName, size, GraphicsUnit.Pixel);
-                        graphics.DrawString(word, spFont, textBrush, size < 10 ? dx + 2 : dx + 3, dy, format);
+                        Font spFont = new Font(spfontName, size, txtFont.Style, txtFont.Unit);
+                        graphics.DrawString(word, spFont, textBrush, dx + (size / 3f), dy + (size / 20f), justifyFormat);
                     }
                     else if (word == "量")
                     {
-                        Font spFont = new Font(spfontName, size, GraphicsUnit.Pixel);
-                        graphics.DrawString(word, spFont, textBrush, dx, dy, format);
+                        Font spFont = new Font(spfontName, size, txtFont.Style, txtFont.Unit);
+                        graphics.DrawString(word, spFont, textBrush, dx, dy + (size / 20f), justifyFormat);
                     }
                     else
-                        graphics.DrawString(word, font, textBrush, dx, dy, format);
-                    SizeF doublesize = graphics.MeasureString(word + nextword, font, 99, format);
-                    SizeF singlesize = graphics.MeasureString(word, font, 99, format);
+                        graphics.DrawString(word, font, textBrush, dx, dy, justifyFormat);
+                    SizeF doublesize = graphics.MeasureString(word + nextword, font, 99, justifyFormat);
+                    SizeF singlesize = graphics.MeasureString(word, font, 99, justifyFormat);
                     float dw = doublesize.Width - singlesize.Width;
                     dx += dw + exspace;
                 }
                 dx = x;
-                dy += size + 1;
+                dy += size + GetLineSpacing(size);
             }
         }
 
