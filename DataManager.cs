@@ -254,21 +254,27 @@ namespace ImgGen
             }
             if (data.isType(Type.TYPE_PENDULUM))
             {
-                if (image.Width == 347 && image.Height == 444)
+                if (image.Width == 347 && image.Height == 444) // LOTDLE游戏图
                     graphics.DrawImage(image, 27, 103, 347, 444);
                 else
                 {
                     graphics.FillRectangle(pendBgBrush, new Rectangle(23, 362, 354, 189));
-                    float ar = image.Width / image.Height;
-                    if ((ar >= 1.3) && (ar <= 1.4))
-                        graphics.DrawImage(image, 27, 103, 347, 259);
+                    Rectangle dest = new Rectangle(27, 103, 347, 259);
+                    if (image.Width == 407 && image.Height == 593) // 官网图
+                        graphics.DrawImage(image, dest, new Rectangle(27, 106, 353, 263), GraphicsUnit.Pixel);
                     else
-                        graphics.DrawImage(image, new Rectangle(27, 103, 347, 259), new Rectangle(0, 0, image.Width, image.Width * 259 / 347), GraphicsUnit.Pixel);
+                        graphics.DrawImage(image, dest);
                 }
             }
             else
             {
-                graphics.DrawImage(image, 48, 106, 304, 304);
+                Rectangle dest = new Rectangle(48, 106, 304, 304);
+                if (image.Width == 407 && image.Height == 593) // 官网图
+                    graphics.DrawImage(image, dest, new Rectangle(49, 109, 308, 308), GraphicsUnit.Pixel);
+                else if (image.Width == 1030 && image.Height == 740) // 官推图
+                    graphics.DrawImage(image, dest, new Rectangle(100, 164, 339, 339), GraphicsUnit.Pixel);
+                else
+                    graphics.DrawImage(image, dest);
             }
         }
 

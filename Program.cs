@@ -50,7 +50,15 @@
                 Directory.CreateDirectory("./pics/thumbnail");
             foreach (string str in files)
             {
-                int code = int.Parse(Path.GetFileNameWithoutExtension(str));
+                int code;
+                try
+                {
+                    code = int.Parse(Path.GetFileNameWithoutExtension(str));
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
                 string fileName = code.ToString() + ".jpg";
                 Console.WriteLine("Generating {0}", fileName);
                 Bitmap image = DataManager.GetImage(code);
