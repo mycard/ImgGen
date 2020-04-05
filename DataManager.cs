@@ -255,15 +255,15 @@ namespace ImgGen
             if (data.isType(Type.TYPE_PENDULUM))
             {
                 if (image.Width == 347 && image.Height == 444)
-                    graphics.DrawImage(image, 26, 103, 347, 444);
+                    graphics.DrawImage(image, 27, 103, 347, 444);
                 else
                 {
                     graphics.FillRectangle(pendBgBrush, new Rectangle(23, 362, 354, 189));
                     float ar = image.Width / image.Height;
                     if ((ar >= 1.3) && (ar <= 1.4))
-                        graphics.DrawImage(image, 26, 103, 347, 260);
+                        graphics.DrawImage(image, 27, 103, 347, 259);
                     else
-                        graphics.DrawImage(image, new Rectangle(26, 103, 347, 260), new Rectangle(0, 0, image.Width, image.Width * 260 / 347), GraphicsUnit.Pixel);
+                        graphics.DrawImage(image, new Rectangle(27, 103, 347, 259), new Rectangle(0, 0, image.Width, image.Width * 259 / 347), GraphicsUnit.Pixel);
                 }
             }
             else
