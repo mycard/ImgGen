@@ -38,11 +38,6 @@ namespace ImgGen
         private static StringFormat justifyFormat;
         private static StringFormat rightAlignFormat;
 
-        private static string regex_monster = @"[果|介|述|報]】\n([\S\s]*)";
-        private static string regex_pendulum = @"】[\s\S]*?\n([\S\s]*?)\n【";
-        private static string non_start_chars = @"。；：，、”」）·× ";
-        private static string non_end_chars = @"“「（●";
-
         private static string xyzString = "超量";
         private static string fontName = "文泉驿微米黑";
         private static string numfontName = "MatrixBoldSmallCaps";
@@ -225,16 +220,6 @@ namespace ImgGen
         private static string FormatCardName(string r)
         {
             return r.Replace('\x00b7', '・'); // another middle dot
-        }
-
-        private static string GetMonsterDesc(string desc, string regex)
-        {
-            // 拆分灵摆卡的灵摆效果和怪兽效果
-            Regex r = new Regex(regex, RegexOptions.Multiline);
-            Match match = r.Match(desc);
-            if (match.Success)
-                return (match.Groups.Count > 1) ? match.Groups[1].Value : match.Groups[0].Value;
-            return "";
         }
 
         private static void DrawPicture(Graphics graphics, Data data)
@@ -501,9 +486,26 @@ namespace ImgGen
             DrawJustifiedText(graphics, text, 33, 453, 335, 75);
         }
 
-        private static void DrawPendulumEffect(Graphics graphics, string text)
+        private static void DrawPendulumEffect(Graphics graphics, string desc)
         {
-            DrawJustifiedText(graphics, text, 65, 369, 272, 58);
+            const string regex_pendulum = @"】[\s\S]*?\n([\S\s]*?)\n【";
+            const string regex_monster = @"[果|介|述|報]】\n([\S\s]*)";
+
+            string pText = "";
+            string mText = "";
+
+            Regex regex = new Regex(regex_pendulum, RegexOptions.Multiline);
+            Match match = regex.Match(desc);
+            if (match.Success)
+                pText = match.Groups[match.Groups.Count - 1].Value;
+
+            regex = new Regex(regex_monster, RegexOptions.Multiline);
+            match = regex.Match(desc);
+            if (match.Success)
+                mText = match.Groups[match.Groups.Count - 1].Value;
+
+            DrawJustifiedText(graphics, pText, 65, 369, 272, 58);
+            DrawMonsterEffect(graphics, mText);
         }
 
         private static void DrawSpellTrapEffect(Graphics graphics, string text)
@@ -597,8 +599,7 @@ namespace ImgGen
                 if (data.isType(Type.TYPE_PENDULUM))
                 {
                     DrawScales(graphics, data);
-                    DrawPendulumEffect(graphics, GetMonsterDesc(desc, regex_pendulum));
-                    DrawMonsterEffect(graphics, GetMonsterDesc(desc, regex_monster));
+                    DrawPendulumEffect(graphics, desc);
                 }
                 else
                 {
@@ -631,6 +632,9 @@ namespace ImgGen
 
         private static void DrawJustifiedText(Graphics graphics, string text, float areaX, float areaY, float areaWidth, float areaHeight)
         {
+            const string non_start_chars = @"。；：，、”」）·× ";
+            const string non_end_chars = @"“「（●";
+
             float size = txtFont.Size;
             var font = new Font(txtFont.Name, size, txtFont.Style, txtFont.Unit);
             List<string> lines = new List<string> { };
