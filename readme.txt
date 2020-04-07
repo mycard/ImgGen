@@ -5,12 +5,14 @@ YGOPro卡图生成工具
 
 必备字体：
 文泉驿微米黑
+方正隶变_GBK
+MatrixBoldSmallCaps
 
 生成卡图：
 在执行目录创建pico目录，放入对应密码的中间图规格的jpg图片，运行ImgGen.exe，即可在picn目录内生成卡图。
 
 普通中间图尺寸：304x304
-灵摆中间图尺寸：347x260
+灵摆中间图尺寸：347x259
 
 参数：
 
@@ -19,10 +21,10 @@ ImgGen.exe ..\expansions\pre-release.cdb
 
 配置：
 
+Style
+支持隶书和黑体，默认为黑体
 XyzString
 自定义Xyz的翻译，默认为超量
-FontName
-自定义字体，默认为文泉驿微米黑
 ZeroStarCards
 红龙等没有星星的怪兽卡，用逗号分开
 GenerateLarge
