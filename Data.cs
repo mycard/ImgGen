@@ -111,7 +111,7 @@
 
         public bool isType(Type typ)
         {
-            return (type & typ) == typ;
+            return (type & typ) > 0;
         }
     }
 }

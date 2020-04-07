@@ -24,13 +24,16 @@ namespace ImgGen
         private static SQLiteConnection conn;
         private static object locker = new object();
 
-        private static Font nameFont;
+        private static Font nameBlackFont;
+        private static Font nameWhiteFont;
         private static Font numFont;
         private static Font numUnknownFont;
         private static Font txtFont;
         private static Font typeFont;
         private static Font scaleFontNormal;
         private static Font scaleFontSmall;
+        private static SolidBrush nameBlackBrush;
+        private static SolidBrush nameWhiteBrush;
         private static SolidBrush nameShadowBrush;
         private static SolidBrush pendBgBrush;
         private static SolidBrush textBrush;
@@ -40,20 +43,19 @@ namespace ImgGen
 
         private static string xyzString = "超量";
         private static string fontName = "文泉驿微米黑";
+        private static string fontLiShuName = "方正隶变_GBK";
         private static string numfontName = "MatrixBoldSmallCaps";
         private static string spfontName = "黑体";
 
         private static List<int> zeroStarCards = new List<int>();
+
+        private static bool LiShu = false;
 
         public static void InitialDatas(string dbPath)
         {
             string _xyzString = System.Configuration.ConfigurationManager.AppSettings["XyzString"];
             if (_xyzString != null)
                 xyzString = _xyzString;
-
-            string _fontName = System.Configuration.ConfigurationManager.AppSettings["FontName"];
-            if (_fontName != null)
-                fontName = _fontName;
 
             string _zeroStarCards = System.Configuration.ConfigurationManager.AppSettings["ZeroStarCards"];
             if (_zeroStarCards != null)
@@ -64,18 +66,37 @@ namespace ImgGen
                 }
             }
 
+            string _style = System.Configuration.ConfigurationManager.AppSettings["Style"];
+            if (_style == "隶书")
+            {
+                LiShu = true;
+                fontName = fontLiShuName;
+            }
+
             conn = new SQLiteConnection("Data Source=" + dbPath);
             numFont = new Font(numfontName, 17, FontStyle.Bold, GraphicsUnit.Pixel);
             numUnknownFont = new Font(numfontName, 22, FontStyle.Bold, GraphicsUnit.Pixel);
-            nameFont = new Font(fontName, 28, GraphicsUnit.Pixel);
+            nameBlackFont = new Font(fontName, LiShu ? 30 : 28, LiShu ? FontStyle.Bold : FontStyle.Regular, GraphicsUnit.Pixel);
+            nameWhiteFont = new Font(fontName, LiShu ? 30 : 28, FontStyle.Regular, GraphicsUnit.Pixel);
             typeFont = new Font(fontName, 12, FontStyle.Bold, GraphicsUnit.Pixel);
             txtFont = new Font(fontName, 10, FontStyle.Bold, GraphicsUnit.Pixel);
             scaleFontNormal = new Font(numfontName, 30, GraphicsUnit.Pixel);
             scaleFontSmall = new Font(numfontName, 27, GraphicsUnit.Pixel);
 
-            nameShadowBrush = new SolidBrush(Color.FromArgb(64, 64, 0));
             pendBgBrush = new SolidBrush(Color.FromArgb(0, 125, 105));
             textBrush = new SolidBrush(Color.FromArgb(0, 0, 0));
+            if (LiShu)
+            {
+                nameBlackBrush = new SolidBrush(Color.FromArgb(0, 0, 0));
+                nameWhiteBrush = new SolidBrush(Color.FromArgb(255, 255, 255));
+                nameShadowBrush = new SolidBrush(Color.FromArgb(0, 0, 0, 0));
+            }
+            else
+            {
+                nameBlackBrush = new SolidBrush(Color.FromArgb(255, 215, 0));
+                nameWhiteBrush = new SolidBrush(Color.FromArgb(255, 215, 0));
+                nameShadowBrush = new SolidBrush(Color.FromArgb(64, 64, 0));
+            }
 
             justifyFormat = new StringFormat(StringFormat.GenericTypographic);
             justifyFormat.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
@@ -454,6 +475,8 @@ namespace ImgGen
             }
             graphics.ScaleTransform(sx1, 1f);
             graphics.DrawString(str, typeFont, textBrush, 26, 438);
+            if (LiShu)
+                graphics.DrawString(str, typeFont, textBrush, 26, 438);
             graphics.ResetTransform();
         }
 
@@ -484,6 +507,8 @@ namespace ImgGen
         private static void DrawMonsterEffect(Graphics graphics, string text)
         {
             DrawJustifiedText(graphics, text, 33, 453, 335, 75);
+            if (LiShu)
+                DrawJustifiedText(graphics, text, 33, 453, 335, 75);
         }
 
         private static void DrawPendulumEffect(Graphics graphics, string desc)
@@ -503,14 +528,17 @@ namespace ImgGen
             match = regex.Match(desc);
             if (match.Success)
                 mText = match.Groups[match.Groups.Count - 1].Value;
-
             DrawJustifiedText(graphics, pText, 65, 369, 272, 58);
+            if (LiShu)
+                DrawJustifiedText(graphics, pText, 65, 369, 272, 58);
             DrawMonsterEffect(graphics, mText);
         }
 
         private static void DrawSpellTrapEffect(Graphics graphics, string text)
         {
             DrawJustifiedText(graphics, text, 33, 439, 335, 108);
+            if (LiShu)
+                DrawJustifiedText(graphics, text, 33, 439, 335, 108);
         }
 
         private static void DrawSpellTrapType(Graphics graphics, Data data)
@@ -555,18 +583,26 @@ namespace ImgGen
                 graphics.DrawImage(bLinkMarkers[8], 329, 91, 37, 37);
         }
 
-        private static void DrawName(Graphics graphics, string name)
+        private static void DrawName(Graphics graphics, string name, Data data)
         {
-            float width = graphics.MeasureString(name, nameFont).Width;
-            float sx = 1f;
-            if (width > 310f)
+            Font nameFont = nameBlackFont;
+            Brush nameBrush = nameBlackBrush;
+            if (data.isType(Type.TYPE_SPELL | Type.TYPE_TRAP | Type.TYPE_FUSION | Type.TYPE_XYZ | Type.TYPE_LINK))
             {
-                sx *= 310f / width;
+                nameFont = nameWhiteFont;
+                nameBrush = nameWhiteBrush;
             }
-            graphics.TranslateTransform(26, 28);
+            SizeF size = graphics.MeasureString(name, nameFont);
+            float width = size.Width;
+            float sx = 1f;
+            if (width > 308f)
+            {
+                sx *= 308f / width;
+            }
+            graphics.TranslateTransform(27, LiShu ? 29.5f : 28.5f);
             graphics.ScaleTransform(sx, 1f);
             graphics.DrawString(name, nameFont, nameShadowBrush, 0f, 0f);
-            graphics.DrawString(name, nameFont, Brushes.Gold, 1f, 1f);
+            graphics.DrawString(name, nameFont, nameBrush, 1f, 1f);
             graphics.ResetTransform();
         }
 
@@ -587,7 +623,7 @@ namespace ImgGen
             DrawPicture(graphics, data);
             DrawTemplate(graphics, data);
 
-            DrawName(graphics, name);
+            DrawName(graphics, name, data);
 
             if (data.isType(Type.TYPE_MONSTER))
             {
@@ -697,20 +733,29 @@ namespace ImgGen
                     string word = line.Substring(pos, 1);
                     string nextword = GetNextWord(line, pos);
 
-                    if (word == "●")
+                    if (word == "●" && !LiShu)
                     {
                         Font spFont = new Font(spfontName, size * 0.9f, txtFont.Style, txtFont.Unit);
                         graphics.DrawString(word, spFont, textBrush, dx + (size / 10f), dy + (size / 10f), justifyFormat);
                     }
-                    else if (word == "×")
+                    else if (word == "×" && !LiShu)
                     {
                         Font spFont = new Font(spfontName, size, txtFont.Style, txtFont.Unit);
                         graphics.DrawString(word, spFont, textBrush, dx + (size / 3f), dy + (size / 20f), justifyFormat);
                     }
-                    else if (word == "量")
+                    else if (word == "量" && !LiShu)
                     {
                         Font spFont = new Font(spfontName, size, txtFont.Style, txtFont.Unit);
                         graphics.DrawString(word, spFont, textBrush, dx, dy + (size / 20f), justifyFormat);
+                    }
+                    else if (word[0] >= '\xff10' && word[0] <= '\xff19' && LiShu) // 0-9数字
+                    {
+                        graphics.DrawString(word, font, textBrush, dx, dy - (size / 8f), justifyFormat);
+                    }
+                    else if (word[0] >= '\x2460' && word[0] <= '\x2469' && LiShu) // ①-⑩数字
+                    {
+                        Font spFont = new Font(fontName, size * 0.8f, txtFont.Style, txtFont.Unit);
+                        graphics.DrawString(word, spFont, textBrush, dx + (size / 10f), dy + (size / 10f), justifyFormat);
                     }
                     else
                         graphics.DrawString(word, font, textBrush, dx, dy, justifyFormat);
