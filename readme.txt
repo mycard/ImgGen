@@ -1,5 +1,8 @@
 YGOPro卡图生成工具
 ------------------------------------------------
+预览：
+https://github.com/mycard/ImgGen/wiki/效果预览
+
 使用：
 放到游戏主目录Gen目录，即执行目录上级有cards.cdb
 
@@ -9,7 +12,7 @@ YGOPro卡图生成工具
 MatrixBoldSmallCaps
 
 生成卡图：
-在执行目录创建pico目录，放入对应密码的中间图规格的jpg图片，运行ImgGen.exe，即可在picn目录内生成卡图。
+在执行目录创建pico目录，放入对应密码的中间图规格的png或jpg图片，运行ImgGen.exe，即可在picn目录内生成卡图。
 
 普通中间图尺寸：304x304
 灵摆中间图尺寸：347x259
