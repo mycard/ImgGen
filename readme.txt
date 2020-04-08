@@ -23,6 +23,8 @@ ImgGen.exe ..\expansions\pre-release.cdb
 
 Style
 支持隶书和黑体，默认为黑体
+NameStyle
+支持金色（UR罕贵）和黑白（N罕贵），默认为金色
 XyzString
 自定义Xyz的翻译，默认为超量
 ZeroStarCards

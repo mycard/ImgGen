@@ -73,11 +73,27 @@ namespace ImgGen
                 fontName = fontLiShuName;
             }
 
+            string _namestyle = System.Configuration.ConfigurationManager.AppSettings["NameStyle"];
+            if (_namestyle == "金色")
+            {
+                nameBlackBrush = new SolidBrush(Color.FromArgb(255, 215, 0));
+                nameWhiteBrush = new SolidBrush(Color.FromArgb(255, 215, 0));
+                nameShadowBrush = new SolidBrush(Color.FromArgb(64, 64, 0));
+                nameBlackFont = new Font(fontName, LiShu ? 30 : 28, LiShu ? FontStyle.Bold : FontStyle.Regular, GraphicsUnit.Pixel);
+                nameWhiteFont = new Font(fontName, LiShu ? 30 : 28, LiShu ? FontStyle.Bold : FontStyle.Regular, GraphicsUnit.Pixel);
+            }
+            else
+            {
+                nameBlackBrush = new SolidBrush(Color.FromArgb(0, 0, 0));
+                nameWhiteBrush = new SolidBrush(Color.FromArgb(255, 255, 255));
+                nameShadowBrush = new SolidBrush(Color.FromArgb(0, 0, 0, 0));
+                nameBlackFont = new Font(fontName, LiShu ? 30 : 28, LiShu ? FontStyle.Bold : FontStyle.Regular, GraphicsUnit.Pixel);
+                nameWhiteFont = new Font(fontName, LiShu ? 30 : 28, FontStyle.Regular, GraphicsUnit.Pixel);
+            }
+
             conn = new SQLiteConnection("Data Source=" + dbPath);
             numFont = new Font(numfontName, 17, FontStyle.Bold, GraphicsUnit.Pixel);
             numUnknownFont = new Font(numfontName, 22, FontStyle.Bold, GraphicsUnit.Pixel);
-            nameBlackFont = new Font(fontName, LiShu ? 30 : 28, LiShu ? FontStyle.Bold : FontStyle.Regular, GraphicsUnit.Pixel);
-            nameWhiteFont = new Font(fontName, LiShu ? 30 : 28, FontStyle.Regular, GraphicsUnit.Pixel);
             typeFont = new Font(fontName, 12, FontStyle.Bold, GraphicsUnit.Pixel);
             txtFont = new Font(fontName, 10, FontStyle.Bold, GraphicsUnit.Pixel);
             scaleFontNormal = new Font(numfontName, 30, GraphicsUnit.Pixel);
@@ -85,18 +101,6 @@ namespace ImgGen
 
             pendBgBrush = new SolidBrush(Color.FromArgb(0, 125, 105));
             textBrush = new SolidBrush(Color.FromArgb(0, 0, 0));
-            if (LiShu)
-            {
-                nameBlackBrush = new SolidBrush(Color.FromArgb(0, 0, 0));
-                nameWhiteBrush = new SolidBrush(Color.FromArgb(255, 255, 255));
-                nameShadowBrush = new SolidBrush(Color.FromArgb(0, 0, 0, 0));
-            }
-            else
-            {
-                nameBlackBrush = new SolidBrush(Color.FromArgb(255, 215, 0));
-                nameWhiteBrush = new SolidBrush(Color.FromArgb(255, 215, 0));
-                nameShadowBrush = new SolidBrush(Color.FromArgb(64, 64, 0));
-            }
 
             justifyFormat = new StringFormat(StringFormat.GenericTypographic);
             justifyFormat.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
