@@ -5,6 +5,11 @@ https://github.com/mycard/ImgGen/wiki/效果预览
 
 使用：
 放到游戏主目录Gen目录，即执行目录上级有cards.cdb
+也可以使用本项目的 Dockerfile 构建的镜像。挂载相应数据卷之后直接运行即可。数据卷如下。
+/usr/src/app/cards.cdb cdb文件
+/usr/src/app/pico 中间图文件
+/usr/src/app/ImgGen.exe.config 配置文件，可选。默认为只生成小图，使用隶书字体，黑白
+/usr/src/app/pics 生成文件，若生成大图则为 /usr/src/app/picn
 
 必备字体：
 文泉驿微米黑
