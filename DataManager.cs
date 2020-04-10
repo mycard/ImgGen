@@ -259,7 +259,11 @@ namespace ImgGen
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error prasing {0} {1}", data.code, e);
+#if DEBUG
+                Console.WriteLine($"Error parsing [{data.code}] : {e.Message}");
+#else
+                Console.WriteLine($"Error parsing [{data.code}] : {e}");
+#endif
                 return;
             }
             if (data.isType(Type.TYPE_PENDULUM))
