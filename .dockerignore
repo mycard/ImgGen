@@ -1,0 +1,13 @@
+.vs/
+bin/
+obj/
+ImgGen.csproj.user
+
+/pico
+/picn
+/pics
+
+/System.Data.SQLite.dll
+
+Dockerfile
+.dockerignore
