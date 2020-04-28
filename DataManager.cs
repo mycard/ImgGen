@@ -144,9 +144,9 @@ namespace ImgGen
             for (int i = 1; i <= 9; i++)
             {
                 if (i < 9)
-                    bLinkNums[i - 1] = new Bitmap("./textures/link_" + i + ".png");
+                    bLinkNums[i - 1] = new Bitmap($"./textures/link_{i}.png");
                 if (i == 5) continue;
-                bLinkMarkers[i - 1] = new Bitmap("./textures/link_marker_on_" + i + ".png");
+                bLinkMarkers[i - 1] = new Bitmap($"./textures/link_marker_on_{i}.png");
             }
         }
 

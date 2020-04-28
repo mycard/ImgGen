@@ -39,9 +39,7 @@ namespace ImgGen
             List<string> files = new List<string>();
             files.AddRange(Directory.GetFiles("./pico", "*.png"));
             files.AddRange(Directory.GetFiles("./pico", "*.jpg"));
-            bool generateLarge = System.Configuration.ConfigurationManager.AppSettings["GenerateLarge"] == "False" ? false : true; // true if AppSettings null
-            bool generateSmall = System.Configuration.ConfigurationManager.AppSettings["GenerateSmall"] == "True" ? true : false;
-            bool generateThumb = System.Configuration.ConfigurationManager.AppSettings["GenerateThumb"] == "True" ? true : false;
+            bool generateSmall = System.Configuration.ConfigurationManager.AppSettings["GenerateSmall"] == "True";
             if (generateLarge)
                 Directory.CreateDirectory("./picn");
             if (generateSmall)
