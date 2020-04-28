@@ -1,4 +1,4 @@
-﻿namespace ImgGen
+namespace ImgGen
 {
     using System;
     using System.Collections.Generic;
@@ -60,7 +60,7 @@
                     continue;
                 }
                 string fileName = code.ToString() + ".jpg";
-                Console.WriteLine("Generating {0}", fileName);
+                Console.WriteLine($"Generating {fileName}");
                 Bitmap image = DataManager.GetImage(code);
                 if (generateLarge)
                     image.Save("./picn/" + fileName, encoderInfo, encoderParams);

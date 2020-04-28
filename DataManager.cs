@@ -178,7 +178,7 @@ namespace ImgGen
                     SQLiteCommand command = new SQLiteCommand(conn);
                     SQLiteDataReader reader;
 
-                    command.CommandText = string.Format("select * from datas where id={0}", code);
+                    command.CommandText = $"SELECT * FROM datas WHERE id={code}";
                     reader = command.ExecuteReader();
                     if (reader.Read())
                     {
@@ -194,7 +194,7 @@ namespace ImgGen
                     }
                     reader.Close();
 
-                    command.CommandText = string.Format("select * from texts where id={0}", code);
+                    command.CommandText = $"SELECT * FROM texts WHERE id={code}";
                     reader = command.ExecuteReader();
                     if (reader.Read())
                     {
