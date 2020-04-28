@@ -197,7 +197,7 @@ namespace ImgGen
                 }
                 catch (Exception e)
                 {
-					Console.WriteLine($"Error when parsing {code} - {e}");
+                    Console.WriteLine($"Error when parsing {code} - {e}");
                     return null;
                 }
                 finally
@@ -247,7 +247,7 @@ namespace ImgGen
             }
             catch (Exception e)
             {
-				Console.WriteLine($"Error when parsing {data.code} - {e}");
+                Console.WriteLine($"Error when parsing {data.code} - {e}");
                 return;
             }
             if (data.isType(Type.TYPE_PENDULUM))
