@@ -18,9 +18,6 @@ namespace ImgGen
         private static Bitmap[] bLinkNums = new Bitmap[8];
         private static Bitmap[] bLinkMarkers = new Bitmap[9];
 
-        private static Dictionary<int, Data> cardDatas = new Dictionary<int, Data>();
-        private static Dictionary<int, Bitmap> cardImages = new Dictionary<int, Bitmap>();
-
         private static SQLiteConnection conn;
         private static object locker = new object();
 
@@ -152,34 +149,22 @@ namespace ImgGen
 
         public static Bitmap GetImage(int code)
         {
-            if (!cardImages.ContainsKey(code))
-            {
-                LoadCard(code);
-            }
-            return cardImages[code];
-        }
-
-        private static int LoadCard(int code)
-        {
             lock (locker)
             {
-                if (cardDatas.ContainsKey(code))
-                {
-                    return 0;
-                }
                 Data data = new Data();
                 Text text = new Text();
                 data.code = code;
                 text.name = "???";
                 text.text = "???";
+                SQLiteCommand command = null;
+                SQLiteDataReader reader = null;
                 try
                 {
                     conn.Open();
-                    SQLiteCommand command = new SQLiteCommand(conn);
-                    SQLiteDataReader reader;
-
+                    command = new SQLiteCommand(conn);
                     command.CommandText = $"SELECT * FROM datas WHERE id={code}";
                     reader = command.ExecuteReader();
+
                     if (reader.Read())
                     {
                         data.code = reader.GetInt32(0);
@@ -196,28 +181,27 @@ namespace ImgGen
 
                     command.CommandText = $"SELECT * FROM texts WHERE id={code}";
                     reader = command.ExecuteReader();
+
                     if (reader.Read())
                     {
                         text.name = reader.GetString(1);
                         text.text = reader.GetString(2);
                     }
                     reader.Close();
+
+                    return DrawCard(data, text);
                 }
-                catch
+                catch (Exception e)
                 {
+					Console.WriteLine($"Error when parsing {code} - {e}");
+                    return null;
                 }
                 finally
                 {
+                    reader?.Close();
+                    command?.Dispose();
                     conn.Close();
                 }
-                cardDatas.Add(code, data);
-                if (!cardImages.ContainsKey(code))
-                {
-                    Bitmap bitmap;
-                    bitmap = DrawCard(data, text);
-                    cardImages.Add(code, bitmap);
-                }
-                return 0;
             }
         }
 
@@ -249,7 +233,7 @@ namespace ImgGen
 
         private static void DrawPicture(Graphics graphics, Data data)
         {
-            Bitmap image;
+            Bitmap image = null;
             string filename = "./pico/" + data.code.ToString() + ".png";
             if (!File.Exists(filename))
                 filename = "./pico/" + data.code.ToString() + ".jpg";
@@ -259,11 +243,7 @@ namespace ImgGen
             }
             catch (Exception e)
             {
-#if DEBUG
-                Console.WriteLine($"Error parsing [{data.code}] : {e.Message}");
-#else
-                Console.WriteLine($"Error parsing [{data.code}] : {e}");
-#endif
+				Console.WriteLine($"Error when parsing {data.code} - {e}");
                 return;
             }
             if (data.isType(Type.TYPE_PENDULUM))
@@ -290,6 +270,7 @@ namespace ImgGen
                 else
                     graphics.DrawImage(image, dest);
             }
+            image?.Dispose();
         }
 
         private static void DrawTemplate(Graphics graphics, Data data)
@@ -359,6 +340,7 @@ namespace ImgGen
                 template = new Bitmap(bTemplates[8]);
             }
             graphics.DrawImage(template, 0, 0, 400, 580);
+            template.Dispose();
         }
 
         private static void DrawStars(Graphics graphics, Data data)
@@ -660,7 +642,7 @@ namespace ImgGen
                 DrawSpellTrapType(graphics, data);
                 DrawSpellTrapEffect(graphics, desc);
             }
-
+            graphics.Dispose();
             return bitmap;
         }
 

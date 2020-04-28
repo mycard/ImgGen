@@ -39,7 +39,9 @@ namespace ImgGen
             List<string> files = new List<string>();
             files.AddRange(Directory.GetFiles("./pico", "*.png"));
             files.AddRange(Directory.GetFiles("./pico", "*.jpg"));
+            bool generateLarge = System.Configuration.ConfigurationManager.AppSettings["GenerateLarge"] != "False"; // true if AppSettings null
             bool generateSmall = System.Configuration.ConfigurationManager.AppSettings["GenerateSmall"] == "True";
+            bool generateThumb = System.Configuration.ConfigurationManager.AppSettings["GenerateThumb"] == "True";
             if (generateLarge)
                 Directory.CreateDirectory("./picn");
             if (generateSmall)
@@ -53,20 +55,35 @@ namespace ImgGen
                 {
                     code = int.Parse(Path.GetFileNameWithoutExtension(str));
                 }
-                catch (Exception)
+                catch
                 {
                     continue;
                 }
                 string fileName = code.ToString() + ".jpg";
                 Console.WriteLine($"Generating {fileName}");
                 Bitmap image = DataManager.GetImage(code);
+                if (image == null)
+                {
+                    Console.WriteLine($"[{code}] generation failed");
+                    continue;
+                }
                 if (generateLarge)
+                {
                     image.Save("./picn/" + fileName, encoderInfo, encoderParams);
+                }
                 if (generateSmall)
-                    DataManager.Zoom(image, 177, 254).Save("./pics/" + fileName, encoderInfo, encoderParams);
+                {
+                    Bitmap bmp = DataManager.Zoom(image, 177, 254);
+                    bmp.Save("./pics/" + fileName, encoderInfo, encoderParams);
+                    bmp.Dispose();
+                }
                 if (generateThumb)
-                    DataManager.Zoom(image, 44, 64).Save("./pics/thumbnail/" + fileName, encoderInfo, encoderParams);
-                image.Dispose();
+                {
+                    Bitmap bmp = DataManager.Zoom(image, 44, 64);
+                    bmp.Save("./pics/thumbnail/" + fileName, encoderInfo, encoderParams);
+                    bmp.Dispose();
+                }
+                image?.Dispose();
             }
         }
     }
