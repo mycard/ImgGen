@@ -39,10 +39,9 @@ namespace ImgGen
         private static StringFormat rightAlignFormat;
 
         private static string xyzString = "超量";
-        private static string fontName = "文泉驿微米黑";
-        private static string fontLiShuName = "方正隶变_GBK";
-        private static string numfontName = "MatrixBoldSmallCaps";
         private static string spfontName = "黑体";
+        private static FontFamily fontName;
+        private static FontFamily numfontName;
 
         private static List<int> zeroStarCards = new List<int>();
 
@@ -63,11 +62,16 @@ namespace ImgGen
                 }
             }
 
+            numfontName = Program.GetFontFamily("MatrixBoldSmallCaps");
             string _style = System.Configuration.ConfigurationManager.AppSettings["Style"];
             if (_style == "隶书")
             {
                 LiShu = true;
-                fontName = fontLiShuName;
+                fontName = Program.GetFontFamily("方正隶变_GBK");
+            }
+            else
+            {
+                fontName = Program.GetFontFamily("文泉驿微米黑");
             }
 
             string _namestyle = System.Configuration.ConfigurationManager.AppSettings["NameStyle"];

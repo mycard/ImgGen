@@ -4,6 +4,7 @@ namespace ImgGen
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
+    using System.Drawing.Text;
     using System.IO;
 
     internal class Program
@@ -21,8 +22,35 @@ namespace ImgGen
             return null;
         }
 
+        private static PrivateFontCollection fontCollection;
+
+        public static FontFamily GetFontFamily(string fontName)
+        {
+            try
+            {
+                return new FontFamily(fontName, fontCollection);
+            }
+            catch
+            {
+                try
+                {
+                    return new FontFamily(fontName);
+                }
+                catch
+                {
+                    Console.WriteLine($"Font {fontName} not found!");
+                    return new FontFamily("Arial");
+                }
+            }
+        }
+
         private static void Main(string[] args)
         {
+            fontCollection = new PrivateFontCollection();
+            foreach (string font in Directory.GetFiles("./fonts"))
+            {
+                fontCollection.AddFontFile(font);
+            }
             if (args.Length > 0)
             {
                 DataManager.InitialDatas(args[0]);
