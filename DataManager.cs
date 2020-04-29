@@ -182,6 +182,7 @@ namespace ImgGen
                         data.attribute = (Attribute)reader.GetInt32(9);
                     }
                     reader.Close();
+                    reader = null; // for Exception -> finally GC
 
                     command.CommandText = $"SELECT * FROM texts WHERE id={code}";
                     reader = command.ExecuteReader();
@@ -196,6 +197,9 @@ namespace ImgGen
                     return DrawCard(data, text);
                 }
                 catch (Exception e)
+#if DEBUG
+                    when (false)
+#endif
                 {
                     Console.WriteLine($"Error when parsing {code} - {e}");
                     return null;
@@ -246,6 +250,9 @@ namespace ImgGen
                 image = new Bitmap(filename);
             }
             catch (Exception e)
+#if DEBUG
+                when (false)
+#endif
             {
                 Console.WriteLine($"Error when parsing {data.code} - {e}");
                 return;
