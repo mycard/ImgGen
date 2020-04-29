@@ -171,15 +171,15 @@ namespace ImgGen
 
                     if (reader.Read())
                     {
-                        data.code = reader.GetInt32(0);
-                        data.alias = reader.GetInt32(2);
-                        data.setcode = reader.GetInt32(3);
-                        data.type = (Type)reader.GetInt32(4);
-                        data.attack = reader.GetInt32(5);
-                        data.defence = reader.GetInt32(6);
-                        data.level = reader.GetInt32(7);
-                        data.race = (Race)reader.GetInt32(8);
-                        data.attribute = (Attribute)reader.GetInt32(9);
+                        data.code = (int)(long)reader["id"];
+                        data.alias = (int)(long)reader["alias"];
+                        data.setcode = (int)(long)reader["setcode"];
+                        data.type = (Type)(long)reader["type"];
+                        data.attack = (int)(long)reader["atk"];
+                        data.defence = (int)(long)reader["def"];
+                        data.level = (int)(long)reader["level"];
+                        data.race = (Race)(long)reader["race"];
+                        data.attribute = (Attribute)(long)reader["attribute"];
                     }
                     reader.Close();
                     reader = null; // for Exception -> finally GC
@@ -189,8 +189,8 @@ namespace ImgGen
 
                     if (reader.Read())
                     {
-                        text.name = reader.GetString(1);
-                        text.text = reader.GetString(2);
+                        text.name = (string)reader["name"];
+                        text.text = (string)reader["desc"];
                     }
                     reader.Close();
 
