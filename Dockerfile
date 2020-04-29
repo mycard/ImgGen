@@ -23,21 +23,18 @@ RUN xbuild /p:Configuration=Release /p:TargetFrameworkVersion=v4.6
 FROM debian:buster-slim
 
 RUN apt-get update && \
-	apt-get -y install xfonts-utils fontconfig wget p7zip-full mono-complete && \
+	apt-get -y install wget p7zip-full mono-complete xfonts-utils fontconfig && \
 	rm -rf /var/lib/apt/lists/*
-
-WORKDIR /
-RUN wget https://minio.mycard.moe:9000/nanahira/ImgGen-Fonts.7z && \
-	7z x -y -o/usr/share/fonts ImgGen-Fonts.7z && \
-	rm -rf ImgGen-Fonts.7z && \
-	mkfontscale && \
-	mkfontdir && \
-	fc-cache -fv
 
 COPY --from=builder /ImgGen/bin/Release /usr/src/app
 WORKDIR /usr/src/app
-
-RUN cp -rf /usr/share/fonts/ImgGen.exe.config .
+RUN wget https://minio.mycard.moe:9000/nanahira/ImgGen-Fonts.7z && \
+	7z x -y  ImgGen-Fonts.7z && \
+	rm -rf ImgGen-Fonts.7z && \
+	cp -rf fonts /usr/share/ && \
+	mkfontscale && \
+	mkfontdir && \
+	fc-cache -fv
 
 ENTRYPOINT [ "mono" ]
 CMD [ "ImgGen.exe", "./cards.cdb" ]
