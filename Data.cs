@@ -89,14 +89,6 @@
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct Text
-    {
-        public string name;
-        public string text;
-        public string[] desc;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
     public struct Data
     {
         public int code;
@@ -108,6 +100,8 @@
         public Race race;
         public int attack;
         public int defence;
+        public string name;
+        public string text;
 
         public bool isType(Type typ)
         {

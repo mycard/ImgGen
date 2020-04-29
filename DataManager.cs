@@ -18,6 +18,8 @@ namespace ImgGen
         private static Bitmap[] bLinkNums = new Bitmap[8];
         private static Bitmap[] bLinkMarkers = new Bitmap[9];
 
+        private static Dictionary<int, Data> cardDatas = new Dictionary<int, Data>();
+
         private static SQLiteConnection conn;
         private static object locker = new object();
 
@@ -149,68 +151,49 @@ namespace ImgGen
                 if (i == 5) continue;
                 bLinkMarkers[i - 1] = new Bitmap($"./textures/link_marker_on_{i}.png");
             }
+
+            conn.Open();
+            SQLiteCommand command = new SQLiteCommand(conn);
+            command.CommandText = "SELECT * FROM datas JOIN texts on datas.id = texts.id";
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Data data = new Data();
+                data.code = (int)(long)reader["id"];
+                data.alias = (int)(long)reader["alias"];
+                data.setcode = (int)(long)reader["setcode"];
+                data.type = (Type)(long)reader["type"];
+                data.attack = (int)(long)reader["atk"];
+                data.defence = (int)(long)reader["def"];
+                data.level = (int)(long)reader["level"];
+                data.race = (Race)(long)reader["race"];
+                data.attribute = (Attribute)(long)reader["attribute"];
+                data.name = (string)reader["name"];
+                data.text = (string)reader["desc"];
+                cardDatas.Add(data.code, data);
+            }
+            reader.Close();
+            command.Dispose();
+            conn.Close();
         }
 
         public static Bitmap GetImage(int code)
         {
-            lock (locker)
+            Data data;
+            if(cardDatas.ContainsKey(code))
             {
-                Data data = new Data();
-                Text text = new Text();
-                data.code = code;
-                text.name = "???";
-                text.text = "???";
-                SQLiteCommand command = null;
-                SQLiteDataReader reader = null;
-                try
-                {
-                    conn.Open();
-                    command = new SQLiteCommand(conn);
-                    command.CommandText = $"SELECT * FROM datas WHERE id={code}";
-                    reader = command.ExecuteReader();
-
-                    if (reader.Read())
-                    {
-                        data.code = (int)(long)reader["id"];
-                        data.alias = (int)(long)reader["alias"];
-                        data.setcode = (int)(long)reader["setcode"];
-                        data.type = (Type)(long)reader["type"];
-                        data.attack = (int)(long)reader["atk"];
-                        data.defence = (int)(long)reader["def"];
-                        data.level = (int)(long)reader["level"];
-                        data.race = (Race)(long)reader["race"];
-                        data.attribute = (Attribute)(long)reader["attribute"];
-                    }
-                    reader.Close();
-                    reader = null; // for Exception -> finally GC
-
-                    command.CommandText = $"SELECT * FROM texts WHERE id={code}";
-                    reader = command.ExecuteReader();
-
-                    if (reader.Read())
-                    {
-                        text.name = (string)reader["name"];
-                        text.text = (string)reader["desc"];
-                    }
-                    reader.Close();
-
-                    return DrawCard(data, text);
-                }
-                catch (Exception e)
-#if DEBUG
-                    when (false)
-#endif
-                {
-                    Console.WriteLine($"Error when parsing {code} - {e}");
-                    return null;
-                }
-                finally
-                {
-                    reader?.Close();
-                    command?.Dispose();
-                    conn.Close();
-                }
+                data = cardDatas[code];
             }
+            else
+            {
+                Console.WriteLine($"Card {code} not found!");
+                data = new Data();
+                data.code = code;
+                data.name = "???";
+                data.text = "???";
+            }
+            return DrawCard(data);
         }
 
         private static string FormatCardDesc(string r)
@@ -607,7 +590,7 @@ namespace ImgGen
             graphics.ResetTransform();
         }
 
-        private static Bitmap DrawCard(Data data, Text text)
+        private static Bitmap DrawCard(Data data)
         {
             Bitmap bitmap = new Bitmap(400, 580);
             Graphics graphics = Graphics.FromImage(bitmap);
@@ -618,8 +601,8 @@ namespace ImgGen
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
             graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
 
-            string name = FormatCardName(text.name);
-            string desc = FormatCardDesc(text.text);
+            string name = FormatCardName(data.name);
+            string desc = FormatCardDesc(data.text);
 
             DrawPicture(graphics, data);
             DrawTemplate(graphics, data);
