@@ -19,8 +19,7 @@ namespace ImgGen
         private static bool generateSmall;
         private static bool generateThumb;
 
-        private static Queue<string> files;
-        private static object locker = new object();
+        private static List<string> files;
 
         private static ImageCodecInfo GetEncoderInfo(string mimeType)
         {
@@ -49,7 +48,7 @@ namespace ImgGen
                 }
                 catch
                 {
-                    Console.WriteLine($"Font {fontName} not found!");
+                    Console.WriteLine($"Warning : Font {fontName} not found!");
                     return new FontFamily("Arial");
                 }
             }
@@ -58,9 +57,21 @@ namespace ImgGen
         private static void Main(string[] args)
         {
             fontCollection = new PrivateFontCollection();
+            if (!Directory.Exists("./fonts"))
+            {
+                Directory.CreateDirectory("./fonts");
+                return;
+            }
             foreach (string font in Directory.GetFiles("./fonts"))
             {
-                fontCollection.AddFontFile(font);
+                try
+                {
+                    fontCollection.AddFontFile(font);
+                }
+                catch
+                {
+                    Console.WriteLine($"Warning : {font} is not a valid font file");
+                }
             }
 
             encoderInfo = GetEncoderInfo("image/jpeg");
@@ -77,52 +88,85 @@ namespace ImgGen
                 DataManager.InitialDatas("../cards.cdb");
             }
 
-            files = new Queue<string>();
-            foreach (string file in Directory.GetFiles("./pico", "*.png"))
-            {
-                files.Enqueue(file);
-            }
-            foreach (string file in Directory.GetFiles("./pico", "*.jpg"))
-            {
-                files.Enqueue(file);
-            }
-
+            files = new List<string>();
+            files.AddRange(Directory.GetFiles("./pico", "*.png"));
+            files.AddRange(Directory.GetFiles("./pico", "*.jpg"));
             generateLarge = System.Configuration.ConfigurationManager.AppSettings["GenerateLarge"] != "False"; // true if AppSettings null
             generateSmall = System.Configuration.ConfigurationManager.AppSettings["GenerateSmall"] == "True";
             generateThumb = System.Configuration.ConfigurationManager.AppSettings["GenerateThumb"] == "True";
             if (generateLarge)
-                Directory.CreateDirectory("./picn");
-            if (generateSmall)
-                Directory.CreateDirectory("./pics");
-            if (generateThumb)
-                Directory.CreateDirectory("./pics/thumbnail");
-
-            for (int i = 0; i < Environment.ProcessorCount; i++)
             {
-                Thread workThread = new Thread(Worker);
-                workThread.Start();
+                Directory.CreateDirectory("./picn");
             }
+            if (generateSmall)
+            {
+                Directory.CreateDirectory("./pics");
+            }
+            if (generateThumb)
+            {
+                Directory.CreateDirectory("./pics/thumbnail");
+            }
+            
+            for (int i = 0; i < threads.Length; i++)
+            {
+                threads[i] = null; //init
+            }
+            ImageManager[] imageManagers = new ImageManager[threads.Length];
+            for(int i=0;i<imageManagers.Length;i++)
+            {
+                imageManagers[i] = new ImageManager();
+                imageManagers[i].InitialDatas();
+            }
+
+            DateTime startTime = DateTime.Now;
+            foreach (var file in files)
+            {
+                int workerIndex = -1;
+                while (workerIndex < 0)
+                {
+                    for (int i = 0; i < threads.Length; i++)
+                    {
+                        if (threads[i] == null)
+                        {
+                            workerIndex = i;
+                            break;
+                        }
+                    }
+                    if (workerIndex < 0)
+                    {
+                        Thread.Sleep(10);
+                    }
+                }
+                threads[workerIndex] = new Thread(Worker);
+                threads[workerIndex].Start(new object[] { imageManagers[workerIndex], workerIndex, file });
+            }
+            for (int i = 0; i < threads.Length; i++)
+            {
+                if (threads[i] != null)
+                {
+                    Thread.Sleep(100);
+                    continue;
+                }
+            }
+            Console.WriteLine($"Generation complete - generated {files.Count} files in {DateTime.Now - startTime}");
         }
 
-        private static void Worker()
+        static Thread[] threads = new Thread[Environment.ProcessorCount];
+        //static Thread[] threads = new Thread[1];
+
+        private static void Worker(object input)
         {
-            ImageManager imageManager;
-            lock (locker)
-            {
-                imageManager = new ImageManager();
-                imageManager.InitialDatas();
-            }
-            while (true)
-            {
-                string file;
-                lock (locker)
-                {
-                    if (files.Count == 0)
-                        return;
-                    file = files.Dequeue();
-                }
-                Genernate(file, imageManager);
-            }
+            DateTime dt = DateTime.Now;
+            object[] inputArr = input as object[];
+            ImageManager imageManager = inputArr[0] as ImageManager;
+            int workerIndex = (int)inputArr[1];
+            string file = (string)inputArr[2];
+
+            Genernate(file, imageManager);
+#if DEBUG
+            Console.WriteLine($"Generation completed in {DateTime.Now - dt}");
+#endif
+            threads[workerIndex] = null;
         }
 
         private static void Genernate(string srcName, ImageManager imageManager)
