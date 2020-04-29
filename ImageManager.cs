@@ -419,8 +419,8 @@ namespace ImgGen
         private void DrawMonsterEffect(Graphics graphics, string text)
         {
             DrawJustifiedText(graphics, text, 33, 453, 335, 75);
-            if (LiShu)
-                DrawJustifiedText(graphics, text, 33, 453, 335, 75);
+            //if (LiShu)
+            //    DrawJustifiedText(graphics, text, 33, 453, 335, 75);
         }
 
         private void DrawPendulumEffect(Graphics graphics, string desc)
@@ -441,16 +441,16 @@ namespace ImgGen
             if (match.Success)
                 mText = match.Groups[match.Groups.Count - 1].Value;
             DrawJustifiedText(graphics, pText, 65, 369, 272, 58);
-            if (LiShu)
-                DrawJustifiedText(graphics, pText, 65, 369, 272, 58);
+            //if (LiShu)
+            //    DrawJustifiedText(graphics, pText, 65, 369, 272, 58);
             DrawMonsterEffect(graphics, mText);
         }
 
         private void DrawSpellTrapEffect(Graphics graphics, string text)
         {
             DrawJustifiedText(graphics, text, 33, 439, 335, 108);
-            if (LiShu)
-                DrawJustifiedText(graphics, text, 33, 439, 335, 108);
+            //if (LiShu)
+            //    DrawJustifiedText(graphics, text, 33, 439, 335, 108);
         }
 
         private void DrawSpellTrapType(Graphics graphics, Data data)
@@ -578,12 +578,27 @@ namespace ImgGen
             return size / 5f;
         }
 
-        private void DrawJustifiedText(Graphics graphics, string text, float areaX, float areaY, float areaWidth, float areaHeight)
+        private void DrawJustifiedText(Graphics _graphics, string text, float areaX, float areaY, float areaWidth, float areaHeight)
         {
+            float aaLevel = 8f;
+            areaWidth *= aaLevel;
+            areaHeight *= aaLevel;
+            Bitmap bitmap = new Bitmap((int)areaWidth, (int)areaHeight);
+            Graphics graphics = Graphics.FromImage(bitmap);
+            graphics.CompositingMode = CompositingMode.SourceOver;
+            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            graphics.CompositingQuality = CompositingQuality.HighQuality;
+            graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            graphics.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
+            graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+            //graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+            graphics.TextContrast = 0;
+
             const string non_start_chars = @"。；：，、”」）·× ";
             const string non_end_chars = @"“「（●";
 
-            float size = txtFont.Size;
+            float size = txtFont.Size * aaLevel;
             var font = new Font(txtFont.Name, size, txtFont.Style, txtFont.Unit);
             List<string> lines = new List<string> { };
             List<float> paddings = new List<float> { }; // 每行文字两端对齐须补充的像素
@@ -606,8 +621,8 @@ namespace ImgGen
                         pos++;
                         continue;
                     }
-                    SizeF doublesize = graphics.MeasureString(word + nextword, font, 99, justifyFormat);
-                    SizeF singlesize = graphics.MeasureString(word, font, 99, justifyFormat);
+                    SizeF doublesize = graphics.MeasureString(word + nextword, font, 999, justifyFormat);
+                    SizeF singlesize = graphics.MeasureString(word, font, 999, justifyFormat);
                     float wordwidth = doublesize.Width - singlesize.Width;
                     if (linewidth + wordwidth > areaWidth
                         || (non_start_chars.Contains(nextword) && linewidth + doublesize.Width > areaWidth)
@@ -629,13 +644,13 @@ namespace ImgGen
                 }
                 if (lines.Count * (size + GetLineSpacing(size)) <= areaHeight - GetLineSpacing(size))
                     break;
-                size -= 0.5f;
+                size -= 0.5f * aaLevel;
                 font = new Font(txtFont.Name, size, txtFont.Style, txtFont.Unit);
                 lines.Clear();
                 paddings.Clear();
             }
-            float dx = areaX;
-            float dy = areaY;
+            float dx = 0;
+            float dy = 0;
             for (int i = 0; i < lines.Count; i++)
             {
                 string line = lines[i];
@@ -655,11 +670,11 @@ namespace ImgGen
                         Font spFont = new Font(spfontName, size, txtFont.Style, txtFont.Unit);
                         graphics.DrawString(word, spFont, textBrush, dx + (size / 3f), dy + (size / 20f), justifyFormat);
                     }
-                    else if (word == "量" && !LiShu)
-                    {
-                        Font spFont = new Font(spfontName, size, txtFont.Style, txtFont.Unit);
-                        graphics.DrawString(word, spFont, textBrush, dx, dy + (size / 20f), justifyFormat);
-                    }
+                    //else if (word == "量" && !LiShu)
+                    //{
+                    //    Font spFont = new Font(spfontName, size, txtFont.Style, txtFont.Unit);
+                    //    graphics.DrawString(word, spFont, textBrush, dx, dy + (size / 20f), justifyFormat);
+                    //}
                     else if (word[0] >= '\xff10' && word[0] <= '\xff19' && LiShu) // 0-9数字
                     {
                         graphics.DrawString(word, font, textBrush, dx, dy - (size / 8f), justifyFormat);
@@ -672,14 +687,15 @@ namespace ImgGen
                     else
                         graphics.DrawString(word, font, textBrush, dx, dy, justifyFormat);
 
-                    SizeF doublesize = graphics.MeasureString(word + nextword, font, 99, justifyFormat);
-                    SizeF singlesize = graphics.MeasureString(word, font, 99, justifyFormat);
+                    SizeF doublesize = graphics.MeasureString(word + nextword, font, 999, justifyFormat);
+                    SizeF singlesize = graphics.MeasureString(word, font, 999, justifyFormat);
                     float dw = doublesize.Width - singlesize.Width;
                     dx += dw + exspace;
                 }
-                dx = areaX;
+                dx = 0;
                 dy += size + GetLineSpacing(size);
             }
+            _graphics.DrawImage(bitmap, areaX - 0.5f, areaY, areaWidth / aaLevel, areaHeight / aaLevel);
         }
     }
 }
