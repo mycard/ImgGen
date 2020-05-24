@@ -14,29 +14,32 @@ namespace ImgGen
         private static Dictionary<int, Data> cardDatas = new Dictionary<int, Data>();
 
         private static SQLiteConnection conn;
-        private static object locker = new object();
 
         public static void InitialDatas(string dbPath)
         {
             conn = new SQLiteConnection("Data Source=" + dbPath);
             conn.Open();
-            SQLiteCommand command = new SQLiteCommand(conn);
-            command.CommandText = "SELECT * FROM datas JOIN texts on datas.id = texts.id";
+            SQLiteCommand command = new SQLiteCommand(conn)
+            {
+                CommandText = "SELECT * FROM datas JOIN texts ON datas.id = texts.id"
+            };
             SQLiteDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                Data data = new Data();
-                data.code = (int)(long)reader["id"];
-                data.alias = (int)(long)reader["alias"];
-                data.setcode = (int)(long)reader["setcode"];
-                data.type = (Type)(long)reader["type"];
-                data.attack = (int)(long)reader["atk"];
-                data.defence = (int)(long)reader["def"];
-                data.level = (int)(long)reader["level"];
-                data.race = (Race)(long)reader["race"];
-                data.attribute = (Attribute)(long)reader["attribute"];
-                data.name = (string)reader["name"];
-                data.text = (string)reader["desc"];
+                Data data = new Data
+                {
+                    code = (int)(long)reader["id"],
+                    alias = (int)(long)reader["alias"],
+                    setcode = (int)(long)reader["setcode"],
+                    type = (Type)(long)reader["type"],
+                    attack = (int)(long)reader["atk"],
+                    defence = (int)(long)reader["def"],
+                    level = (int)(long)reader["level"],
+                    race = (Race)(long)reader["race"],
+                    attribute = (Attribute)(long)reader["attribute"],
+                    name = (string)reader["name"],
+                    text = (string)reader["desc"]
+                };
                 cardDatas.Add(data.code, data);
             }
             reader.Close();

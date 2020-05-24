@@ -103,9 +103,9 @@
         public string name;
         public string text;
 
-        public bool isType(Type typ)
+        public bool IsType(Type typ)
         {
-            return (type & typ) > 0;
+            return (this.type & typ) > 0;
         }
     }
 }
