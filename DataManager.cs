@@ -79,8 +79,9 @@ namespace ImgGen
             }
             string desc = new string(chArray);
             desc = desc.Replace(Environment.NewLine, "\n");
+            desc = Regex.Replace(desc, @"(（注：.*[\n\s]+)", ""); // 去掉注释
             desc = Regex.Replace(desc, @"(?<=。)([\n\s]+)(?=[①②③④⑤⑥⑦⑧⑨⑩])", ""); // 去掉效果编号前的换行
-            desc = Regex.Replace(desc, @"([\n\s]+)(?=●)", ""); // 去掉●号前的换行
+            desc = Regex.Replace(desc, @"([\n\s]+)(?=●)(?=.+。)", ""); // 去掉●号前的换行
             return desc;
         }
 
