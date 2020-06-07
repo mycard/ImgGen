@@ -584,7 +584,7 @@ namespace ImgGen
             const string non_end_chars = @"“「（●";
 
             float size = txtFont.Size;
-            var font = new Font(txtFont.Name, size, txtFont.Style, txtFont.Unit);
+            var font = new Font(fontName, size, txtFont.Style, txtFont.Unit);
             List<string> lines = new List<string> { };
             List<float> paddings = new List<float> { }; // 每行文字两端对齐须补充的像素
             while (true)
@@ -630,7 +630,7 @@ namespace ImgGen
                 if (lines.Count * (size + GetLineSpacing(size)) <= areaHeight - GetLineSpacing(size))
                     break;
                 size -= 0.5f;
-                font = new Font(txtFont.Name, size, txtFont.Style, txtFont.Unit);
+                font = new Font(fontName, size, txtFont.Style, txtFont.Unit);
                 lines.Clear();
                 paddings.Clear();
             }
