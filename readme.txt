@@ -15,6 +15,7 @@ https://github.com/mycard/ImgGen/wiki/效果预览
 文泉驿微米黑
 方正隶变_GBK
 MatrixBoldSmallCaps
+字体可安装至系统，也可放至fonts目录
 
 生成卡图：
 在执行目录创建pico目录，放入对应密码的中间图规格的png或jpg图片，运行ImgGen.exe，即可在picn目录内生成卡图。
