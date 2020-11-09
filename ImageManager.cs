@@ -155,8 +155,8 @@ namespace ImgGen
         {
             Bitmap image = null;
             string filename = "./pico/" + data.code.ToString() + ".jpg";
-            //if (!File.Exists(filename))
-            //    filename = "./pico/" + data.code.ToString() + ".png";
+            if (!File.Exists(filename))
+                filename = "./pico/" + data.code.ToString() + ".png";
             try
             {
                 image = new Bitmap(filename);
