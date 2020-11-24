@@ -275,7 +275,7 @@ namespace ImgGen
                 {
                     for (nStar = 0; nStar < level; nStar++)
                     {
-                        graphics.DrawImage(bStar[1], 41f + (26.5f * nStar), 69, 28, 28);
+                        graphics.DrawImage(bStar[1], (level==13  ? 27.5f : 41f) + (26.5f * nStar), 69, 28, 28);
                     }
                 }
                 else if (!data.isType(Type.TYPE_LINK))
