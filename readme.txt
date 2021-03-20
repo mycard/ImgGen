@@ -3,6 +3,9 @@ YGOPro卡图生成工具
 预览：
 https://github.com/mycard/ImgGen/wiki/效果预览
 
+Windows 10说明：
+因为一些神秘原因，Windows 10中字体的渲染极为丑陋，在此问题由微软解决前不建议使用Windows 10运行本工具。
+
 使用：
 放到游戏主目录Gen目录，即执行目录上级有cards.cdb
 也可以使用本项目的 Dockerfile 构建的镜像。挂载相应数据卷之后直接运行即可。数据卷如下。
@@ -15,6 +18,7 @@ https://github.com/mycard/ImgGen/wiki/效果预览
 文泉驿微米黑
 方正隶变_GBK
 MatrixBoldSmallCaps
+字体可安装至系统，也可放至fonts目录
 
 生成卡图：
 在执行目录创建pico目录，放入对应密码的中间图规格的png或jpg图片，运行ImgGen.exe，即可在picn目录内生成卡图。

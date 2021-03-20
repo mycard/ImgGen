@@ -58,9 +58,12 @@ namespace ImgGen
         private static void Main(string[] args)
         {
             fontCollection = new PrivateFontCollection();
-            foreach (string font in Directory.GetFiles("./fonts"))
+            if (Directory.Exists("./fonts"))
             {
-                fontCollection.AddFontFile(font);
+                foreach (string font in Directory.GetFiles("./fonts"))
+                {
+                    fontCollection.AddFontFile(font);
+                }
             }
 
             encoderInfo = GetEncoderInfo("image/jpeg");
