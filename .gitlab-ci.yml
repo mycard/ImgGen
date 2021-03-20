@@ -16,7 +16,7 @@ build:
   script:
     - sed -i '/download.mono-project.com/d' /etc/apt/sources.list /etc/apt/sources.list.d/*
     - apt update && apt -y install p7zip-full tar
-    - msbuild /p:Configuration=Release /p:TargetFrameworkVersion=v4.6
+    - xbuild /p:Configuration=Release /p:TargetFrameworkVersion=v4.6
     - mkdir dist
     - cd bin/Release
     - 7z a -mx9 ../../dist/ImgGen.7z *
