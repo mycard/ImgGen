@@ -177,7 +177,7 @@ namespace ImgGen
                 {
                     graphics.FillRectangle(pendBgBrush, new Rectangle(23, 362, 354, 189));
                     Rectangle dest = new Rectangle(27, 103, 347, 259);
-                    if (image.Width == 407 && image.Height == 593) // 官网图
+                    if (image.Width == 407 && image.Height >= 593) // 官网图
                         graphics.DrawImage(image, dest, new Rectangle(27, 106, 353, 263), GraphicsUnit.Pixel);
                     else
                         graphics.DrawImage(image, dest);
@@ -186,7 +186,7 @@ namespace ImgGen
             else
             {
                 Rectangle dest = new Rectangle(48, 106, 304, 304);
-                if (image.Width == 407 && image.Height == 593) // 官网图
+                if (image.Width == 407 && image.Height >= 593) // 官网图
                     graphics.DrawImage(image, dest, new Rectangle(49, 109, 308, 308), GraphicsUnit.Pixel);
                 else if (image.Width == 1030 && image.Height == 740) // 官推图
                     graphics.DrawImage(image, dest, new Rectangle(100, 164, 339, 339), GraphicsUnit.Pixel);
@@ -354,7 +354,7 @@ namespace ImgGen
                 case Race.RACE_DINOSAUR: str += "恐龙族"; break;
                 case Race.RACE_FISH: str += "鱼族"; break;
                 case Race.RACE_SEASERPENT: str += "海龙族"; break;
-                case Race.RACE_REPTILE: str += "爬虫族"; break;
+                case Race.RACE_REPTILE: str += "爬虫类族"; break;
                 case Race.RACE_PSYCHO: str += "念动力族"; break;
                 case Race.RACE_DEVINE: str += "幻神兽族"; break;
                 case Race.RACE_CREATORGOD: str += "创造神族"; break;
