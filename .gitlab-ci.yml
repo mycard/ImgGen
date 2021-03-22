@@ -7,23 +7,23 @@ variables:
   CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
 
-build:
-  stage: build
-  dependencies: []
-  tags:
-    - linux
-  image: mono
-  script:
-    - sed -i '/download.mono-project.com/d' /etc/apt/sources.list /etc/apt/sources.list.d/*
-    - apt update && apt -y install p7zip-full tar
-    - xbuild /p:Configuration=Release /p:TargetFrameworkVersion=v2.0
-    - mkdir dist
-    - cd bin/Release
-    - 7z a -mx9 ../../dist/ImgGen.7z *
-    - cd ../..
-  artifacts:
-    paths:
-      - dist/
+#build:
+#  stage: build
+#  dependencies: []
+#  tags:
+#    - linux
+#  image: mono
+#  script:
+#    - sed -i '/download.mono-project.com/d' /etc/apt/sources.list /etc/apt/sources.list.d/*
+#    - apt update && apt -y install p7zip-full tar
+#    - xbuild /p:Configuration=Release /p:TargetFrameworkVersion=v2.0
+#    - mkdir dist
+#    - cd bin/Release
+#    - 7z a -mx9 ../../dist/ImgGen.7z *
+#    - cd ../..
+#  artifacts:
+#    paths:
+#      - dist/
 
 docker:
   stage: build
@@ -34,18 +34,18 @@ docker:
     - docker build --pull --no-cache -t $CONTAINER_TEST_IMAGE .
     - docker push $CONTAINER_TEST_IMAGE
 
-upload_to_minio:
-  stage: deploy
-  dependencies:
-    - build
-  tags: 
-    - linux
-  image: python
-  script:
-    - pip install -U -i https://mirrors.aliyun.com/pypi/simple/ awscli
-    - aws s3 --endpoint=https://minio.mycard.moe:9000 sync dist/ s3://mycard/ImgGen
-  only:
-    - master
+#upload_to_minio:
+#  stage: deploy
+#  dependencies:
+#    - build
+#  tags: 
+#    - linux
+#  image: python
+#  script:
+#    - pip install -U -i https://mirrors.aliyun.com/pypi/simple/ awscli
+#    - aws s3 --endpoint=https://minio.mycard.moe:9000 sync dist/ s3://mycard/ImgGen
+#  only:
+#    - master
 
 deploy_docker:
   stage: deploy
