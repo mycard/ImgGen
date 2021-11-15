@@ -12,7 +12,7 @@ namespace ImgGen
     {
         private Bitmap[] bAttributes = new Bitmap[8];
         private Bitmap[] bStar = new Bitmap[2];
-        private Bitmap[] bTemplates = new Bitmap[15];
+        private Bitmap[] bTemplates = new Bitmap[16];
         private Bitmap[] bType = new Bitmap[9];
         private Bitmap[] bLinkNums = new Bitmap[8];
         private Bitmap[] bLinkMarkers = new Bitmap[9];
@@ -118,6 +118,7 @@ namespace ImgGen
             bTemplates[12] = new Bitmap("./textures/card_psynchro.png");
             bTemplates[13] = new Bitmap("./textures/card_pfusion.png");
             bTemplates[14] = new Bitmap("./textures/card_link.png");
+            bTemplates[15] = new Bitmap("./textures/card_pritual.png");
             bAttributes[0] = new Bitmap("./textures/att_earth.png");
             bAttributes[1] = new Bitmap("./textures/att_water.png");
             bAttributes[2] = new Bitmap("./textures/att_fire.png");
@@ -220,6 +221,10 @@ namespace ImgGen
                 else if (data.isType(Type.TYPE_FUSION))
                 {
                     template = bTemplates[13];
+                }
+                else if (data.isType(Type.TYPE_RITUAL))
+                {
+                    template = bTemplates[15];
                 }
                 else if (data.isType(Type.TYPE_EFFECT))
                 {
