@@ -177,11 +177,18 @@ namespace ImgGen
                 else
                 {
                     graphics.FillRectangle(pendBgBrush, new Rectangle(23, 362, 354, 189));
-                    Rectangle dest = new Rectangle(27, 103, 347, 259);
-                    if (image.Width == 407 && image.Height >= 593) // 官网图
-                        graphics.DrawImage(image, dest, new Rectangle(27, 106, 353, 263), GraphicsUnit.Pixel);
+                    if(image.Width == image.Height)
+                    {
+                        graphics.DrawImage(image, new Rectangle(27, 103, 347, 330), new Rectangle(0, 0, image.Width, (int)(image.Height * (330f / 347f))), GraphicsUnit.Pixel);
+                    }
                     else
-                        graphics.DrawImage(image, dest);
+                    {
+                        Rectangle dest = new Rectangle(27, 103, 347, 259);
+                        if (image.Width == 407 && image.Height >= 593) // 官网图
+                            graphics.DrawImage(image, dest, new Rectangle(27, 106, 353, 263), GraphicsUnit.Pixel);
+                        else
+                            graphics.DrawImage(image, dest);
+                    }
                 }
             }
             else
