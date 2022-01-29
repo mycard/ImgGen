@@ -46,7 +46,7 @@ pack:
 upload_to_minio:
   stage: deploy
   dependencies:
-    - build
+    - pack
   tags: 
     - linux
   script:
