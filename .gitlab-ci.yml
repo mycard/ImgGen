@@ -36,7 +36,7 @@ pack:
     - linux
   script:
     - mkdir dist
-    - cd bin/release
+    - cd bin/Release
     - 7z a -mx9 ../../dist/ImgGen.7z *
     - cd ../..
   artifacts:
