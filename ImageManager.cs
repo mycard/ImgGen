@@ -672,6 +672,10 @@ namespace ImgGen
                         Font spFont = new Font(spfontName, size, txtFont.Style, txtFont.Unit);
                         graphics.DrawString(word, spFont, textBrush, dx, dy + (size / 20f), justifyFormat);
                     }
+                    else if (word[0] >= '\x0370' && word[0] <= '\x03ff' && !LiShu) // α-ω等字母
+                    {
+                        graphics.DrawString(word, font, textBrush, dx + (size / 2f), dy, justifyFormat);
+                    }
                     else if (word[0] >= '\xff10' && word[0] <= '\xff19' && LiShu) // 0-9数字
                     {
                         graphics.DrawString(word, font, textBrush, dx, dy - (size / 8f), justifyFormat);
