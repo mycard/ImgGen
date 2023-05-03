@@ -372,6 +372,7 @@ namespace ImgGen
                 case Race.RACE_CREATORGOD: str += "创造神族"; break;
                 case Race.RACE_WYRM: str += "幻龙族"; break;
                 case Race.RACE_CYBERS: str += "电子界族"; break;
+                case Race.RACE_ILLUSION: str += "幻想魔族"; break;
                 default: str += "???"; break;
             }
             if (data.isType(Type.TYPE_FUSION)) str += "／融合";

@@ -42,7 +42,8 @@
         RACE_DEVINE = 0x200000,
         RACE_CREATORGOD = 0x400000,
         RACE_WYRM = 0x800000,
-        RACE_CYBERS = 0x1000000
+        RACE_CYBERS = 0x1000000,
+        RACE_ILLUSION = 0x2000000,
     }
 
     [Flags]
