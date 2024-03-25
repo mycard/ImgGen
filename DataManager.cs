@@ -55,7 +55,7 @@ namespace ImgGen
                 Console.WriteLine($"Card {code} not found!");
                 Data data = new Data
                 {
-                    code = code,
+                    code = 0,
                     name = "???",
                     text = "???"
                 };
@@ -91,4 +91,3 @@ namespace ImgGen
         }
     }
 }
-
