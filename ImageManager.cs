@@ -149,10 +149,6 @@ namespace ImgGen
         public Bitmap GetImage(int code)
         {
             Data data = DataManager.GetData(code);
-            if (data == null)
-            {
-                return null;
-            }
             return DrawCard(data);
         }
 

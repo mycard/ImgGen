@@ -53,7 +53,14 @@ namespace ImgGen
             else
             {
                 Console.WriteLine($"Card {code} not found!");
-                return null;
+                Data data = new Data
+                {
+                    code = code,
+                    name = "???",
+                    text = "???"
+                };
+                return data;
+            }
         }
 
         public static string FormatCardDesc(string r)
@@ -84,3 +91,4 @@ namespace ImgGen
         }
     }
 }
+
