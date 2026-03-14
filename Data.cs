@@ -103,6 +103,7 @@
         public int defence;
         public string name;
         public string text;
+        public bool isFullArt;
 
         public bool isType(Type typ)
         {

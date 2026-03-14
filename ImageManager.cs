@@ -16,6 +16,10 @@ namespace ImgGen
         private Bitmap[] bType = new Bitmap[9];
         private Bitmap[] bLinkNums = new Bitmap[8];
         private Bitmap[] bLinkMarkers = new Bitmap[9];
+        private Bitmap bTextBox;
+        private Bitmap bTextBoxPendulum;
+        private Bitmap bTextBoxAtkDef;
+        private Bitmap bTextBoxAtkLink;
         private Font nameBlackFont;
         private Font nameWhiteFont;
         private Font numFont;
@@ -27,6 +31,7 @@ namespace ImgGen
         private SolidBrush nameBlackBrush;
         private SolidBrush nameWhiteBrush;
         private SolidBrush nameShadowBrush;
+        private SolidBrush nameOutlineBrush;
         private SolidBrush pendBgBrush;
         private SolidBrush textBrush;
 
@@ -75,6 +80,7 @@ namespace ImgGen
                 nameBlackBrush = new SolidBrush(Color.FromArgb(255, 215, 0));
                 nameWhiteBrush = new SolidBrush(Color.FromArgb(255, 215, 0));
                 nameShadowBrush = new SolidBrush(Color.FromArgb(64, 64, 0));
+                nameOutlineBrush = new SolidBrush(Color.FromArgb(85, 64, 64, 64));
                 nameBlackFont = new Font(fontName, LiShu ? 30 : 28, LiShu ? FontStyle.Bold : FontStyle.Regular, GraphicsUnit.Pixel);
                 nameWhiteFont = new Font(fontName, LiShu ? 30 : 28, LiShu ? FontStyle.Bold : FontStyle.Regular, GraphicsUnit.Pixel);
             }
@@ -83,6 +89,7 @@ namespace ImgGen
                 nameBlackBrush = new SolidBrush(Color.FromArgb(0, 0, 0));
                 nameWhiteBrush = new SolidBrush(Color.FromArgb(255, 255, 255));
                 nameShadowBrush = new SolidBrush(Color.FromArgb(0, 0, 0, 0));
+                nameOutlineBrush = new SolidBrush(Color.FromArgb(170, 32, 32, 32));
                 nameBlackFont = new Font(fontName, LiShu ? 30 : 28, LiShu ? FontStyle.Bold : FontStyle.Regular, GraphicsUnit.Pixel);
                 nameWhiteFont = new Font(fontName, LiShu ? 30 : 28, FontStyle.Regular, GraphicsUnit.Pixel);
             }
@@ -144,6 +151,10 @@ namespace ImgGen
                 if (i == 5) continue;
                 bLinkMarkers[i - 1] = new Bitmap($"./textures/link_marker_on_{i}.png");
             }
+            bTextBox = new Bitmap("./textures/text_box.png");
+            bTextBoxPendulum = new Bitmap("./textures/text_box_p.png");
+            bTextBoxAtkDef = new Bitmap("./textures/atk_def.png");
+            bTextBoxAtkLink = new Bitmap("./textures/atk_link.png");
         }
 
         public Bitmap GetImage(int code)
@@ -155,22 +166,28 @@ namespace ImgGen
             return DrawCard(data);
         }
 
-        private void DrawPicture(Graphics graphics, Data data)
+        private Bitmap GetPicture(int code)
         {
             Bitmap image = null;
-            string filename = "./pico/" + data.code.ToString() + ".jpg";
+            string filename = "./pico/" + code.ToString() + ".jpg";
             if (!File.Exists(filename))
-                filename = "./pico/" + data.code.ToString() + ".png";
+                filename = "./pico/" + code.ToString() + ".png";
             try
             {
                 image = new Bitmap(filename);
             }
-            catch (Exception e)
-#if DEBUG
-                when (false)
-#endif
+            catch {
+                image = null;
+            }
+            return image;
+        }
+
+        private void DrawPicture(Graphics graphics, Data data)
+        {
+            Bitmap image = GetPicture(data.code);
+            if (image == null)
             {
-                Console.WriteLine($"Error when parsing {data.code} - {e}");
+                Console.WriteLine($"Can't load picture {data.code}");
                 return;
             }
             if (data.isType(Type.TYPE_PENDULUM))
@@ -515,7 +532,7 @@ namespace ImgGen
         {
             Font nameFont = nameBlackFont;
             Brush nameBrush = nameBlackBrush;
-            if (data.isType(Type.TYPE_SPELL | Type.TYPE_TRAP | Type.TYPE_FUSION | Type.TYPE_XYZ | Type.TYPE_LINK))
+            if (data.isType(Type.TYPE_SPELL | Type.TYPE_TRAP | Type.TYPE_FUSION | Type.TYPE_XYZ | Type.TYPE_LINK) || data.isFullArt)
             {
                 nameFont = nameWhiteFont;
                 nameBrush = nameWhiteBrush;
@@ -529,9 +546,41 @@ namespace ImgGen
             }
             graphics.TranslateTransform(27, LiShu ? 29.5f : 28.5f);
             graphics.ScaleTransform(sx, 1f);
-            graphics.DrawString(name, nameFont, nameShadowBrush, 0f, 0f);
+            if (!LiShu) graphics.DrawString(name, nameFont, nameShadowBrush, 0f, 0f);
+            if (data.isFullArt)
+            {
+                graphics.DrawString(name, nameFont, nameOutlineBrush, 0f, 0f);
+                graphics.DrawString(name, nameFont, nameOutlineBrush, 1f, 0f);
+                graphics.DrawString(name, nameFont, nameOutlineBrush, 2f, 0f);
+                graphics.DrawString(name, nameFont, nameOutlineBrush, 0f, 1f);
+                graphics.DrawString(name, nameFont, nameOutlineBrush, 1f, 1f);
+                graphics.DrawString(name, nameFont, nameOutlineBrush, 2f, 1f);
+                graphics.DrawString(name, nameFont, nameOutlineBrush, 0f, 2f);
+                graphics.DrawString(name, nameFont, nameOutlineBrush, 1f, 2f);
+                graphics.DrawString(name, nameFont, nameOutlineBrush, 2f, 2f);
+            }
             graphics.DrawString(name, nameFont, nameBrush, 1f, 1f);
             graphics.ResetTransform();
+        }
+
+        private void DrawTextbox(Graphics graphics, Data data)
+        {
+            // 全画幅卡图专用
+            if (data.isType(Type.TYPE_PENDULUM))
+            {
+                graphics.DrawImage(bTextBoxPendulum, 20, 357, 360, 197);
+            }
+            else
+            {
+                graphics.DrawImage(bTextBox, 22, 428, 357, 125);
+            }
+            if (data.isType(Type.TYPE_MONSTER))
+            {
+                if (data.isType(Type.TYPE_LINK))
+                    graphics.DrawImage(bTextBoxAtkLink, 33, 527, 334, 15);
+                else
+                    graphics.DrawImage(bTextBoxAtkDef, 33, 527, 334, 15);
+            }
         }
 
         private Bitmap DrawCard(Data data)
@@ -548,8 +597,19 @@ namespace ImgGen
             string name = DataManager.FormatCardName(data.name);
             string desc = DataManager.FormatCardDesc(data.text);
 
-            DrawPicture(graphics, data);
-            DrawTemplate(graphics, data);
+            Bitmap image = GetPicture(data.code);
+            data.isFullArt = image != null && image.Width == 400 && image.Height == 580;
+
+            if (data.isFullArt)
+            {
+                graphics.DrawImage(image, 0, 0, 400, 580);
+                DrawTextbox(graphics, data);
+            }
+            else
+            {
+                DrawPicture(graphics, data);
+                DrawTemplate(graphics, data);
+            }
 
             DrawName(graphics, name, data);
 
