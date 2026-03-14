@@ -18,6 +18,7 @@ namespace ImgGen
         private static bool generateLarge;
         private static bool generateSmall;
         private static bool generateThumb;
+        private static bool usePng;
 
         private static Queue<string> files;
         private static object locker = new object();
@@ -93,6 +94,7 @@ namespace ImgGen
             generateLarge = System.Configuration.ConfigurationManager.AppSettings["GenerateLarge"] != "False"; // true if AppSettings null
             generateSmall = System.Configuration.ConfigurationManager.AppSettings["GenerateSmall"] == "True";
             generateThumb = System.Configuration.ConfigurationManager.AppSettings["GenerateThumb"] == "True";
+            usePng = Environment.GetEnvironmentVariable("USE_PNG") == "1";
             if (generateLarge)
                 Directory.CreateDirectory("./picn");
             if (generateSmall)
@@ -139,7 +141,7 @@ namespace ImgGen
             {
                 return;
             }
-            string fileName = code.ToString() + ".jpg";
+            string fileName = code.ToString() + (usePng ? ".png" : ".jpg");
             Console.WriteLine($"Generating {fileName}");
             Bitmap image = imageManager.GetImage(code);
             if (image == null)
@@ -149,18 +151,27 @@ namespace ImgGen
             }
             if (generateLarge)
             {
-                image.Save("./picn/" + fileName, encoderInfo, encoderParams);
+                if (usePng)
+                    image.Save("./picn/" + fileName, ImageFormat.Png);
+                else
+                    image.Save("./picn/" + fileName, encoderInfo, encoderParams);
             }
             if (generateSmall)
             {
                 Bitmap bmp = Zoom(image, 177, 254);
-                bmp.Save("./pics/" + fileName, encoderInfo, encoderParams);
+                if (usePng)
+                    bmp.Save("./pics/" + fileName, ImageFormat.Png);
+                else
+                    bmp.Save("./pics/" + fileName, encoderInfo, encoderParams);
                 bmp.Dispose();
             }
             if (generateThumb)
             {
                 Bitmap bmp = Zoom(image, 44, 64);
-                bmp.Save("./pics/thumbnail/" + fileName, encoderInfo, encoderParams);
+                if (usePng)
+                    bmp.Save("./pics/thumbnail/" + fileName, ImageFormat.Png);
+                else
+                    bmp.Save("./pics/thumbnail/" + fileName, encoderInfo, encoderParams);
                 bmp.Dispose();
             }
             image?.Dispose();
