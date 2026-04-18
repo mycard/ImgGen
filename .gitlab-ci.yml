@@ -14,7 +14,7 @@ build:
   tags:
     - vs
   script:
-    - cmd /c '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\msbuild.exe" ImgGen.sln /m /p:Configuration=Release'
+    - cmd /c '"C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\msbuild.exe" ImgGen.sln /m /p:Configuration=Release'
   artifacts:
     paths:
       - bin/Release
