@@ -11,6 +11,7 @@ namespace ImgGen
     class ImageManager
     {
         private Bitmap[] bAttributes = new Bitmap[8];
+        private Bitmap[] bSpellTrapAttributes = new Bitmap[2];
         private Bitmap[] bStar = new Bitmap[2];
         private Bitmap[] bTemplates = new Bitmap[16];
         private Bitmap[] bType = new Bitmap[9];
@@ -133,6 +134,8 @@ namespace ImgGen
             bAttributes[4] = new Bitmap("./textures/att_light.png");
             bAttributes[5] = new Bitmap("./textures/att_dark.png");
             bAttributes[6] = new Bitmap("./textures/att_devine.png");
+            bSpellTrapAttributes[0] = new Bitmap("./textures/att_spell.png");
+            bSpellTrapAttributes[1] = new Bitmap("./textures/att_trap.png");
             bStar[0] = new Bitmap("./textures/star.png");
             bStar[1] = new Bitmap("./textures/starb.png");
             bType[0] = new Bitmap("./textures/spell_normal.png");
@@ -332,6 +335,15 @@ namespace ImgGen
             else if (data.attribute == Attribute.ATTRIBUTE_DEVINE) nAttr = 6;
             if (nAttr >= 0)
                 graphics.DrawImage(bAttributes[nAttr], 334, 28, 36, 36);
+        }
+
+        private void DrawSpellTrapAttributes(Graphics graphics, Data data)
+        {
+            int nAttr = -1;
+            if ((data.type & Type.TYPE_SPELL) > 0) nAttr = 0;
+            if ((data.type & Type.TYPE_TRAP) > 0) nAttr = 1;
+            if (nAttr >= 0)
+                graphics.DrawImage(bSpellTrapAttributes[nAttr], 334, 28, 36, 36);
         }
 
         private void DrawAtkDef(Graphics graphics, Data data)
@@ -603,6 +615,7 @@ namespace ImgGen
             if (data.isFullArt)
             {
                 graphics.DrawImage(image, 0, 0, 400, 580);
+                DrawSpellTrapAttributes(graphics, data);
                 DrawTextbox(graphics, data);
             }
             else
